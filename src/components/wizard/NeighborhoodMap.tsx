@@ -5,7 +5,8 @@ import { NEIGHBORHOOD_COORDINATES, ZONA_ESMERALDA_CENTER } from '@shared/neighbo
 
 // Same muted style array the authenticated ACM tool uses for its property
 // map, so this feels like the same product rather than a bare default map.
-const MAP_STYLES = [
+// Exported for reuse by ComparablesMap.tsx.
+export const MAP_STYLES = [
   { featureType: 'all', elementType: 'geometry', stylers: [{ color: '#f5f5f5' }] },
   { featureType: 'all', elementType: 'labels.text.fill', stylers: [{ color: '#616161' }] },
   { featureType: 'all', elementType: 'labels.text.stroke', stylers: [{ color: '#f5f5f5' }] },

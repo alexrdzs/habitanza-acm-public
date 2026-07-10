@@ -46,8 +46,10 @@ export const COMPARABLE_LISTINGS: Record<string, ComparableListing[]> = {
       precio: 3800000,
       m2: 572.62,
       photo: 'https://images.pulppo.com/property/6812b95bc4b9d40da6848713/picture_ab59db6530f14c4c8824ad4b7747916d.jpg',
-      lat: 19.5853053,
-      lng: -99.3091286,
+      // Corrected by Alex -- the portfolio's own coordinate for this listing
+      // placed the pin in the wrong spot.
+      lat: 19.568735,
+      lng: -99.321748,
     },
   ],
   'Lomas de Valle Escondido': [

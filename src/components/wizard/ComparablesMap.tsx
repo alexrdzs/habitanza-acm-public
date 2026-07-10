@@ -2,23 +2,7 @@ import { useCallback, useRef } from 'react';
 import { useLoadScript, GoogleMap } from '@react-google-maps/api';
 import { MapPin } from 'lucide-react';
 import type { ComparableListing } from '@shared/comparableListings';
-
-// A dark variant of NeighborhoodMap.tsx's style array -- this map sits
-// inside the reveal screen's dark "ink" panel, so a stock light Google Map
-// would look like a jarring white rectangle rather than an integrated part
-// of the card.
-const DARK_MAP_STYLES = [
-  { elementType: 'geometry', stylers: [{ color: '#17281F' }] },
-  { elementType: 'labels.text.stroke', stylers: [{ color: '#17281F' }] },
-  { elementType: 'labels.text.fill', stylers: [{ color: '#9CA89C' }] },
-  { featureType: 'administrative', elementType: 'geometry', stylers: [{ color: '#2B342F' }] },
-  { featureType: 'poi', stylers: [{ visibility: 'off' }] },
-  { featureType: 'poi.park', elementType: 'geometry', stylers: [{ color: '#146C48' }, { visibility: 'on' }] },
-  { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#2B342F' }] },
-  { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#17281F' }] },
-  { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#414D46' }] },
-  { featureType: 'water', stylers: [{ color: '#10201A' }] },
-];
+import { MAP_STYLES } from './NeighborhoodMap';
 
 interface Props {
   listings: ComparableListing[];
@@ -26,9 +10,9 @@ interface Props {
 
 function MapFallback({ count }: { count: number }) {
   return (
-    <div className="flex h-40 flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed border-white/20 bg-white/[0.04] text-center">
-      <MapPin className="h-5 w-5 text-emerald-glow" />
-      <p className="px-4 text-xs text-neutral-400">{count} propiedades de referencia en la zona</p>
+    <div className="flex h-40 flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed border-neutral-300 bg-neutral-50 text-center">
+      <MapPin className="h-5 w-5 text-brand-500" />
+      <p className="px-4 text-xs text-neutral-500">{count} propiedades de referencia en la zona</p>
     </div>
   );
 }
@@ -54,9 +38,9 @@ export function ComparablesMap({ listings }: Props) {
             icon: {
               path: google.maps.SymbolPath.CIRCLE,
               scale: 7,
-              fillColor: '#4ADE80',
+              fillColor: '#25D366',
               fillOpacity: 1,
-              strokeColor: '#10201A',
+              strokeColor: '#ffffff',
               strokeWeight: 2,
             },
           })
@@ -78,14 +62,14 @@ export function ComparablesMap({ listings }: Props) {
   }
 
   return (
-    <div className="h-40 overflow-hidden rounded-xl border border-white/15">
+    <div className="h-40 overflow-hidden rounded-xl border border-neutral-200 shadow-inner">
       {isLoaded ? (
         <GoogleMap
           mapContainerStyle={{ width: '100%', height: '100%' }}
           center={{ lat: listings[0].lat, lng: listings[0].lng }}
           zoom={14}
           onLoad={onLoad}
-          options={{ styles: DARK_MAP_STYLES, disableDefaultUI: true, gestureHandling: 'cooperative' }}
+          options={{ styles: MAP_STYLES, disableDefaultUI: true, gestureHandling: 'cooperative' }}
         />
       ) : (
         <div className="flex h-full items-center justify-center text-xs text-neutral-400">Cargando mapa...</div>

@@ -1,5 +1,7 @@
 import { ShieldCheck, Clock, MapPin, LineChart, MessageCircle, Building2, FileCheck2 } from 'lucide-react';
 import { TestimonialsCarousel } from './TestimonialsCarousel';
+import { TeamSection } from './TeamSection';
+import { MethodologySection } from './MethodologySection';
 
 interface Props {
   onStart: () => void;
@@ -67,9 +69,11 @@ export function WizardHero({ onStart }: Props) {
         </p>
       </div>
 
-      {/* What you actually get, spelled out up front -- this page should
-          read as an offer of value, not the minimum copy needed to get a
-          click on a lead form. */}
+      <CtaButton onStart={onStart} />
+
+      {/* What you actually get, spelled out for anyone still reading before
+          scrolling back up to the button above -- this page should read as
+          an offer of value, not the minimum copy needed to get a click. */}
       <div className="mx-auto flex max-w-xs flex-col gap-2.5 text-left">
         {VALUE_ITEMS.map(({ icon: Icon, label }) => (
           <div key={label} className="flex items-start gap-2.5">
@@ -100,7 +104,7 @@ export function WizardHero({ onStart }: Props) {
         </p>
       </div>
 
-      <CtaButton onStart={onStart} />
+      <TeamSection />
 
       <div
         className="-mx-4 overflow-hidden pb-2 pt-1 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]"
@@ -120,6 +124,8 @@ export function WizardHero({ onStart }: Props) {
           ))}
         </div>
       </div>
+
+      <MethodologySection />
 
       {/* Secondary trust module -- real client testimonials, moved here from
           the reveal screen so people have this reassurance before handing

@@ -7,11 +7,11 @@ function MiniCard({ listing }: { listing: ComparableListing }) {
   const [imgFailed, setImgFailed] = useState(false);
 
   return (
-    <div className="w-[124px] flex-shrink-0 snap-center overflow-hidden rounded-xl border border-white/15 bg-white/[0.04]">
-      <div className="relative aspect-[4/3] overflow-hidden bg-white/5">
+    <div className="w-[124px] flex-shrink-0 snap-center overflow-hidden rounded-xl border border-neutral-200 bg-white">
+      <div className="relative aspect-[4/3] overflow-hidden bg-neutral-100">
         {imgFailed || !listing.photo ? (
           <div className="flex h-full w-full items-center justify-center">
-            <Home className="h-5 w-5 text-white/30" />
+            <Home className="h-5 w-5 text-neutral-300" />
           </div>
         ) : (
           <img
@@ -25,10 +25,10 @@ function MiniCard({ listing }: { listing: ComparableListing }) {
         )}
       </div>
       <div className="space-y-0.5 p-2">
-        <p className="truncate font-mono text-[11px] font-semibold tabular-nums text-white">
+        <p className="truncate font-mono text-[11px] font-semibold tabular-nums text-neutral-900">
           {formatCurrency(listing.precio)}
         </p>
-        <p className="flex items-center gap-1 text-[10px] text-neutral-400">
+        <p className="flex items-center gap-1 text-[10px] text-neutral-500">
           <Maximize className="h-2.5 w-2.5" />
           {listing.m2}m²
         </p>

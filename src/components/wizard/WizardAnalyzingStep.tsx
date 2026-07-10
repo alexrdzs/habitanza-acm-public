@@ -82,20 +82,24 @@ export function WizardAnalyzingStep({ onDone }: { onDone: () => void }) {
                       'conic-gradient(from 0deg, transparent 0deg, var(--color-emerald-glow) 25deg, transparent 70deg)',
                   }}
                 />
-                <div className="relative flex gap-2.5 px-4">
-                  {[0, 1, 2].map((i) => (
-                    <div
-                      key={i}
-                      className="h-20 w-16 rounded-lg border border-neutral-300 bg-white shadow-sm transition-[filter] duration-700 ease-out"
-                      style={{ filter: `blur(${blurPx}px)`, opacity: 0.5 + progress * 0.5 }}
-                    >
-                      <div className="h-11 w-full rounded-t-lg bg-neutral-200" />
-                      <div className="space-y-1 p-1.5">
-                        <div className="h-1.5 w-3/4 rounded-full bg-neutral-200" />
-                        <div className="h-1.5 w-1/2 rounded-full bg-neutral-200" />
+                {/* Scrolling, not a static trio -- suggests pulling through
+                    many references rather than looking at 3 fixed cards. */}
+                <div className="relative w-full overflow-hidden">
+                  <div className="marquee-track flex items-center gap-2.5" style={{ animationDuration: '6s' }}>
+                    {Array.from({ length: 12 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className="h-20 w-16 flex-shrink-0 rounded-lg border border-neutral-300 bg-white shadow-sm transition-[filter] duration-700 ease-out"
+                        style={{ filter: `blur(${blurPx}px)`, opacity: 0.5 + progress * 0.5 }}
+                      >
+                        <div className="h-11 w-full rounded-t-lg bg-neutral-200" />
+                        <div className="space-y-1 p-1.5">
+                          <div className="h-1.5 w-3/4 rounded-full bg-neutral-200" />
+                          <div className="h-1.5 w-1/2 rounded-full bg-neutral-200" />
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </>
             ) : (
