@@ -1,10 +1,12 @@
 import { useMemo } from 'react';
 import { Search, ListChecks, UserCheck } from 'lucide-react';
-import { TestimonialsCarousel } from './TestimonialsCarousel';
 import { PreliminaryPricingBar } from './PreliminaryPricingBar';
+import { ComparablesMap } from './ComparablesMap';
+import { ComparableListingCards } from './ComparableListingCards';
 import { AdvisorCTA } from './AdvisorCTA';
 import { AdvisorAvatar } from './AdvisorAvatar';
 import { ADVISORS } from '@shared/advisors';
+import { COMPARABLE_LISTINGS } from '@shared/comparableListings';
 import type { PreliminaryEstimate } from '@shared/pricing';
 import { formatCurrency } from '../../lib/utils';
 
@@ -40,64 +42,61 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
   // can compare inbound contact between Rogelio and Tere.
   const advisor = useMemo(() => ADVISORS[Math.floor(Math.random() * ADVISORS.length)], []);
   const advisorFirstName = advisor.name.split(' ')[0];
+  const comps = COMPARABLE_LISTINGS[colonia] ?? [];
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 space-y-5 pb-20 duration-700">
-      {/* Reassurance panel — the first thing people read after submitting.
-          Deliberately not the final number: it names who picks up the lead
-          (with a real photo, for a human sense) and states outright that a
-          full, personalized ACM is still coming, so this screen never
-          reads as the end of the process. The price range lives here too
-          instead of a separate card, so the payoff and the reassurance
-          read as one moment. */}
+      {/* The one screen staged like a certificate being issued (dark ink
+          ground, brass trim) rather than a form -- deliberately not the
+          final ACM, but the one moment meant to feel like a payoff. */}
       <div className="relative overflow-hidden rounded-card-lg bg-gradient-to-b from-ink-soft to-ink p-px shadow-[0_24px_48px_-24px_rgba(16,32,26,0.55)]">
         <div className="relative overflow-hidden rounded-[calc(var(--radius-card-lg)-1px)] p-6 md:p-10">
           <div className="pointer-events-none absolute -left-10 -top-16 h-56 w-56 rounded-full bg-emerald-glow/25 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-20 -right-10 h-64 w-64 rounded-full bg-brass/20 blur-3xl" />
 
-          <p className="relative mb-4 font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-brass-soft">
-            Recibimos tu información
-          </p>
-
-          <div className="relative mb-5 flex items-center gap-3">
-            <AdvisorAvatar
-              advisor={advisor}
-              className="h-12 w-12 border-2 border-white/30 bg-white/10"
-              iconClassName="h-5 w-5 text-white/70"
-            />
-            <div>
-              <p className="text-sm font-bold text-white">{advisor.name}</p>
-              <p className="text-xs text-neutral-400">{advisor.roleLabel}</p>
-            </div>
-          </div>
-
           <h2 className="relative text-xl font-bold leading-snug text-white md:text-2xl">
-            Muchas gracias, {firstName}. Ya tenemos todo para trabajar tu estimado de valor.
+            Muchas gracias, {firstName}.
           </h2>
-          <p className="relative mt-3 max-w-xl text-sm leading-relaxed text-neutral-300 md:text-base">
-            Lo estará trabajando <span className="font-semibold text-white">{advisorFirstName}</span>, quien conoce a
-            fondo {colonia}.
+          <p className="relative mt-1.5 text-base font-medium text-neutral-300">
+            Ya tenemos todo para trabajar tu estimado de valor.
           </p>
 
-          <div className="relative mt-5 rounded-xl border border-white/15 bg-white/[0.06] px-4 py-3.5">
-            <p className="text-xs leading-relaxed text-neutral-300 md:text-sm">
-              <span className="font-semibold text-emerald-glow">Esto todavía no es el paso final: </span>
-              con la información de tu {tipoPropiedad.toLowerCase()} en {colonia}, nuestro equipo trabajará un
-              Análisis Comparativo de Mercado (ACM) personalizado, y nos pondremos en contacto contigo con una
-              presentación completa.
-            </p>
-          </div>
+          <p className="relative mt-4 max-w-xl text-sm leading-relaxed text-neutral-300 md:text-base">
+            <span className="font-semibold text-white">{advisorFirstName}</span> estará trabajando una propuesta
+            para ti porque conoce a fondo {colonia}, pero desde ahora te podemos compartir algo que sabemos basado
+            en nuestra experiencia y tendencias del mercado.
+          </p>
 
           <div className="relative mt-6 border-t border-white/10 pt-5">
-            <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-brass-soft">Rango de zona</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-brass-soft">Rango de precio</p>
             <h3 className="mt-1 text-base font-bold text-white">
               Tu propiedad estaría en un rango de {formatCurrency(estimate.low)} a {formatCurrency(estimate.high)}
             </h3>
-            <p className="mt-2 text-sm leading-relaxed text-neutral-400">
-              Por experiencia e indicadores de mercado, sabemos que {colonia} suele moverse en un rango así — pero
-              cada propiedad es distinta, y es importante diseñar una estrategia específica para la tuya.
-            </p>
             <PreliminaryPricingBar estimate={estimate} />
+          </div>
+
+          {comps.length > 0 && (
+            <div className="relative mt-2 space-y-3 md:flex md:gap-3 md:space-y-0">
+              <div className="md:w-1/2">
+                <ComparablesMap listings={comps} />
+              </div>
+              <div className="md:w-1/2">
+                <ComparableListingCards listings={comps} />
+              </div>
+            </div>
+          )}
+
+          <div className="relative mt-6 flex items-center gap-3 border-t border-white/10 pt-5">
+            <AdvisorAvatar
+              advisor={advisor}
+              className="h-11 w-11 border-2 border-white/25 bg-white/10"
+              iconClassName="h-5 w-5 text-white/70"
+            />
+            <div>
+              <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-neutral-500">Firma</p>
+              <p className="text-sm font-bold text-white">{advisor.name}</p>
+              <p className="text-xs text-neutral-400">{advisor.roleLabel}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -124,8 +123,6 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
           ))}
         </ol>
       </div>
-
-      <TestimonialsCarousel />
 
       <AdvisorCTA advisor={advisor} tipoPropiedad={tipoPropiedad} colonia={colonia} />
     </div>

@@ -107,7 +107,7 @@ export function LandingPage() {
       <header className="flex justify-center py-6">
         <Logo className="h-8 text-neutral-900" />
       </header>
-      <main className="mx-auto max-w-md px-4 pb-20">
+      <main className="mx-auto max-w-md px-4 pb-20 md:max-w-xl lg:max-w-2xl">
         {step === 'hero' && <WizardHero onStart={() => setStep('location')} />}
 
         {step === 'location' && (

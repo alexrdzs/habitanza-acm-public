@@ -1,8 +1,15 @@
-import { ShieldCheck, Clock, MapPin, LineChart, MessageCircle, Building2 } from 'lucide-react';
+import { ShieldCheck, Clock, MapPin, LineChart, MessageCircle, Building2, FileCheck2 } from 'lucide-react';
+import { TestimonialsCarousel } from './TestimonialsCarousel';
 
 interface Props {
   onStart: () => void;
 }
+
+const VALUE_ITEMS = [
+  { icon: LineChart, label: 'Un rango de precio de tu zona, en minutos' },
+  { icon: MessageCircle, label: 'Un asesor real, dedicado a tu fraccionamiento' },
+  { icon: FileCheck2, label: 'Tu Análisis Comparativo de Mercado (ACM) completo' },
+];
 
 const TRUST_MARKS = [
   { icon: ShieldCheck, label: 'Sin costo, sin compromiso' },
@@ -33,6 +40,17 @@ const EXPERTISE_CARDS = [
   },
 ];
 
+function CtaButton({ onStart }: { onStart: () => void }) {
+  return (
+    <button
+      onClick={onStart}
+      className="rounded-pill bg-brand-500 px-9 py-4 text-base font-semibold text-white shadow-[0_10px_24px_-8px_rgba(37,211,102,0.55)] transition-all hover:bg-brand-600 active:scale-95"
+    >
+      Conoce el valor de tu propiedad
+    </button>
+  );
+}
+
 export function WizardHero({ onStart }: Props) {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 space-y-10 py-6 text-center duration-700">
@@ -47,6 +65,20 @@ export function WizardHero({ onStart }: Props) {
           Una primera referencia en minutos, y un Análisis Comparativo de Mercado hecho a la medida por un asesor que
           conoce tu fraccionamiento.
         </p>
+      </div>
+
+      {/* What you actually get, spelled out up front -- this page should
+          read as an offer of value, not the minimum copy needed to get a
+          click on a lead form. */}
+      <div className="mx-auto flex max-w-xs flex-col gap-2.5 text-left">
+        {VALUE_ITEMS.map(({ icon: Icon, label }) => (
+          <div key={label} className="flex items-start gap-2.5">
+            <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-emerald-deep/10">
+              <Icon className="h-3 w-3 text-emerald-deep" />
+            </div>
+            <p className="text-sm font-medium leading-snug text-neutral-700">{label}</p>
+          </div>
+        ))}
       </div>
 
       <div className="facet-rule mx-auto max-w-xs" />
@@ -68,12 +100,7 @@ export function WizardHero({ onStart }: Props) {
         </p>
       </div>
 
-      <button
-        onClick={onStart}
-        className="rounded-pill bg-brand-500 px-9 py-4 text-base font-semibold text-white shadow-[0_10px_24px_-8px_rgba(37,211,102,0.55)] transition-all hover:bg-brand-600 active:scale-95"
-      >
-        Conoce el valor de tu propiedad
-      </button>
+      <CtaButton onStart={onStart} />
 
       <div
         className="-mx-4 overflow-hidden pb-2 pt-1 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]"
@@ -93,6 +120,13 @@ export function WizardHero({ onStart }: Props) {
           ))}
         </div>
       </div>
+
+      {/* Secondary trust module -- real client testimonials, moved here from
+          the reveal screen so people have this reassurance before handing
+          over contact info, not after. */}
+      <TestimonialsCarousel />
+
+      <CtaButton onStart={onStart} />
     </div>
   );
 }
