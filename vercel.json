@@ -1,9 +1,4 @@
 {
-  "functions": {
-    "api/lead.ts": {
-      "includeFiles": "shared/**"
-    }
-  },
   "rewrites": [
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]

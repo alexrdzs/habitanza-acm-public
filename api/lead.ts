@@ -1,13 +1,42 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import {
-  LeadSubmission,
-  ZONA_ESMERALDA_COLONIAS,
-  OTHER_COLONIA_VALUE,
-  PUBLIC_PROPERTY_TYPES,
-  PROPERTY_CONDITIONS,
-  normalizePhone,
-  sanitizeText,
-} from '../shared/validation';
+// Type-only import — erased entirely at build time, so it carries no
+// runtime module resolution risk (see the note below on why the runtime
+// values it would otherwise pull in must be inlined instead).
+import type { LeadSubmission } from '../shared/validation';
+
+// Vercel compiles this function with Node's native TypeScript type-stripping
+// (types erased, syntax otherwise untouched) rather than bundling — it does
+// not inline or transpile sibling files outside api/, and Node's ESM
+// resolver won't guess extensions for a relative import like
+// '../shared/validation'. So the runtime values shared/validation.ts
+// exports are duplicated here rather than imported; keep them in sync with
+// that file if they change. shared/validation.ts remains the source of
+// truth for the client wizard, which Vite bundles normally.
+const ZONA_ESMERALDA_COLONIAS = [
+  'Bosque Esmeralda',
+  'Condado de Sayavedra',
+  'Hacienda de las Palmas',
+  'Loma Alta',
+  'La Estadía',
+  'Bosques de Echegaray',
+  'Club de Golf Bellavista',
+] as const;
+const OTHER_COLONIA_VALUE = 'otra';
+const PUBLIC_PROPERTY_TYPES = ['Casa', 'Departamento', 'Terreno'] as const;
+const PROPERTY_CONDITIONS = ['Para reformar', 'Buen estado', 'Remodelada', 'Nueva'] as const;
+
+function normalizePhone(raw: string): string | null {
+  const digits = raw.replace(/\D/g, '');
+  if (digits.length === 10) return digits;
+  if (digits.length === 12 && digits.startsWith('52')) return digits.slice(2);
+  if (digits.length === 13 && digits.startsWith('521')) return digits.slice(3);
+  return null;
+}
+
+function sanitizeText(input: unknown, maxLen: number): string {
+  if (typeof input !== 'string') return '';
+  return input.replace(/[<>]/g, '').trim().slice(0, maxLen);
+}
 
 const RATE_LIMIT_MAX = 5;
 const RATE_LIMIT_WINDOW_SECONDS = 600;
