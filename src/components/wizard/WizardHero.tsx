@@ -1,4 +1,4 @@
-import { ShieldCheck, Clock, MapPin } from 'lucide-react';
+import { ShieldCheck, Clock, MapPin, LineChart, MessageCircle, Building2 } from 'lucide-react';
 
 interface Props {
   onStart: () => void;
@@ -8,6 +8,29 @@ const TRUST_MARKS = [
   { icon: ShieldCheck, label: 'Sin costo, sin compromiso' },
   { icon: Clock, label: 'Respuesta en menos de 48 horas' },
   { icon: MapPin, label: 'Especialistas en la zona' },
+];
+
+const EXPERTISE_CARDS = [
+  {
+    icon: MapPin,
+    title: 'Conocimiento local',
+    detail: 'Asesores que viven y trabajan la zona todos los días, no un call center genérico.',
+  },
+  {
+    icon: LineChart,
+    title: 'Método basado en datos',
+    detail: 'Homologamos metros, condición y ubicación antes de sugerir un precio.',
+  },
+  {
+    icon: MessageCircle,
+    title: 'Acompañamiento real',
+    detail: 'Un asesor te guía por WhatsApp desde el primer mensaje hasta el cierre.',
+  },
+  {
+    icon: Building2,
+    title: 'Portafolio activo',
+    detail: 'Inventario real en la zona ahora mismo, no solo un formulario.',
+  },
 ];
 
 export function WizardHero({ onStart }: Props) {
@@ -51,6 +74,21 @@ export function WizardHero({ onStart }: Props) {
       >
         Conoce el valor de tu propiedad
       </button>
+
+      <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 pt-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {EXPERTISE_CARDS.map(({ icon: Icon, title, detail }) => (
+          <div
+            key={title}
+            className="flex w-[168px] flex-shrink-0 snap-start flex-col gap-2.5 rounded-2xl border border-neutral-200 bg-parchment-card p-4 text-left shadow-[0_8px_20px_-10px_rgba(16,32,26,0.25)]"
+          >
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-deep/10">
+              <Icon className="h-4 w-4 text-emerald-deep" />
+            </div>
+            <p className="text-[13px] font-bold leading-snug text-neutral-900">{title}</p>
+            <p className="text-[11.5px] leading-relaxed text-neutral-500">{detail}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

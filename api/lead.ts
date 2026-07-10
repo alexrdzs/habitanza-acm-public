@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 // Type-only import — erased entirely at build time, so it carries no
 // runtime module resolution risk (see the note below on why the runtime
 // values it would otherwise pull in must be inlined instead).
-import type { LeadSubmission } from '../shared/validation';
+import type { LeadSubmission, Amenity } from '../shared/validation';
 
 // Vercel compiles this function with Node's native TypeScript type-stripping
 // (types erased, syntax otherwise untouched) rather than bundling — it does
@@ -23,6 +23,7 @@ const ZONA_ESMERALDA_COLONIAS = [
 const OTHER_COLONIA_VALUE = 'otra';
 const PUBLIC_PROPERTY_TYPES = ['Casa', 'Departamento', 'Terreno'] as const;
 const PROPERTY_CONDITIONS = ['Para reformar', 'Buen estado', 'Remodelada', 'Nueva'] as const;
+const AMENITIES = ['Jardín', 'Alberca', 'Seguridad 24h', 'Estacionamiento techado', 'Cuarto de servicio', 'Terraza'] as const;
 
 function normalizePhone(raw: string): string | null {
   const digits = raw.replace(/\D/g, '');
@@ -121,6 +122,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       : undefined;
   const banos =
     typeof body.banos === 'number' && body.banos >= 0 && body.banos <= 50 ? Math.round(body.banos) : undefined;
+  const amenidades = Array.isArray(body.amenidades)
+    ? body.amenidades.filter((a): a is Amenity => (AMENITIES as readonly string[]).includes(a))
+    : undefined;
   const timeline = body.timeline;
   const consentimiento = body.consentimiento === true;
 
@@ -160,6 +164,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     m2Terreno,
     recamaras,
     banos,
+    amenidades,
     timeline,
     fuente: 'landing-valuacion',
     zona: 'zona-esmeralda',

@@ -28,6 +28,20 @@ export type PublicPropertyType = (typeof PUBLIC_PROPERTY_TYPES)[number];
 export const PROPERTY_CONDITIONS = ['Para reformar', 'Buen estado', 'Remodelada', 'Nueva'] as const;
 export type PropertyCondition = (typeof PROPERTY_CONDITIONS)[number];
 
+// Optional amenity chips on the basics step — not used by the preliminary
+// pricing formula, just extra context passed to the broker building the
+// real ACM (matches BrokerNotes-style qualitative signal in the
+// authenticated tool).
+export const AMENITIES = [
+  'Jardín',
+  'Alberca',
+  'Seguridad 24h',
+  'Estacionamiento techado',
+  'Cuarto de servicio',
+  'Terraza',
+] as const;
+export type Amenity = (typeof AMENITIES)[number];
+
 export const TIMELINE_OPTIONS = [
   { value: 'ya', label: 'Ya quiero vender' },
   { value: 'proximos_meses', label: 'En los próximos meses' },
@@ -46,6 +60,7 @@ export interface LeadSubmission {
   m2Terreno?: number;
   recamaras?: number;
   banos?: number;
+  amenidades?: Amenity[];
   timeline?: SellTimeline;
   consentimiento: boolean;
   empresa?: string; // honeypot — must stay empty

@@ -3,6 +3,7 @@ import { CheckCircle2 } from 'lucide-react';
 import { formatCurrency } from '../../lib/utils';
 import type { PreliminaryEstimate } from '@shared/pricing';
 import { PropertyShowcase } from './PropertyShowcase';
+import { PreliminaryPricingBar } from './PreliminaryPricingBar';
 
 interface Props {
   estimate: PreliminaryEstimate;
@@ -48,8 +49,7 @@ function useCountUp(target: number, durationMs = 1100) {
 
 export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: Props) {
   const firstName = nombre.trim().split(' ')[0] || 'gracias';
-  const low = useCountUp(estimate.low);
-  const high = useCountUp(estimate.high, 1300);
+  const mid = useCountUp(estimate.mid);
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 space-y-5 duration-700">
@@ -74,21 +74,25 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
           {/* Glass panel — the ACM report's bold price treatment, in frosted
               glass over the ambient color blobs above. */}
           <div className="relative mt-3 rounded-2xl border border-white/20 bg-white/[0.07] px-5 py-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.15)] backdrop-blur-xl md:px-8 md:py-8">
-            <div className="flex flex-wrap items-baseline gap-x-3 font-mono text-[2rem] font-medium tabular-nums text-white md:text-[2.75rem] lg:text-5xl">
-              <span>{formatCurrency(low)}</span>
-              <span className="text-lg font-normal text-neutral-400 md:text-xl">—</span>
-              <span>{formatCurrency(high)}</span>
+            <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-neutral-400">Precio de referencia</p>
+            <div className="mt-1 font-mono text-[2.25rem] font-medium tabular-nums text-white md:text-[3rem] lg:text-5xl">
+              {formatCurrency(mid)}
             </div>
-            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.15em] text-neutral-400">MXN</p>
           </div>
 
           <p className="relative mt-6 max-w-xl text-sm leading-relaxed text-neutral-400 md:text-base">
-            Rango preliminar para tu {tipoPropiedad.toLowerCase()} en {colonia}, basado en promedios generales de la
-            zona. <span className="font-semibold text-white">No sustituye tu Análisis Comparativo de Mercado</span>{' '}
+            Referencia preliminar para tu {tipoPropiedad.toLowerCase()} en {colonia}, basado en promedios generales de
+            la zona. <span className="font-semibold text-white">No sustituye tu Análisis Comparativo de Mercado</span>{' '}
             completo, que un asesor te comparte por WhatsApp en menos de 48 horas usando comparables reales de tu
             zona.
           </p>
         </div>
+      </div>
+
+      <div className="rounded-card-lg border border-neutral-200 bg-parchment-card p-6 md:p-8">
+        <p className="text-[11px] font-bold uppercase tracking-wider text-brass">Rango de posicionamiento</p>
+        <h3 className="mt-1 text-base font-bold text-neutral-900">Dónde se ubica tu propiedad</h3>
+        <PreliminaryPricingBar estimate={estimate} />
       </div>
 
       <div className="space-y-4 rounded-card-lg border border-neutral-200 bg-parchment-card p-6 md:p-8">

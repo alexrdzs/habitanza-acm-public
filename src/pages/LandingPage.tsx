@@ -5,10 +5,15 @@ import { WizardBasicsStep } from '../components/wizard/WizardBasicsStep';
 import { WizardAnalyzingStep } from '../components/wizard/WizardAnalyzingStep';
 import { WizardContactStep } from '../components/wizard/WizardContactStep';
 import { WizardRevealStep } from '../components/wizard/WizardRevealStep';
-import { OTHER_COLONIA_VALUE, normalizePhone, type PropertyCondition } from '@shared/validation';
+import { OTHER_COLONIA_VALUE, normalizePhone, type PropertyCondition, type Amenity } from '@shared/validation';
 import { estimatePreliminaryRange, type PreliminaryEstimate } from '@shared/pricing';
 
 type Step = 'hero' | 'basics' | 'analyzing' | 'contact' | 'reveal';
+
+function parseRoomCount(v: string): number | undefined {
+  if (!v) return undefined;
+  return v === '5+' ? 5 : Number(v);
+}
 
 export function LandingPage() {
   const [step, setStep] = useState<Step>('hero');
@@ -22,6 +27,7 @@ export function LandingPage() {
   const [m2Terreno, setM2Terreno] = useState('');
   const [recamaras, setRecamaras] = useState('');
   const [banos, setBanos] = useState('');
+  const [amenidades, setAmenidades] = useState<Amenity[]>([]);
 
   // Contact
   const [nombre, setNombre] = useState('');
@@ -62,8 +68,9 @@ export function LandingPage() {
           condicion: condicion || undefined,
           m2Construccion: m2Construccion ? Number(m2Construccion) : undefined,
           m2Terreno: m2Terreno ? Number(m2Terreno) : undefined,
-          recamaras: recamaras ? Number(recamaras) : undefined,
-          banos: banos ? Number(banos) : undefined,
+          recamaras: parseRoomCount(recamaras),
+          banos: parseRoomCount(banos),
+          amenidades: amenidades.length > 0 ? amenidades : undefined,
           timeline: timeline || undefined,
           consentimiento,
           empresa,
@@ -118,6 +125,8 @@ export function LandingPage() {
             setRecamaras={setRecamaras}
             banos={banos}
             setBanos={setBanos}
+            amenidades={amenidades}
+            setAmenidades={setAmenidades}
             onBack={() => setStep('hero')}
             onContinue={() => setStep('analyzing')}
           />
