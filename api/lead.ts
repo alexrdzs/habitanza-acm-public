@@ -1,0 +1,146 @@
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import {
+  LeadSubmission,
+  ZONA_ESMERALDA_COLONIAS,
+  OTHER_COLONIA_VALUE,
+  PUBLIC_PROPERTY_TYPES,
+  normalizePhone,
+  sanitizeText,
+} from '../shared/validation';
+
+const RATE_LIMIT_MAX = 5;
+const RATE_LIMIT_WINDOW_SECONDS = 600;
+
+// Best-effort fallback only — holds within a single warm serverless
+// instance. Set UPSTASH_REDIS_REST_URL/TOKEN for durable, cross-instance
+// rate limiting in production.
+const memoryStore = new Map<string, { count: number; resetAt: number }>();
+
+async function checkRateLimit(ip: string): Promise<boolean> {
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+
+  if (url && token) {
+    const key = `ratelimit:lead:${ip}`;
+    const incrRes = await fetch(`${url}/incr/${key}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const { result: count } = (await incrRes.json()) as { result: number };
+    if (count === 1) {
+      await fetch(`${url}/expire/${key}/${RATE_LIMIT_WINDOW_SECONDS}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+    }
+    return count <= RATE_LIMIT_MAX;
+  }
+
+  const now = Date.now();
+  const entry = memoryStore.get(ip);
+  if (!entry || entry.resetAt < now) {
+    memoryStore.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_SECONDS * 1000 });
+    return true;
+  }
+  entry.count += 1;
+  return entry.count <= RATE_LIMIT_MAX;
+}
+
+function getClientIp(req: VercelRequest): string {
+  const forwarded = req.headers['x-forwarded-for'];
+  if (typeof forwarded === 'string') return forwarded.split(',')[0].trim();
+  if (Array.isArray(forwarded)) return forwarded[0];
+  return req.socket?.remoteAddress || 'unknown';
+}
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
+    return res.status(405).json({ error: 'Método no permitido' });
+  }
+
+  const body = req.body as Partial<LeadSubmission>;
+
+  // Honeypot: bots that fill hidden fields get a fake success, no processing.
+  if (body.empresa) {
+    return res.status(200).json({ ok: true });
+  }
+
+  const ip = getClientIp(req);
+  const allowed = await checkRateLimit(ip);
+  if (!allowed) {
+    return res.status(429).json({ error: 'Demasiadas solicitudes. Intenta de nuevo más tarde.' });
+  }
+
+  const nombre = sanitizeText(body.nombre, 120);
+  const telefono = normalizePhone(sanitizeText(body.telefono, 20));
+  const colonia = sanitizeText(body.colonia, 120);
+  const coloniaOtra = sanitizeText(body.colonia_otra, 120);
+  const tipoPropiedad = body.tipoPropiedad;
+  const m2Construccion =
+    typeof body.m2Construccion === 'number' && body.m2Construccion > 0 && body.m2Construccion < 100000
+      ? Math.round(body.m2Construccion)
+      : undefined;
+  const recamaras =
+    typeof body.recamaras === 'number' && body.recamaras >= 0 && body.recamaras <= 50
+      ? Math.round(body.recamaras)
+      : undefined;
+  const timeline = body.timeline;
+  const consentimiento = body.consentimiento === true;
+
+  const isKnownColonia = (ZONA_ESMERALDA_COLONIAS as readonly string[]).includes(colonia);
+  const isOtherColonia = colonia === OTHER_COLONIA_VALUE;
+
+  const errors: string[] = [];
+  if (!nombre) errors.push('nombre');
+  if (!telefono) errors.push('telefono');
+  if (!isKnownColonia && !isOtherColonia) errors.push('colonia');
+  if (isOtherColonia && !coloniaOtra) errors.push('colonia_otra');
+  if (!tipoPropiedad || !(PUBLIC_PROPERTY_TYPES as readonly string[]).includes(tipoPropiedad)) {
+    errors.push('tipoPropiedad');
+  }
+  if (!consentimiento) errors.push('consentimiento');
+
+  if (errors.length > 0) {
+    return res.status(400).json({ error: 'Faltan datos requeridos', fields: errors });
+  }
+
+  const webhookUrl = process.env.MAKE_WEBHOOK_URL;
+  if (!webhookUrl) {
+    console.error('MAKE_WEBHOOK_URL no está configurado; lead descartado.');
+    return res.status(500).json({ error: 'No se pudo procesar tu solicitud. Intenta de nuevo más tarde.' });
+  }
+
+  const payload = {
+    nombre,
+    telefono,
+    colonia: isOtherColonia ? coloniaOtra : colonia,
+    tipoPropiedad,
+    m2Construccion,
+    recamaras,
+    timeline,
+    fuente: 'landing-valuacion',
+    zona: 'zona-esmeralda',
+    creadoEn: new Date().toISOString(),
+    ip,
+  };
+
+  try {
+    const webhookRes = await fetch(webhookUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(process.env.MAKE_WEBHOOK_SECRET ? { 'X-Webhook-Secret': process.env.MAKE_WEBHOOK_SECRET } : {}),
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!webhookRes.ok) {
+      console.error('Make webhook respondió con error:', webhookRes.status);
+      return res.status(502).json({ error: 'No se pudo procesar tu solicitud. Intenta de nuevo más tarde.' });
+    }
+  } catch (err) {
+    console.error('Error al enviar lead a Make:', err);
+    return res.status(502).json({ error: 'No se pudo procesar tu solicitud. Intenta de nuevo más tarde.' });
+  }
+
+  return res.status(200).json({ ok: true });
+}
