@@ -4,6 +4,7 @@ import {
   ZONA_ESMERALDA_COLONIAS,
   OTHER_COLONIA_VALUE,
   PUBLIC_PROPERTY_TYPES,
+  PROPERTY_CONDITIONS,
   normalizePhone,
   sanitizeText,
 } from '../shared/validation';
@@ -75,19 +76,29 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const colonia = sanitizeText(body.colonia, 120);
   const coloniaOtra = sanitizeText(body.colonia_otra, 120);
   const tipoPropiedad = body.tipoPropiedad;
+  const condicion = (PROPERTY_CONDITIONS as readonly string[]).includes(body.condicion ?? '')
+    ? (body.condicion as LeadSubmission['condicion'])
+    : undefined;
   const m2Construccion =
     typeof body.m2Construccion === 'number' && body.m2Construccion > 0 && body.m2Construccion < 100000
       ? Math.round(body.m2Construccion)
+      : undefined;
+  const m2Terreno =
+    typeof body.m2Terreno === 'number' && body.m2Terreno > 0 && body.m2Terreno < 1000000
+      ? Math.round(body.m2Terreno)
       : undefined;
   const recamaras =
     typeof body.recamaras === 'number' && body.recamaras >= 0 && body.recamaras <= 50
       ? Math.round(body.recamaras)
       : undefined;
+  const banos =
+    typeof body.banos === 'number' && body.banos >= 0 && body.banos <= 50 ? Math.round(body.banos) : undefined;
   const timeline = body.timeline;
   const consentimiento = body.consentimiento === true;
 
   const isKnownColonia = (ZONA_ESMERALDA_COLONIAS as readonly string[]).includes(colonia);
   const isOtherColonia = colonia === OTHER_COLONIA_VALUE;
+  const isTerreno = tipoPropiedad === 'Terreno';
 
   const errors: string[] = [];
   if (!nombre) errors.push('nombre');
@@ -97,6 +108,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!tipoPropiedad || !(PUBLIC_PROPERTY_TYPES as readonly string[]).includes(tipoPropiedad)) {
     errors.push('tipoPropiedad');
   }
+  if (isTerreno && !m2Terreno) errors.push('m2Terreno');
+  if (!isTerreno && !m2Construccion) errors.push('m2Construccion');
   if (!consentimiento) errors.push('consentimiento');
 
   if (errors.length > 0) {
@@ -114,8 +127,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     telefono,
     colonia: isOtherColonia ? coloniaOtra : colonia,
     tipoPropiedad,
+    condicion,
     m2Construccion,
+    m2Terreno,
     recamaras,
+    banos,
     timeline,
     fuente: 'landing-valuacion',
     zona: 'zona-esmeralda',

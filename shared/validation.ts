@@ -1,4 +1,4 @@
-// Shared between the client form (src/components/LeadForm.tsx) and the
+// Shared between the client wizard (src/components/wizard/*) and the
 // serverless endpoint (api/lead.ts). The server re-validates everything
 // here independently — this file does not make client input trustworthy.
 
@@ -20,6 +20,13 @@ export const OTHER_COLONIA_VALUE = 'otra';
 export const PUBLIC_PROPERTY_TYPES = ['Casa', 'Departamento', 'Terreno'] as const;
 export type PublicPropertyType = (typeof PUBLIC_PROPERTY_TYPES)[number];
 
+// Matches the canonical 4-option PropertyCondition scale used across the
+// authenticated Habitanza-ACM tool — same strings, same order, same
+// default ('Buen estado'), so a broker building the real ACM later sees a
+// familiar value rather than a free-text guess.
+export const PROPERTY_CONDITIONS = ['Para reformar', 'Buen estado', 'Remodelada', 'Nueva'] as const;
+export type PropertyCondition = (typeof PROPERTY_CONDITIONS)[number];
+
 export const TIMELINE_OPTIONS = [
   { value: 'ya', label: 'Ya quiero vender' },
   { value: 'proximos_meses', label: 'En los próximos meses' },
@@ -33,8 +40,11 @@ export interface LeadSubmission {
   colonia: string; // one of ZONA_ESMERALDA_COLONIAS, or OTHER_COLONIA_VALUE
   colonia_otra?: string;
   tipoPropiedad: PublicPropertyType;
+  condicion?: PropertyCondition;
   m2Construccion?: number;
+  m2Terreno?: number;
   recamaras?: number;
+  banos?: number;
   timeline?: SellTimeline;
   consentimiento: boolean;
   empresa?: string; // honeypot — must stay empty

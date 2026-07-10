@@ -1,25 +1,165 @@
+import { useState } from 'react';
 import { Logo } from '../components/Logo';
-import { LeadForm } from '../components/LeadForm';
+import { WizardHero } from '../components/wizard/WizardHero';
+import { WizardBasicsStep } from '../components/wizard/WizardBasicsStep';
+import { WizardAnalyzingStep } from '../components/wizard/WizardAnalyzingStep';
+import { WizardContactStep } from '../components/wizard/WizardContactStep';
+import { WizardRevealStep } from '../components/wizard/WizardRevealStep';
+import { OTHER_COLONIA_VALUE, normalizePhone, type PropertyCondition } from '@shared/validation';
+import { estimatePreliminaryRange, type PreliminaryEstimate } from '@shared/pricing';
+
+type Step = 'hero' | 'basics' | 'analyzing' | 'contact' | 'reveal';
 
 export function LandingPage() {
+  const [step, setStep] = useState<Step>('hero');
+
+  // Property basics
+  const [tipoPropiedad, setTipoPropiedad] = useState('');
+  const [colonia, setColonia] = useState('');
+  const [coloniaOtra, setColoniaOtra] = useState('');
+  const [condicion, setCondicion] = useState<PropertyCondition | ''>('');
+  const [m2Construccion, setM2Construccion] = useState('');
+  const [m2Terreno, setM2Terreno] = useState('');
+  const [recamaras, setRecamaras] = useState('');
+  const [banos, setBanos] = useState('');
+
+  // Contact
+  const [nombre, setNombre] = useState('');
+  const [telefono, setTelefono] = useState('');
+  const [timeline, setTimeline] = useState('');
+  const [consentimiento, setConsentimiento] = useState(false);
+  const [empresa, setEmpresa] = useState('');
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [estimate, setEstimate] = useState<PreliminaryEstimate | null>(null);
+
+  const resolvedColonia = colonia === OTHER_COLONIA_VALUE ? coloniaOtra : colonia;
+
+  async function handleContactSubmit() {
+    setErrorMessage('');
+
+    if (!nombre.trim() || !telefono.trim() || !consentimiento) {
+      setErrorMessage('Por favor completa los campos requeridos.');
+      return;
+    }
+    if (!normalizePhone(telefono)) {
+      setErrorMessage('Ingresa un número de WhatsApp válido a 10 dígitos.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const res = await fetch('/api/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombre,
+          telefono,
+          colonia,
+          colonia_otra: coloniaOtra || undefined,
+          tipoPropiedad,
+          condicion: condicion || undefined,
+          m2Construccion: m2Construccion ? Number(m2Construccion) : undefined,
+          m2Terreno: m2Terreno ? Number(m2Terreno) : undefined,
+          recamaras: recamaras ? Number(recamaras) : undefined,
+          banos: banos ? Number(banos) : undefined,
+          timeline: timeline || undefined,
+          consentimiento,
+          empresa,
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}) as { error?: string });
+        throw new Error(data.error || 'No se pudo enviar tu solicitud.');
+      }
+
+      setEstimate(
+        estimatePreliminaryRange({
+          tipoPropiedad,
+          colonia: resolvedColonia,
+          condicion: condicion || undefined,
+          m2Construccion: m2Construccion ? Number(m2Construccion) : undefined,
+          m2Terreno: m2Terreno ? Number(m2Terreno) : undefined,
+        })
+      );
+      setStep('reveal');
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : 'No se pudo enviar tu solicitud.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-neutral-100">
       <header className="flex justify-center py-6">
         <Logo className="h-8 text-neutral-900" />
       </header>
-      <main className="mx-auto flex max-w-md flex-col gap-6 px-4 pb-16">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-brand-500 sm:text-3xl">
-            ¿Cuánto vale hoy tu casa en Zona Esmeralda?
-          </h1>
-          <p className="mt-2 text-neutral-600">
-            Un asesor de Habitanza te comparte el valor estimado de tu propiedad, sin costo y sin compromiso.
-          </p>
-        </div>
-        <LeadForm />
-        <p className="text-center text-xs text-neutral-400">
-          Habitanza · Zona Esmeralda, Atizapán de Zaragoza
-        </p>
+      <main className="mx-auto max-w-md px-4 pb-16">
+        {step === 'hero' && <WizardHero onStart={() => setStep('basics')} />}
+
+        {step === 'basics' && (
+          <WizardBasicsStep
+            tipoPropiedad={tipoPropiedad}
+            setTipoPropiedad={setTipoPropiedad}
+            colonia={colonia}
+            setColonia={setColonia}
+            coloniaOtra={coloniaOtra}
+            setColoniaOtra={setColoniaOtra}
+            condicion={condicion}
+            setCondicion={setCondicion}
+            m2Construccion={m2Construccion}
+            setM2Construccion={setM2Construccion}
+            m2Terreno={m2Terreno}
+            setM2Terreno={setM2Terreno}
+            recamaras={recamaras}
+            setRecamaras={setRecamaras}
+            banos={banos}
+            setBanos={setBanos}
+            onBack={() => setStep('hero')}
+            onContinue={() => setStep('analyzing')}
+          />
+        )}
+
+        {step === 'analyzing' && <WizardAnalyzingStep onDone={() => setStep('contact')} />}
+
+        {step === 'contact' && (
+          <WizardContactStep
+            nombre={nombre}
+            setNombre={setNombre}
+            telefono={telefono}
+            setTelefono={setTelefono}
+            timeline={timeline}
+            setTimeline={setTimeline}
+            consentimiento={consentimiento}
+            setConsentimiento={setConsentimiento}
+            empresa={empresa}
+            setEmpresa={setEmpresa}
+            errorMessage={errorMessage}
+            isSubmitting={isSubmitting}
+            onBack={() => setStep('basics')}
+            onSubmit={handleContactSubmit}
+          />
+        )}
+
+        {step === 'reveal' &&
+          (estimate ? (
+            <WizardRevealStep
+              estimate={estimate}
+              nombre={nombre}
+              tipoPropiedad={tipoPropiedad}
+              colonia={resolvedColonia}
+            />
+          ) : (
+            <div className="animate-in fade-in slide-in-from-bottom-4 space-y-3 rounded-card-lg bg-white p-8 text-center shadow-sm duration-500">
+              <h2 className="text-xl font-bold text-neutral-900">Gracias, {nombre.split(' ')[0]}</h2>
+              <p className="text-neutral-600">
+                Un asesor te contacta por WhatsApp en menos de 48 horas con el valor estimado de tu propiedad.
+              </p>
+            </div>
+          ))}
       </main>
     </div>
   );
