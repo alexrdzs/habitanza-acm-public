@@ -117,7 +117,7 @@ export function WizardBasicsStep(props: Props) {
 
         <div className={cn(boxClass, 'col-span-2')}>
           <label className={labelClass}>Amenidades (opcional)</label>
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-2 gap-2">
             {AMENITIES.map((a) => {
               const active = props.amenidades.includes(a);
               const Icon = AMENITY_ICONS[a];
@@ -127,16 +127,16 @@ export function WizardBasicsStep(props: Props) {
                   type="button"
                   onClick={() => toggleAmenity(a)}
                   className={cn(
-                    'flex items-center gap-1.5 rounded-input border px-3 py-2 text-sm font-medium transition-all',
+                    'flex items-center gap-1.5 rounded-input border px-3 py-2 text-left text-sm font-medium transition-all',
                     active
                       ? 'border-emerald-deep bg-emerald-deep/10 text-emerald-deep'
                       : 'border-neutral-300 text-neutral-600 hover:border-neutral-400 hover:bg-neutral-50'
                   )}
                 >
-                  <Icon className={cn('h-4 w-4', active ? 'text-emerald-deep' : 'text-neutral-400')} />
-                  {a}
+                  <Icon className={cn('h-4 w-4 flex-shrink-0', active ? 'text-emerald-deep' : 'text-neutral-400')} />
+                  <span className="flex-1">{a}</span>
                   {active && (
-                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-deep">
+                    <span className="flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-emerald-deep">
                       <Check className="h-2.5 w-2.5 text-white" strokeWidth={3} />
                     </span>
                   )}

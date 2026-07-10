@@ -1,7 +1,10 @@
-import { Search, ListChecks, UserCheck, Check } from 'lucide-react';
+import { useMemo } from 'react';
+import { Search, ListChecks, UserCheck } from 'lucide-react';
 import { TestimonialsCarousel } from './TestimonialsCarousel';
 import { PreliminaryPricingBar } from './PreliminaryPricingBar';
 import { AdvisorCTA } from './AdvisorCTA';
+import { AdvisorAvatar } from './AdvisorAvatar';
+import { ADVISORS } from '@shared/advisors';
 import type { PreliminaryEstimate } from '@shared/pricing';
 import { formatCurrency } from '../../lib/utils';
 
@@ -32,24 +35,39 @@ const METHODOLOGY_STEPS = [
 
 export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: Props) {
   const firstName = nombre.trim().split(' ')[0] || 'gracias';
+  // Randomized once per visit so the same advisor's photo/name shown here
+  // also appears on the persistent WhatsApp bar below -- and so the team
+  // can compare inbound contact between Rogelio and Tere.
+  const advisor = useMemo(() => ADVISORS[Math.floor(Math.random() * ADVISORS.length)], []);
+  const advisorFirstName = advisor.name.split(' ')[0];
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 space-y-5 duration-700">
+    <div className="animate-in fade-in slide-in-from-bottom-4 space-y-5 pb-20 duration-700">
       {/* Reassurance panel — the first thing people read after submitting.
           Deliberately not the final number: it names who picks up the lead
-          and states outright that a full, personalized ACM is still coming,
-          so this screen never reads as the end of the process. */}
+          (with a real photo, for a human sense) and states outright that a
+          full, personalized ACM is still coming, so this screen never
+          reads as the end of the process. The price range lives here too
+          instead of a separate card, so the payoff and the reassurance
+          read as one moment. */}
       <div className="relative overflow-hidden rounded-card-lg bg-gradient-to-b from-ink-soft to-ink p-px shadow-[0_24px_48px_-24px_rgba(16,32,26,0.55)]">
         <div className="relative overflow-hidden rounded-[calc(var(--radius-card-lg)-1px)] p-6 md:p-10">
           <div className="pointer-events-none absolute -left-10 -top-16 h-56 w-56 rounded-full bg-emerald-glow/25 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-20 -right-10 h-64 w-64 rounded-full bg-brass/20 blur-3xl" />
 
-          <div className="relative mb-5 flex items-center justify-between">
-            <p className="font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-brass-soft">
-              Recibimos tu información
-            </p>
-            <div className="flex h-8 w-8 items-center justify-center rounded-full border border-brass/50">
-              <Check className="h-4 w-4 text-emerald-glow" strokeWidth={3} />
+          <p className="relative mb-4 font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-brass-soft">
+            Recibimos tu información
+          </p>
+
+          <div className="relative mb-5 flex items-center gap-3">
+            <AdvisorAvatar
+              advisor={advisor}
+              className="h-12 w-12 border-2 border-white/30 bg-white/10"
+              iconClassName="h-5 w-5 text-white/70"
+            />
+            <div>
+              <p className="text-sm font-bold text-white">{advisor.name}</p>
+              <p className="text-xs text-neutral-400">{advisor.roleLabel}</p>
             </div>
           </div>
 
@@ -57,8 +75,8 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
             Muchas gracias, {firstName}. Ya tenemos todo para trabajar tu estimado de valor.
           </h2>
           <p className="relative mt-3 max-w-xl text-sm leading-relaxed text-neutral-300 md:text-base">
-            Lo estará trabajando <span className="font-semibold text-white">Rogelio</span>,{' '}
-            <span className="font-semibold text-white">Tere</span>, o alguien más de nuestro equipo.
+            Lo estará trabajando <span className="font-semibold text-white">{advisorFirstName}</span>, quien conoce a
+            fondo {colonia}.
           </p>
 
           <div className="relative mt-5 rounded-xl border border-white/15 bg-white/[0.06] px-4 py-3.5">
@@ -68,6 +86,18 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
               Análisis Comparativo de Mercado (ACM) personalizado, y nos pondremos en contacto contigo con una
               presentación completa.
             </p>
+          </div>
+
+          <div className="relative mt-6 border-t border-white/10 pt-5">
+            <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-brass-soft">Rango de zona</p>
+            <h3 className="mt-1 text-base font-bold text-white">
+              Tu propiedad estaría en un rango de {formatCurrency(estimate.low)} a {formatCurrency(estimate.high)}
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-neutral-400">
+              Por experiencia e indicadores de mercado, sabemos que {colonia} suele moverse en un rango así — pero
+              cada propiedad es distinta, y es importante diseñar una estrategia específica para la tuya.
+            </p>
+            <PreliminaryPricingBar estimate={estimate} />
           </div>
         </div>
       </div>
@@ -95,21 +125,9 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
         </ol>
       </div>
 
-      <div className="rounded-card-lg border border-neutral-200 bg-parchment-card p-6 md:p-8">
-        <p className="text-[11px] font-bold uppercase tracking-wider text-brass">Rango de zona</p>
-        <h3 className="mt-1 text-base font-bold text-neutral-900">
-          Tu propiedad estaría en un rango de {formatCurrency(estimate.low)} a {formatCurrency(estimate.high)}
-        </h3>
-        <p className="mt-2 text-sm leading-relaxed text-neutral-500">
-          Por experiencia e indicadores de mercado, sabemos que {colonia} suele moverse en un rango así — pero cada
-          propiedad es distinta, y es importante diseñar una estrategia específica para la tuya.
-        </p>
-        <PreliminaryPricingBar estimate={estimate} />
-      </div>
-
       <TestimonialsCarousel />
 
-      <AdvisorCTA tipoPropiedad={tipoPropiedad} colonia={colonia} />
+      <AdvisorCTA advisor={advisor} tipoPropiedad={tipoPropiedad} colonia={colonia} />
     </div>
   );
 }

@@ -1,51 +1,37 @@
-import { useMemo, useState } from 'react';
-import { MessageCircle, User } from 'lucide-react';
-import { ADVISORS, whatsappLink } from '@shared/advisors';
+import { MessageCircle } from 'lucide-react';
+import { whatsappLink, type Advisor } from '@shared/advisors';
+import { AdvisorAvatar } from './AdvisorAvatar';
 
 interface Props {
+  advisor: Advisor;
   tipoPropiedad: string;
   colonia: string;
 }
 
-export function AdvisorCTA({ tipoPropiedad, colonia }: Props) {
-  // Randomized per visit so the team can see whether Rogelio or Tere gets
-  // more inbound WhatsApp contact from this page.
-  const advisor = useMemo(() => ADVISORS[Math.floor(Math.random() * ADVISORS.length)], []);
-  const [imgFailed, setImgFailed] = useState(false);
-
+// A persistent bottom bar rather than a card at the end of a long scroll --
+// the WhatsApp CTA stays reachable no matter where on the reveal screen the
+// visitor is reading.
+export function AdvisorCTA({ advisor, tipoPropiedad, colonia }: Props) {
   const message = `Hola ${advisor.name.split(' ')[0]}, acabo de recibir una estimación preliminar para mi ${tipoPropiedad.toLowerCase()} en ${colonia} y me gustaría platicar sobre mi Análisis Comparativo de Mercado.`;
 
   return (
-    <div className="relative overflow-hidden rounded-card-lg border border-neutral-200 bg-gradient-to-br from-brand-500 to-emerald-deep p-6 text-center text-white md:p-8">
-      <div className="mx-auto mb-3 h-16 w-16 overflow-hidden rounded-full border-2 border-white/40 bg-white/10">
-        {imgFailed ? (
-          <div className="flex h-full w-full items-center justify-center">
-            <User className="h-7 w-7 text-white/70" />
-          </div>
-        ) : (
-          <img
-            src={advisor.imageUrl}
-            alt={advisor.name}
-            className="h-full w-full object-cover"
-            referrerPolicy="no-referrer"
-            onError={() => setImgFailed(true)}
-          />
-        )}
+    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-neutral-200 bg-parchment-card/95 shadow-[0_-8px_24px_-16px_rgba(16,32,26,0.25)] backdrop-blur-sm">
+      <div className="mx-auto flex max-w-md items-center gap-3 px-4 py-3">
+        <AdvisorAvatar advisor={advisor} className="h-10 w-10 border border-neutral-200" iconClassName="h-4 w-4" />
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-xs font-bold text-neutral-900">{advisor.name}</p>
+          <p className="truncate text-[10.5px] text-neutral-500">{advisor.roleLabel}</p>
+        </div>
+        <a
+          href={whatsappLink(advisor, message)}
+          target="_blank"
+          rel="noreferrer"
+          className="flex flex-shrink-0 items-center gap-1.5 rounded-pill bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-transform active:scale-95 hover:bg-brand-600"
+        >
+          <MessageCircle className="h-4 w-4" />
+          Hablemos ahora
+        </a>
       </div>
-      <p className="text-[11px] font-bold uppercase tracking-wider text-white/70">{advisor.roleLabel}</p>
-      <h3 className="mt-1 text-lg font-bold">{advisor.name}</h3>
-      <p className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-white/85">
-        Platica ahora mismo sobre tu propiedad y recibe tu Análisis Comparativo de Mercado completo.
-      </p>
-      <a
-        href={whatsappLink(advisor, message)}
-        target="_blank"
-        rel="noreferrer"
-        className="mt-5 inline-flex items-center gap-2 rounded-pill bg-white px-7 py-3.5 text-base font-semibold text-emerald-deep shadow-lg transition-transform active:scale-95"
-      >
-        <MessageCircle className="h-5 w-5" />
-        Hablemos ahora
-      </a>
     </div>
   );
 }
