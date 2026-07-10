@@ -1,10 +1,17 @@
 import { useState } from 'react';
 import { User } from 'lucide-react';
-import type { Advisor } from '@shared/advisors';
 import { cn } from '../../lib/utils';
 
+// Structural, not imported from shared/advisors -- this renders both the
+// small CTA advisor pool and the broader shared/team.ts roster, which only
+// have name/imageUrl in common.
+interface AvatarSubject {
+  name: string;
+  imageUrl: string;
+}
+
 interface Props {
-  advisor: Advisor;
+  advisor: AvatarSubject;
   className?: string;
   iconClassName?: string;
 }

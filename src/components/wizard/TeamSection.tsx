@@ -1,9 +1,9 @@
-import { ADVISORS } from '@shared/advisors';
+import { TEAM_MEMBERS } from '@shared/team';
 import { AdvisorAvatar } from './AdvisorAvatar';
 
-// A starting point for a "meet the team" module -- currently just the two
-// real advisors already used elsewhere (AdvisorCTA, the reveal screen's
-// firma block). Expand with more advisors/bios here as the roster grows.
+// The full active roster (see shared/team.ts), not just the smaller pool
+// used for the WhatsApp CTA rotation -- this is a "meet the team" trust
+// module, so everyone real should show up here.
 export function TeamSection() {
   return (
     <div className="space-y-3 text-left">
@@ -14,15 +14,15 @@ export function TeamSection() {
         <h3 className="mt-1 text-base font-bold text-neutral-900">Personas reales, no un call center</h3>
       </div>
       <div className="grid grid-cols-2 gap-3">
-        {ADVISORS.map((advisor) => (
+        {TEAM_MEMBERS.map((member) => (
           <div
-            key={advisor.name}
+            key={member.name}
             className="flex flex-col items-center gap-2 rounded-2xl border border-neutral-200 bg-parchment-card p-4 text-center"
           >
-            <AdvisorAvatar advisor={advisor} className="h-14 w-14 border border-neutral-200" iconClassName="h-6 w-6 text-neutral-400" />
+            <AdvisorAvatar advisor={member} className="h-14 w-14 border border-neutral-200" iconClassName="h-6 w-6 text-neutral-400" />
             <div>
-              <p className="text-sm font-bold text-neutral-900">{advisor.name}</p>
-              <p className="text-xs text-neutral-500">{advisor.roleLabel}</p>
+              <p className="text-sm font-bold text-neutral-900">{member.name}</p>
+              <p className="text-xs text-neutral-500">{member.roleLabel}</p>
             </div>
           </div>
         ))}
