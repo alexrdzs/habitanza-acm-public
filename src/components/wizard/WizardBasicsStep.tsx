@@ -1,16 +1,25 @@
 import { PUBLIC_PROPERTY_TYPES, AMENITIES } from '@shared/validation';
 import type { PropertyCondition, Amenity } from '@shared/validation';
 import { WizardShell } from './WizardShell';
-import { ConditionToggle } from '../ConditionToggle';
+import { ConditionQuickPicker } from './ConditionQuickPicker';
 import { SegmentedControl } from './SegmentedControl';
 import { ThousandsInput } from './ThousandsInput';
 import { labelClass } from './formStyles';
-import { Check } from 'lucide-react';
+import { Check, Trees, Waves, ShieldCheck, Car, DoorClosed, Sun } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 const ROOM_COUNT_OPTIONS = ['1', '2', '3', '4', '5+'];
 
 const boxClass = 'rounded-2xl border border-neutral-200 bg-parchment-card p-4';
+
+const AMENITY_ICONS: Record<Amenity, typeof Trees> = {
+  'Jardín': Trees,
+  'Alberca': Waves,
+  'Seguridad 24h': ShieldCheck,
+  'Estacionamiento techado': Car,
+  'Cuarto de servicio': DoorClosed,
+  'Terraza': Sun,
+};
 
 interface Props {
   tipoPropiedad: string;
@@ -97,7 +106,7 @@ export function WizardBasicsStep(props: Props) {
             </div>
 
             <div className={cn(boxClass, 'col-span-2')}>
-              <ConditionToggle
+              <ConditionQuickPicker
                 label="Estado general de la propiedad"
                 value={props.condicion}
                 onChange={props.setCondicion}
@@ -111,6 +120,7 @@ export function WizardBasicsStep(props: Props) {
           <div className="flex flex-wrap gap-2">
             {AMENITIES.map((a) => {
               const active = props.amenidades.includes(a);
+              const Icon = AMENITY_ICONS[a];
               return (
                 <button
                   key={a}
@@ -123,15 +133,13 @@ export function WizardBasicsStep(props: Props) {
                       : 'border-neutral-300 text-neutral-600 hover:border-neutral-400 hover:bg-neutral-50'
                   )}
                 >
-                  <span
-                    className={cn(
-                      'flex h-4 w-4 items-center justify-center rounded border transition-all',
-                      active ? 'border-emerald-deep bg-emerald-deep' : 'border-neutral-300 bg-white'
-                    )}
-                  >
-                    {active && <Check className="h-3 w-3 text-white" strokeWidth={3} />}
-                  </span>
+                  <Icon className={cn('h-4 w-4', active ? 'text-emerald-deep' : 'text-neutral-400')} />
                   {a}
+                  {active && (
+                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-deep">
+                      <Check className="h-2.5 w-2.5 text-white" strokeWidth={3} />
+                    </span>
+                  )}
                 </button>
               );
             })}

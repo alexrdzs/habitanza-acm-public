@@ -25,7 +25,7 @@ export function LandingPage() {
 
   // Property specifics
   const [tipoPropiedad, setTipoPropiedad] = useState('');
-  const [condicion, setCondicion] = useState<PropertyCondition | ''>('');
+  const [condicion, setCondicion] = useState<PropertyCondition | ''>('Buen estado');
   const [m2Construccion, setM2Construccion] = useState('');
   const [m2Terreno, setM2Terreno] = useState('');
   const [recamaras, setRecamaras] = useState('');

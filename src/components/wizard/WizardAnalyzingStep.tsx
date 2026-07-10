@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Check } from 'lucide-react';
 import { WizardShell } from './WizardShell';
+import { cn } from '../../lib/utils';
 
 interface Stage {
   label: string;
@@ -27,61 +28,93 @@ const STAGES: Stage[] = [
 ];
 
 const STAGE_DURATION_MS = 950;
+const COMPLETE_HOLD_MS = 850;
+const EXIT_DURATION_MS = 500;
+
+type Phase = 'running' | 'complete' | 'exiting';
 
 export function WizardAnalyzingStep({ onDone }: { onDone: () => void }) {
   const [stageIndex, setStageIndex] = useState(0);
+  const [phase, setPhase] = useState<Phase>('running');
 
   useEffect(() => {
     const interval = setInterval(() => {
       setStageIndex((prev) => Math.min(prev + 1, STAGES.length - 1));
     }, STAGE_DURATION_MS);
-    const doneTimeout = setTimeout(onDone, STAGES.length * STAGE_DURATION_MS + 500);
+
+    const completeAt = STAGES.length * STAGE_DURATION_MS;
+    const completeTimeout = setTimeout(() => setPhase('complete'), completeAt);
+    const exitTimeout = setTimeout(() => setPhase('exiting'), completeAt + COMPLETE_HOLD_MS);
+    const doneTimeout = setTimeout(onDone, completeAt + COMPLETE_HOLD_MS + EXIT_DURATION_MS);
+
     return () => {
       clearInterval(interval);
+      clearTimeout(completeTimeout);
+      clearTimeout(exitTimeout);
       clearTimeout(doneTimeout);
     };
   }, [onDone]);
 
   const progress = (stageIndex + 1) / STAGES.length;
   const blurPx = Math.max(0, 10 - stageIndex * 3.5);
+  const isComplete = phase !== 'running';
 
   return (
-    <WizardShell title="Analizando tu zona" description="Estamos preparando tu primera referencia de valor.">
-      <div className="flex flex-col items-center gap-8 py-4">
-        {/* Radar-scan ring behind a sharpening trio of property-card
-            silhouettes — foreshadows the real showcase on the next screen. */}
-        <div className="relative flex h-36 w-full items-center justify-center overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-50">
-          <div
-            className="absolute inset-0 animate-spin opacity-40 [animation-duration:2.4s]"
-            style={{
-              background:
-                'conic-gradient(from 0deg, transparent 0deg, var(--color-emerald-glow) 25deg, transparent 70deg)',
-            }}
-          />
-          <div className="relative flex gap-2.5 px-4">
-            {[0, 1, 2].map((i) => (
-              <div
-                key={i}
-                className="h-20 w-16 rounded-lg border border-neutral-300 bg-white shadow-sm transition-[filter] duration-700 ease-out"
-                style={{ filter: `blur(${blurPx}px)`, opacity: 0.5 + progress * 0.5 }}
-              >
-                <div className="h-11 w-full rounded-t-lg bg-neutral-200" />
-                <div className="space-y-1 p-1.5">
-                  <div className="h-1.5 w-3/4 rounded-full bg-neutral-200" />
-                  <div className="h-1.5 w-1/2 rounded-full bg-neutral-200" />
+    <div
+      className={cn(
+        'transition-all duration-500 ease-out',
+        phase === 'exiting' ? '-translate-y-3 opacity-0' : 'translate-y-0 opacity-100'
+      )}
+    >
+      <WizardShell title="Analizando tu zona" description="Estamos preparando tu primera referencia de valor.">
+        <div className="flex flex-col items-center gap-8 py-4">
+          {/* Radar-scan ring behind a sharpening trio of property-card
+              silhouettes, cross-fading into a completion stamp once every
+              stage has finished so the cut to the next screen reads as a
+              deliberate beat rather than an abrupt jump. */}
+          <div className="relative flex h-36 w-full items-center justify-center overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-50">
+            {!isComplete ? (
+              <>
+                <div
+                  className="absolute inset-0 animate-spin opacity-40 [animation-duration:2.4s]"
+                  style={{
+                    background:
+                      'conic-gradient(from 0deg, transparent 0deg, var(--color-emerald-glow) 25deg, transparent 70deg)',
+                  }}
+                />
+                <div className="relative flex gap-2.5 px-4">
+                  {[0, 1, 2].map((i) => (
+                    <div
+                      key={i}
+                      className="h-20 w-16 rounded-lg border border-neutral-300 bg-white shadow-sm transition-[filter] duration-700 ease-out"
+                      style={{ filter: `blur(${blurPx}px)`, opacity: 0.5 + progress * 0.5 }}
+                    >
+                      <div className="h-11 w-full rounded-t-lg bg-neutral-200" />
+                      <div className="space-y-1 p-1.5">
+                        <div className="h-1.5 w-3/4 rounded-full bg-neutral-200" />
+                        <div className="h-1.5 w-1/2 rounded-full bg-neutral-200" />
+                      </div>
+                    </div>
+                  ))}
                 </div>
+              </>
+            ) : (
+              <div className="flex animate-in flex-col items-center gap-2 zoom-in-95 fade-in duration-500">
+                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-deep text-white shadow-lg">
+                  <Check className="h-7 w-7" strokeWidth={3} />
+                </div>
+                <p className="text-sm font-bold text-neutral-800">Referencia lista</p>
               </div>
-            ))}
+            )}
           </div>
-        </div>
 
-        {/* Stage checklist — each item narrates what's happening and why it
-            matters, not a generic "cargando..." message. */}
-        <div className="w-full space-y-3">
-          {STAGES.map((stage, i) => {
-            const isDone = i < stageIndex;
-            const isActive = i === stageIndex;
-            return (
+          {/* Stage checklist — each item narrates what's happening and why it
+              matters, not a generic "cargando..." message. */}
+          <div className="w-full space-y-3">
+            {STAGES.map((stage, i) => {
+              const isDone = i < stageIndex || isComplete;
+              const isActive = i === stageIndex && !isComplete;
+              return (
               <div
                 key={stage.label}
                 className={`flex items-start gap-3 rounded-xl border p-3 transition-all duration-500 ${
@@ -110,6 +143,7 @@ export function WizardAnalyzingStep({ onDone }: { onDone: () => void }) {
           })}
         </div>
       </div>
-    </WizardShell>
+      </WizardShell>
+    </div>
   );
 }

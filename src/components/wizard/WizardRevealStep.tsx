@@ -1,8 +1,9 @@
-import { Search, ListChecks, UserCheck } from 'lucide-react';
-import { PropertyShowcase } from './PropertyShowcase';
+import { Search, ListChecks, UserCheck, Check } from 'lucide-react';
+import { TestimonialsCarousel } from './TestimonialsCarousel';
 import { PreliminaryPricingBar } from './PreliminaryPricingBar';
 import { AdvisorCTA } from './AdvisorCTA';
 import type { PreliminaryEstimate } from '@shared/pricing';
+import { formatCurrency } from '../../lib/utils';
 
 interface Props {
   estimate: PreliminaryEstimate;
@@ -34,52 +35,47 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 space-y-5 duration-700">
+      {/* Reassurance panel — the first thing people read after submitting.
+          Deliberately not the final number: it names who picks up the lead
+          and states outright that a full, personalized ACM is still coming,
+          so this screen never reads as the end of the process. */}
       <div className="relative overflow-hidden rounded-card-lg bg-gradient-to-b from-ink-soft to-ink p-px shadow-[0_24px_48px_-24px_rgba(16,32,26,0.55)]">
         <div className="relative overflow-hidden rounded-[calc(var(--radius-card-lg)-1px)] p-6 md:p-10">
-          {/* Ambient color behind the glass panel below — glassmorphism needs
-              something with variation to actually refract. */}
           <div className="pointer-events-none absolute -left-10 -top-16 h-56 w-56 rounded-full bg-emerald-glow/25 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-20 -right-10 h-64 w-64 rounded-full bg-brass/20 blur-3xl" />
 
-          <div className="relative mb-7 flex items-center justify-between">
+          <div className="relative mb-5 flex items-center justify-between">
             <p className="font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-brass-soft">
-              Estimación preliminar
+              Recibimos tu información
             </p>
             <div className="flex h-8 w-8 items-center justify-center rounded-full border border-brass/50">
-              <div className="h-1.5 w-1.5 rotate-45 bg-emerald-glow" />
+              <Check className="h-4 w-4 text-emerald-glow" strokeWidth={3} />
             </div>
           </div>
 
-          <p className="relative text-sm font-medium text-neutral-300">Gracias, {firstName}</p>
-
-          {/* Glass panel — blurred by design: this screen is a teaser, the
-              real number comes from an advisor, not a client-side formula. */}
-          <div className="relative mt-3 rounded-2xl border border-white/20 bg-white/[0.07] px-5 py-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.15)] backdrop-blur-xl md:px-8 md:py-8">
-            <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-neutral-400">Precio de referencia</p>
-            <div className="mt-1 select-none font-mono text-[2.25rem] font-medium tabular-nums text-white blur-[6px] md:text-[3rem] lg:text-5xl">
-              {'$•••,•••,•••'}
-            </div>
-            <p className="mt-2 text-xs font-medium text-brass-soft">Tu asesor te lo comparte por WhatsApp</p>
-          </div>
-
-          <p className="relative mt-6 max-w-xl text-sm leading-relaxed text-neutral-400 md:text-base">
-            Ya calculamos una referencia para tu {tipoPropiedad.toLowerCase()} en {colonia}. Esto es solo un adelanto
-            — <span className="font-semibold text-white">tu Análisis Comparativo de Mercado completo</span> lo arma
-            un asesor con comparables reales de tu zona, no una fórmula genérica.
+          <h2 className="relative text-xl font-bold leading-snug text-white md:text-2xl">
+            Muchas gracias, {firstName}. Ya tenemos todo para trabajar tu estimado de valor.
+          </h2>
+          <p className="relative mt-3 max-w-xl text-sm leading-relaxed text-neutral-300 md:text-base">
+            Lo estará trabajando <span className="font-semibold text-white">Rogelio</span>,{' '}
+            <span className="font-semibold text-white">Tere</span>, o alguien más de nuestro equipo.
           </p>
-        </div>
-      </div>
 
-      <div className="rounded-card-lg border border-neutral-200 bg-parchment-card p-6 md:p-8">
-        <p className="text-[11px] font-bold uppercase tracking-wider text-brass">Rango de posicionamiento</p>
-        <h3 className="mt-1 text-base font-bold text-neutral-900">Dónde se ubica tu propiedad</h3>
-        <PreliminaryPricingBar estimate={estimate} />
+          <div className="relative mt-5 rounded-xl border border-white/15 bg-white/[0.06] px-4 py-3.5">
+            <p className="text-xs leading-relaxed text-neutral-300 md:text-sm">
+              <span className="font-semibold text-emerald-glow">Esto todavía no es el paso final: </span>
+              con la información de tu {tipoPropiedad.toLowerCase()} en {colonia}, nuestro equipo trabajará un
+              Análisis Comparativo de Mercado (ACM) personalizado, y nos pondremos en contacto contigo con una
+              presentación completa.
+            </p>
+          </div>
+        </div>
       </div>
 
       <div className="space-y-5 rounded-card-lg border border-neutral-200 bg-parchment-card p-6 md:p-8">
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-wider text-brass">Metodología</p>
-          <h3 className="mt-1 text-base font-bold text-neutral-900">Así llegamos a un número</h3>
+          <p className="text-[11px] font-bold uppercase tracking-wider text-brass">¿Cómo lo hacemos?</p>
+          <h3 className="mt-1 text-base font-bold text-neutral-900">Metodología</h3>
         </div>
         <ol className="space-y-4">
           {METHODOLOGY_STEPS.map(({ icon: Icon, title, detail }, i) => (
@@ -99,7 +95,19 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
         </ol>
       </div>
 
-      <PropertyShowcase />
+      <div className="rounded-card-lg border border-neutral-200 bg-parchment-card p-6 md:p-8">
+        <p className="text-[11px] font-bold uppercase tracking-wider text-brass">Rango de zona</p>
+        <h3 className="mt-1 text-base font-bold text-neutral-900">
+          Tu propiedad estaría en un rango de {formatCurrency(estimate.low)} a {formatCurrency(estimate.high)}
+        </h3>
+        <p className="mt-2 text-sm leading-relaxed text-neutral-500">
+          Por experiencia e indicadores de mercado, sabemos que {colonia} suele moverse en un rango así — pero cada
+          propiedad es distinta, y es importante diseñar una estrategia específica para la tuya.
+        </p>
+        <PreliminaryPricingBar estimate={estimate} />
+      </div>
+
+      <TestimonialsCarousel />
 
       <AdvisorCTA tipoPropiedad={tipoPropiedad} colonia={colonia} />
     </div>

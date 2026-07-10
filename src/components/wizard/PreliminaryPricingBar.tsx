@@ -26,7 +26,7 @@ export function PreliminaryPricingBar({ estimate }: Props) {
         <div className="absolute z-10" style={{ left: '50%', bottom: '8px', transform: 'translateX(-50%)' }}>
           <div className="flex flex-col items-center">
             <div className="relative mb-1.5 flex flex-col items-center whitespace-nowrap rounded-lg bg-ink px-3 py-1.5 shadow-lg ring-1 ring-brass/40">
-              <span className="select-none font-mono text-sm font-semibold tabular-nums text-white blur-[4px]">
+              <span className="font-mono text-sm font-semibold tabular-nums text-white">
                 {formatCurrency(estimate.mid)}
               </span>
               <span className="text-[8px] font-bold uppercase tracking-wider text-emerald-glow">Estimado</span>
@@ -40,7 +40,7 @@ export function PreliminaryPricingBar({ estimate }: Props) {
         <div className="absolute z-0" style={{ left: '0%', top: '12px' }}>
           <div className="mx-auto h-2.5 w-0.5 rounded-full bg-neutral-400" />
           <div className="mt-1.5 flex flex-col whitespace-nowrap">
-            <span className="select-none font-mono text-[11px] font-semibold tabular-nums text-neutral-700 blur-[3px]">
+            <span className="font-mono text-[11px] font-semibold tabular-nums text-neutral-700">
               {formatCurrency(estimate.low)}
             </span>
             <span className="text-[9px] font-bold uppercase tracking-wider text-neutral-400">Mín</span>
@@ -49,7 +49,7 @@ export function PreliminaryPricingBar({ estimate }: Props) {
         <div className="absolute z-0" style={{ right: '0%', top: '12px' }}>
           <div className="ml-auto h-2.5 w-0.5 rounded-full bg-neutral-400" />
           <div className="mt-1.5 flex flex-col items-end whitespace-nowrap">
-            <span className="select-none font-mono text-[11px] font-semibold tabular-nums text-neutral-700 blur-[3px]">
+            <span className="font-mono text-[11px] font-semibold tabular-nums text-neutral-700">
               {formatCurrency(estimate.high)}
             </span>
             <span className="text-[9px] font-bold uppercase tracking-wider text-neutral-400">Máx</span>
