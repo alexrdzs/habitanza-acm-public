@@ -14,12 +14,11 @@ import type { LeadSubmission } from '../shared/validation';
 // truth for the client wizard, which Vite bundles normally.
 const ZONA_ESMERALDA_COLONIAS = [
   'Bosque Esmeralda',
+  'Residencial Lago Esmeralda',
   'Condado de Sayavedra',
-  'Hacienda de las Palmas',
-  'Loma Alta',
-  'La Estadía',
-  'Bosques de Echegaray',
-  'Club de Golf Bellavista',
+  'Lomas de Valle Escondido',
+  'Hacienda de Valle Escondido',
+  'Rancho San Juan',
 ] as const;
 const OTHER_COLONIA_VALUE = 'otra';
 const PUBLIC_PROPERTY_TYPES = ['Casa', 'Departamento', 'Terreno'] as const;

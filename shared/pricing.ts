@@ -1,35 +1,32 @@
 // Preliminary, non-binding pricing model used only to render a wide,
 // clearly-labeled "estimación preliminar" immediately after a visitor
 // shares contact info. This is NOT the real homologation engine — no real
-// comparables are consulted — it is a simple zone-average formula meant to
-// feel personalized while honestly setting up the real Análisis Comparativo
-// de Mercado (ACM) a broker builds afterward.
+// comparables are consulted at request time — it is a simple zone-average
+// formula meant to feel personalized while honestly setting up the real
+// Análisis Comparativo de Mercado (ACM) a broker builds afterward.
 //
-// The baselines below are placeholders and MUST be calibrated by the team
-// against real recent closing prices in each colonia before launch.
+// The baselines below are derived from real, currently-published listings
+// in Habitanza's own portfolio (price ÷ built m², sampled 2026-07-10), not
+// guessed — but most colonias only had one or two comps available, so
+// treat these as directional, not precise. Re-derive periodically as more
+// sales close; a colonia with no sample falls back to the blended default.
 import type { PropertyCondition, PublicPropertyType } from './validation';
 
 export const PRICE_PER_M2_CONSTRUCCION: Record<string, number> = {
-  'Bosque Esmeralda': 28000,
-  'Condado de Sayavedra': 32000,
-  'Hacienda de las Palmas': 26000,
-  'Loma Alta': 24000,
-  'La Estadía': 25000,
-  'Bosques de Echegaray': 27000,
-  'Club de Golf Bellavista': 30000,
+  'Bosque Esmeralda': 40000, // depto DAJ-081: $8.2M / 204m²
+  'Residencial Lago Esmeralda': 48000, // depto DOG-086: $2.4M / 38m² (single small unit — noisy)
+  'Lomas de Valle Escondido': 42000, // avg of CAX-089 ($45.5k/m²) and CAZ-272 ($39.5k/m²)
+  'Hacienda de Valle Escondido': 48000, // CAQ-399: $34M / 700m²
+  'Rancho San Juan': 34000, // TAP-307: $44.9M / 1,327m²
+  // Condado de Sayavedra has no construcción comp sampled yet — falls back to the default below.
 };
-export const DEFAULT_PRICE_PER_M2_CONSTRUCCION = 26000;
+export const DEFAULT_PRICE_PER_M2_CONSTRUCCION = 42000;
 
 export const PRICE_PER_M2_TERRENO: Record<string, number> = {
-  'Bosque Esmeralda': 14000,
-  'Condado de Sayavedra': 16000,
-  'Hacienda de las Palmas': 13000,
-  'Loma Alta': 12000,
-  'La Estadía': 12500,
-  'Bosques de Echegaray': 13500,
-  'Club de Golf Bellavista': 15000,
+  'Condado de Sayavedra': 6000, // TXJ-575: $6.9M / 1,147m²
+  // Other colonias have no raw-land comp sampled yet — fall back to the default below.
 };
-export const DEFAULT_PRICE_PER_M2_TERRENO = 13000;
+export const DEFAULT_PRICE_PER_M2_TERRENO = 6000;
 
 // Mirrors the direction (not the exact math) of the authenticated tool's
 // qualityFactor: condition is the single biggest lever on a home's value.

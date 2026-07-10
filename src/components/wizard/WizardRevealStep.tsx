@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { CheckCircle2 } from 'lucide-react';
 import { formatCurrency } from '../../lib/utils';
 import type { PreliminaryEstimate } from '@shared/pricing';
+import { PropertyShowcase } from './PropertyShowcase';
 
 interface Props {
   estimate: PreliminaryEstimate;
@@ -53,8 +54,13 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 space-y-5 duration-700">
       <div className="relative overflow-hidden rounded-card-lg bg-gradient-to-b from-ink-soft to-ink p-px shadow-[0_24px_48px_-24px_rgba(16,32,26,0.55)]">
-        <div className="rounded-[calc(var(--radius-card-lg)-1px)] p-6 md:p-10">
-          <div className="mb-7 flex items-center justify-between">
+        <div className="relative overflow-hidden rounded-[calc(var(--radius-card-lg)-1px)] p-6 md:p-10">
+          {/* Ambient color behind the glass panel below — glassmorphism needs
+              something with variation to actually refract. */}
+          <div className="pointer-events-none absolute -left-10 -top-16 h-56 w-56 rounded-full bg-emerald-glow/25 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-20 -right-10 h-64 w-64 rounded-full bg-brass/20 blur-3xl" />
+
+          <div className="relative mb-7 flex items-center justify-between">
             <p className="font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-brass-soft">
               Estimación preliminar
             </p>
@@ -63,18 +69,20 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
             </div>
           </div>
 
-          <p className="text-sm font-medium text-neutral-300">Gracias, {firstName}</p>
+          <p className="relative text-sm font-medium text-neutral-300">Gracias, {firstName}</p>
 
-          <div className="mt-3 rounded-2xl border border-brass/30 bg-white/[0.03] px-5 py-6 md:px-8 md:py-8">
+          {/* Glass panel — the ACM report's bold price treatment, in frosted
+              glass over the ambient color blobs above. */}
+          <div className="relative mt-3 rounded-2xl border border-white/20 bg-white/[0.07] px-5 py-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.15)] backdrop-blur-xl md:px-8 md:py-8">
             <div className="flex flex-wrap items-baseline gap-x-3 font-mono text-[2rem] font-medium tabular-nums text-white md:text-[2.75rem] lg:text-5xl">
               <span>{formatCurrency(low)}</span>
-              <span className="text-lg font-normal text-neutral-500 md:text-xl">—</span>
+              <span className="text-lg font-normal text-neutral-400 md:text-xl">—</span>
               <span>{formatCurrency(high)}</span>
             </div>
-            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.15em] text-neutral-500">MXN</p>
+            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.15em] text-neutral-400">MXN</p>
           </div>
 
-          <p className="mt-6 max-w-xl text-sm leading-relaxed text-neutral-400 md:text-base">
+          <p className="relative mt-6 max-w-xl text-sm leading-relaxed text-neutral-400 md:text-base">
             Rango preliminar para tu {tipoPropiedad.toLowerCase()} en {colonia}, basado en promedios generales de la
             zona. <span className="font-semibold text-white">No sustituye tu Análisis Comparativo de Mercado</span>{' '}
             completo, que un asesor te comparte por WhatsApp en menos de 48 horas usando comparables reales de tu
@@ -97,6 +105,8 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
           ))}
         </ul>
       </div>
+
+      <PropertyShowcase />
     </div>
   );
 }

@@ -37,6 +37,14 @@ export function WizardHero({ onStart }: Props) {
         ))}
       </div>
 
+      <div className="inline-flex items-center gap-2 rounded-pill border border-neutral-200 bg-parchment-card px-4 py-2 shadow-sm">
+        <span className="h-1.5 w-1.5 rounded-full bg-brand-500" />
+        <p className="text-[12px] font-medium text-neutral-600">
+          <span className="font-mono font-semibold text-neutral-900">+10</span> propiedades activas en Zona
+          Esmeralda · asesores dedicados a tu fraccionamiento
+        </p>
+      </div>
+
       <button
         onClick={onStart}
         className="rounded-pill bg-brand-500 px-9 py-4 text-base font-semibold text-white shadow-[0_10px_24px_-8px_rgba(37,211,102,0.55)] transition-all hover:bg-brand-600 active:scale-95"

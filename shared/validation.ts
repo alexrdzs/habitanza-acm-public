@@ -2,14 +2,15 @@
 // serverless endpoint (api/lead.ts). The server re-validates everything
 // here independently — this file does not make client input trustworthy.
 
+// Verified against Habitanza's actual live portfolio (real colonia values
+// returned by published listings in Atizapán de Zaragoza), not guessed.
 export const ZONA_ESMERALDA_COLONIAS = [
   'Bosque Esmeralda',
+  'Residencial Lago Esmeralda',
   'Condado de Sayavedra',
-  'Hacienda de las Palmas',
-  'Loma Alta',
-  'La Estadía',
-  'Bosques de Echegaray',
-  'Club de Golf Bellavista',
+  'Lomas de Valle Escondido',
+  'Hacienda de Valle Escondido',
+  'Rancho San Juan',
 ] as const;
 
 // Sentinel value for "my colonia isn't in the list" — paired with the
