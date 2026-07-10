@@ -75,19 +75,23 @@ export function WizardHero({ onStart }: Props) {
         Conoce el valor de tu propiedad
       </button>
 
-      <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 pt-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {EXPERTISE_CARDS.map(({ icon: Icon, title, detail }) => (
-          <div
-            key={title}
-            className="flex w-[168px] flex-shrink-0 snap-start flex-col gap-2.5 rounded-2xl border border-neutral-200 bg-parchment-card p-4 text-left shadow-[0_8px_20px_-10px_rgba(16,32,26,0.25)]"
-          >
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-deep/10">
-              <Icon className="h-4 w-4 text-emerald-deep" />
+      <div
+        className="-mx-4 overflow-hidden pb-2 pt-1 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]"
+      >
+        <div className="marquee-track flex w-max gap-3">
+          {[...EXPERTISE_CARDS, ...EXPERTISE_CARDS].map(({ icon: Icon, title, detail }, i) => (
+            <div
+              key={`${title}-${i}`}
+              className="flex w-[168px] flex-shrink-0 flex-col gap-2.5 rounded-2xl border border-neutral-200 bg-parchment-card p-4 text-left shadow-[0_8px_20px_-10px_rgba(16,32,26,0.25)]"
+            >
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-deep/10">
+                <Icon className="h-4 w-4 text-emerald-deep" />
+              </div>
+              <p className="text-[13px] font-bold leading-snug text-neutral-900">{title}</p>
+              <p className="text-[11.5px] leading-relaxed text-neutral-500">{detail}</p>
             </div>
-            <p className="text-[13px] font-bold leading-snug text-neutral-900">{title}</p>
-            <p className="text-[11.5px] leading-relaxed text-neutral-500">{detail}</p>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

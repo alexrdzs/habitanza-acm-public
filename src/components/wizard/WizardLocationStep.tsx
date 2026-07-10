@@ -33,14 +33,14 @@ export function WizardLocationStep(props: Props) {
 
         <div>
           <label className={labelClass}>Fraccionamiento / colonia *</label>
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-2 gap-2">
             {ZONA_ESMERALDA_COLONIAS.map((c) => (
               <button
                 key={c}
                 type="button"
                 onClick={() => props.setColonia(c)}
                 className={cn(
-                  'rounded-input border px-3 py-2 text-sm font-medium transition-all',
+                  'flex min-h-[3rem] items-center justify-center rounded-input border px-2 py-2 text-center text-sm font-medium leading-snug transition-all',
                   props.colonia === c
                     ? 'border-brand-500 bg-brand-500 text-white'
                     : 'border-neutral-300 text-neutral-600 hover:border-neutral-400 hover:bg-neutral-50'
@@ -53,7 +53,7 @@ export function WizardLocationStep(props: Props) {
               type="button"
               onClick={() => props.setColonia(OTHER_COLONIA_VALUE)}
               className={cn(
-                'rounded-input border px-3 py-2 text-sm font-medium transition-all',
+                'flex min-h-[3rem] items-center justify-center rounded-input border px-2 py-2 text-center text-sm font-medium leading-snug transition-all',
                 props.colonia === OTHER_COLONIA_VALUE
                   ? 'border-brand-500 bg-brand-500 text-white'
                   : 'border-dashed border-neutral-300 text-neutral-500 hover:border-neutral-400 hover:bg-neutral-50'

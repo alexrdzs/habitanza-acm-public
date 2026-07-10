@@ -99,6 +99,21 @@
     background: var(--color-emerald-deep);
     transform: translate(-50%, -50%) rotate(45deg);
   }
+
+  /* Infinite marquee — the track renders its children twice back to back
+     and scrolls exactly one set's width, so the loop point is invisible. */
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  .marquee-track {
+    animation: marquee 22s linear infinite;
+  }
+
+  .marquee-track:hover {
+    animation-play-state: paused;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -107,5 +122,13 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  /* The generic override above would freeze the marquee mid-loop (a
+     visibly cut-off duplicate row) -- stop it at its natural, untranslated
+     position instead. */
+  .marquee-track {
+    animation: none !important;
+    transform: none !important;
   }
 }
