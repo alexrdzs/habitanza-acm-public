@@ -6,6 +6,8 @@ Flow: hero → location (colonia + map) → property specifics (type, size/lot, 
 
 Visually and structurally reuses pieces of [Habitanza-ACM](https://github.com/alexrdzs/Habitanza-ACM)'s authenticated report UI (dark hero price card, metric cards, brand tokens, logo) but deliberately does **not** include the real homologation engine, Anthropic calls, PDF export, Firestore/report flow, or Firebase auth.
 
+For a screen-by-screen breakdown of what each step is trying to accomplish and why it's designed the way it is (written for design review, not engineering), see [`docs/design-handoff.md`](docs/design-handoff.md).
+
 ## Preliminary estimate — how it works and its limits
 
 `shared/pricing.ts` computes the range shown on the reveal step from a simple formula: a per-colonia average price/m² × the visitor's stated size, adjusted by property type and the condition they picked on `ConditionQuickPicker`. It does **not** query real comparables at request time — it exists purely to make the post-submit moment feel personalized, and is labeled "estimación preliminar" on screen precisely because it isn't a real ACM.
