@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Logo } from '../components/Logo';
 import { WizardHero } from '../components/wizard/WizardHero';
+import { WizardLocationStep } from '../components/wizard/WizardLocationStep';
 import { WizardBasicsStep } from '../components/wizard/WizardBasicsStep';
 import { WizardAnalyzingStep } from '../components/wizard/WizardAnalyzingStep';
 import { WizardContactStep } from '../components/wizard/WizardContactStep';
@@ -8,7 +9,7 @@ import { WizardRevealStep } from '../components/wizard/WizardRevealStep';
 import { OTHER_COLONIA_VALUE, normalizePhone, type PropertyCondition, type Amenity } from '@shared/validation';
 import { estimatePreliminaryRange, type PreliminaryEstimate } from '@shared/pricing';
 
-type Step = 'hero' | 'basics' | 'analyzing' | 'contact' | 'reveal';
+type Step = 'hero' | 'location' | 'basics' | 'analyzing' | 'contact' | 'reveal';
 
 function parseRoomCount(v: string): number | undefined {
   if (!v) return undefined;
@@ -18,10 +19,12 @@ function parseRoomCount(v: string): number | undefined {
 export function LandingPage() {
   const [step, setStep] = useState<Step>('hero');
 
-  // Property basics
-  const [tipoPropiedad, setTipoPropiedad] = useState('');
+  // Location
   const [colonia, setColonia] = useState('');
   const [coloniaOtra, setColoniaOtra] = useState('');
+
+  // Property specifics
+  const [tipoPropiedad, setTipoPropiedad] = useState('');
   const [condicion, setCondicion] = useState<PropertyCondition | ''>('');
   const [m2Construccion, setM2Construccion] = useState('');
   const [m2Terreno, setM2Terreno] = useState('');
@@ -105,16 +108,23 @@ export function LandingPage() {
         <Logo className="h-8 text-neutral-900" />
       </header>
       <main className="mx-auto max-w-md px-4 pb-20">
-        {step === 'hero' && <WizardHero onStart={() => setStep('basics')} />}
+        {step === 'hero' && <WizardHero onStart={() => setStep('location')} />}
+
+        {step === 'location' && (
+          <WizardLocationStep
+            colonia={colonia}
+            setColonia={setColonia}
+            coloniaOtra={coloniaOtra}
+            setColoniaOtra={setColoniaOtra}
+            onBack={() => setStep('hero')}
+            onContinue={() => setStep('basics')}
+          />
+        )}
 
         {step === 'basics' && (
           <WizardBasicsStep
             tipoPropiedad={tipoPropiedad}
             setTipoPropiedad={setTipoPropiedad}
-            colonia={colonia}
-            setColonia={setColonia}
-            coloniaOtra={coloniaOtra}
-            setColoniaOtra={setColoniaOtra}
             condicion={condicion}
             setCondicion={setCondicion}
             m2Construccion={m2Construccion}
@@ -127,7 +137,7 @@ export function LandingPage() {
             setBanos={setBanos}
             amenidades={amenidades}
             setAmenidades={setAmenidades}
-            onBack={() => setStep('hero')}
+            onBack={() => setStep('location')}
             onContinue={() => setStep('analyzing')}
           />
         )}

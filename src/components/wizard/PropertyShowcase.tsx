@@ -1,13 +1,14 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Bed, Bath, Maximize, Home } from 'lucide-react';
 import { formatCurrency } from '../../lib/utils';
 import { SHOWCASE_PROPERTIES, type ShowcaseProperty } from '@shared/showcaseProperties';
+import { cn } from '../../lib/utils';
 
 function PropertyCard({ p }: { p: ShowcaseProperty }) {
   const [imgFailed, setImgFailed] = useState(false);
 
   return (
-    <div className="group overflow-hidden rounded-2xl border border-neutral-200">
+    <div className="w-[78%] flex-shrink-0 snap-center overflow-hidden rounded-2xl border border-neutral-200 bg-white">
       <div className="relative aspect-[4/3] overflow-hidden bg-neutral-100">
         {imgFailed ? (
           <div className="flex h-full w-full items-center justify-center bg-neutral-100">
@@ -18,7 +19,7 @@ function PropertyCard({ p }: { p: ShowcaseProperty }) {
             src={p.photo}
             alt={`${p.tipo} en ${p.colonia}`}
             loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="h-full w-full object-cover"
             referrerPolicy="no-referrer"
             onError={() => setImgFailed(true)}
           />
@@ -56,6 +57,16 @@ function PropertyCard({ p }: { p: ShowcaseProperty }) {
 }
 
 export function PropertyShowcase() {
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  function handleScroll() {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const cardWidth = el.scrollWidth / SHOWCASE_PROPERTIES.length;
+    setActiveIndex(Math.round(el.scrollLeft / cardWidth));
+  }
+
   return (
     <div className="space-y-4 rounded-card-lg border border-neutral-200 bg-parchment-card p-6 md:p-8">
       <div>
@@ -64,14 +75,27 @@ export function PropertyShowcase() {
         </p>
         <h3 className="mt-1 text-base font-bold text-neutral-900">Así es lo que ya tenemos en la zona</h3>
         <p className="mt-1 text-sm leading-relaxed text-neutral-500">
-          Algunas propiedades reales de nuestro portafolio en Zona Esmeralda — no son los comparables de tu
-          estimación, son prueba de que conocemos el terreno.
+          Algunas propiedades reales de nuestro portafolio — no son los comparables de tu estimación, son prueba de
+          que conocemos el terreno.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div
+        ref={scrollerRef}
+        onScroll={handleScroll}
+        className="-mx-6 flex snap-x snap-mandatory gap-3 overflow-x-auto px-6 pb-1 md:-mx-8 md:px-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
         {SHOWCASE_PROPERTIES.map((p) => (
           <PropertyCard key={p.photo} p={p} />
+        ))}
+      </div>
+
+      <div className="flex justify-center gap-1.5">
+        {SHOWCASE_PROPERTIES.map((_, i) => (
+          <div
+            key={i}
+            className={cn('h-1.5 rounded-full transition-all', i === activeIndex ? 'w-4 bg-brand-500' : 'w-1.5 bg-neutral-300')}
+          />
         ))}
       </div>
     </div>

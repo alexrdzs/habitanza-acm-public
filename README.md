@@ -2,7 +2,7 @@
 
 Public, anonymous lead-capture wizard ("¿Cuánto vale hoy tu casa en Zona Esmeralda?"). No live AI call and no real comparables lookup happens on this page — every submission creates a lead a broker builds the actual, authenticated Análisis Comparativo de Mercado (ACM) for by hand, async.
 
-Flow: hero → property basics (type, colonia, size/lot, rooms, condition) → a styled "analyzing" transition → contact info (name, WhatsApp, consent) → an immediate, report-styled reveal of a **preliminary** price range. The reveal exists so submitting contact info doesn't feel like a one-way data grab — visitors get something back immediately, and the real ACM follows from a broker within ~48h.
+Flow: hero → location (colonia + map) → property specifics (type, size/lot, rooms, condition, amenities) → a styled "analyzing" transition → contact info (name, WhatsApp, consent) → a **teaser** reveal — a blurred reference price, the methodology behind it, a few real portfolio listings, and a CTA to talk to an advisor now. The teaser exists so submitting contact info doesn't feel like a one-way data grab, without pretending the client-side formula is the real ACM — that's the whole point of blurring the number instead of showing it plainly.
 
 Visually and structurally reuses pieces of [Habitanza-ACM](https://github.com/alexrdzs/Habitanza-ACM)'s authenticated report UI (dark hero price card, metric cards, `ConditionToggle`, brand tokens, logo) but deliberately does **not** include the real homologation engine, Anthropic calls, PDF export, Firestore/report flow, or Firebase auth.
 
@@ -14,7 +14,15 @@ The per-colonia baselines and the `ZONA_ESMERALDA_COLONIAS` list are derived fro
 
 ## Property showcase
 
-The reveal step also shows three real, currently-published listings from Habitanza's portfolio (`shared/showcaseProperties.ts`) as a credibility signal — proof of real active inventory in the zone, not the comparables behind the visitor's estimate (the copy on-screen makes that distinction explicit). Listings sell; refresh this file periodically so it doesn't go stale or show a property that's no longer available.
+The reveal step shows three real, currently-published listings from Habitanza's portfolio (`shared/showcaseProperties.ts`) in a swipeable carousel, as a credibility signal — proof of real active inventory in the zone, not the comparables behind the visitor's estimate (the copy on-screen makes that distinction explicit). Listings sell; refresh this file periodically so it doesn't go stale or show a property that's no longer available.
+
+## Neighborhood map
+
+`shared/neighborhoods.ts` maps each colonia to a real coordinate sampled from a published listing there (not a precise centroid). `NeighborhoodMap.tsx` renders an actual Google Map (same styling as the authenticated ACM tool) when `VITE_GOOGLE_MAPS_API_KEY` is set, and falls back to a static illustrative pin card when it isn't — the location step never breaks or shows a broken map, it just degrades.
+
+## Advisor CTA
+
+The teaser screen ends with a "Hablemos ahora" WhatsApp CTA featuring a real Habitanza advisor (`shared/advisors.ts`) — randomized per visit between the two configured advisors so the team can compare inbound WhatsApp volume between them. The wa.me message is pre-filled with the visitor's property type and colonia for context.
 
 ## Commands
 
@@ -39,3 +47,5 @@ See `env.example`. At minimum, set `MAKE_WEBHOOK_URL` in Vercel before this can 
 - [ ] Point the subdomain (e.g. `valua.habitanza.com`) at this Vercel project, then update the canonical/OG URLs in `index.html`, `public/robots.txt`, and `public/sitemap.xml` to match
 - [ ] Add a real Open Graph image (`og:image`) once one exists — omitted for now rather than referencing a broken asset
 - [ ] Consider adding real `telephone`/`streetAddress` to the `RealEstateAgent` JSON-LD in `index.html` if Habitanza wants richer local-business search results
+- [ ] Set `VITE_GOOGLE_MAPS_API_KEY` in Vercel and restrict it to this domain in Google Cloud Console for the real map to render on the location step (falls back gracefully to a static pin card without it)
+- [ ] Keep `shared/advisors.ts` current if Rogelio or Tere's number/photo changes, or if the team wants to add/remove who appears in the CTA rotation

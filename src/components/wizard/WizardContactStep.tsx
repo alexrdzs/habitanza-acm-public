@@ -32,7 +32,7 @@ export function WizardContactStep(props: Props) {
     <WizardShell
       title="Ya casi está"
       description="Dinos a dónde enviamos tu estimación preliminar y tu Análisis Comparativo de Mercado (ACM) completo."
-      step={{ current: 2, total: 2 }}
+      step={{ current: 3, total: 3 }}
       onBack={props.onBack}
       nextLabel="Ver mi estimación"
       isNextLoading={props.isSubmitting}
