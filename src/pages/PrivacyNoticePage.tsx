@@ -1,8 +1,8 @@
 export function PrivacyNoticePage() {
   return (
-    <div className="min-h-screen bg-neutral-100 px-4 py-12">
-      <div className="mx-auto max-w-2xl rounded-card-lg bg-white p-8 shadow-sm">
-        <h1 className="text-2xl font-bold text-brand-500">Aviso de Privacidad</h1>
+    <div className="min-h-screen bg-parchment px-4 py-12">
+      <div className="mx-auto max-w-2xl rounded-card-lg border border-neutral-200 bg-parchment-card p-8 shadow-sm">
+        <h1 className="text-2xl font-bold text-emerald-deep">Aviso de Privacidad</h1>
         {/*
           Starting draft only — not reviewed by counsel. Confirm the
           responsible-party details and contact email before launch.

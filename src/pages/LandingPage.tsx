@@ -93,11 +93,11 @@ export function LandingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-100">
+    <div className="min-h-screen bg-parchment">
       <header className="flex justify-center py-6">
         <Logo className="h-8 text-neutral-900" />
       </header>
-      <main className="mx-auto max-w-md px-4 pb-16">
+      <main className="mx-auto max-w-md px-4 pb-20">
         {step === 'hero' && <WizardHero onStart={() => setStep('basics')} />}
 
         {step === 'basics' && (
@@ -153,7 +153,7 @@ export function LandingPage() {
               colonia={resolvedColonia}
             />
           ) : (
-            <div className="animate-in fade-in slide-in-from-bottom-4 space-y-3 rounded-card-lg bg-white p-8 text-center shadow-sm duration-500">
+            <div className="animate-in fade-in slide-in-from-bottom-4 space-y-3 rounded-card-lg border border-neutral-200 bg-parchment-card p-8 text-center shadow-sm duration-500">
               <h2 className="text-xl font-bold text-neutral-900">Gracias, {nombre.split(' ')[0]}</h2>
               <p className="text-neutral-600">
                 Un asesor te contacta por WhatsApp en menos de 48 horas con el valor estimado de tu propiedad.

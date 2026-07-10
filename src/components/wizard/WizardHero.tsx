@@ -4,40 +4,42 @@ interface Props {
   onStart: () => void;
 }
 
-const TRUST_BADGES = [
+const TRUST_MARKS = [
   { icon: ShieldCheck, label: 'Sin costo, sin compromiso' },
   { icon: Clock, label: 'Respuesta en menos de 48 horas' },
-  { icon: MapPin, label: 'Especialistas en Zona Esmeralda' },
+  { icon: MapPin, label: 'Especialistas en la zona' },
 ];
 
 export function WizardHero({ onStart }: Props) {
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 space-y-8 py-4 text-center duration-500">
-      <div className="space-y-4">
-        <h1 className="text-3xl font-bold tracking-tight text-neutral-900 md:text-4xl">
-          ¿Cuánto vale hoy tu casa en Zona Esmeralda?
+    <div className="animate-in fade-in slide-in-from-bottom-4 space-y-10 py-6 text-center duration-700">
+      <div className="space-y-5">
+        <p className="font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-emerald-deep">
+          Zona Esmeralda · Atizapán de Zaragoza
+        </p>
+        <h1 className="text-[2.15rem] font-extrabold leading-[1.08] tracking-tight text-neutral-900 md:text-5xl">
+          ¿Cuánto vale hoy tu casa?
         </h1>
-        <p className="mx-auto max-w-md text-base text-neutral-600 md:text-lg">
-          Recibe una estimación preliminar en minutos y un Análisis Comparativo de Mercado (ACM) personalizado,
-          elaborado por un asesor especialista en tu zona.
+        <p className="mx-auto max-w-sm text-base leading-relaxed text-neutral-600 md:text-lg">
+          Una primera referencia en minutos, y un Análisis Comparativo de Mercado hecho a la medida por un asesor que
+          conoce tu fraccionamiento.
         </p>
       </div>
 
-      <div className="mx-auto grid max-w-xl grid-cols-1 gap-3 sm:grid-cols-3">
-        {TRUST_BADGES.map(({ icon: Icon, label }) => (
-          <div
-            key={label}
-            className="flex flex-col items-center gap-2 rounded-card border border-neutral-200 bg-white p-4 shadow-sm"
-          >
-            <Icon className="h-5 w-5 text-brand-500" />
-            <p className="text-center text-xs font-semibold leading-snug text-neutral-700">{label}</p>
+      <div className="facet-rule mx-auto max-w-xs" />
+
+      <div className="mx-auto flex max-w-lg flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-0 sm:divide-x sm:divide-neutral-300">
+        {TRUST_MARKS.map(({ icon: Icon, label }, i) => (
+          <div key={label} className={`flex items-center gap-2 px-5 ${i === 0 ? 'sm:pl-0' : ''}`}>
+            <Icon className="h-4 w-4 flex-shrink-0 text-brass" />
+            <p className="text-left text-[13px] font-medium leading-snug text-neutral-600">{label}</p>
           </div>
         ))}
       </div>
 
       <button
         onClick={onStart}
-        className="rounded-pill bg-brand-500 px-8 py-4 text-base font-semibold text-white shadow-sm transition-all active:scale-95 hover:bg-brand-600"
+        className="rounded-pill bg-brand-500 px-9 py-4 text-base font-semibold text-white shadow-[0_10px_24px_-8px_rgba(37,211,102,0.55)] transition-all hover:bg-brand-600 active:scale-95"
       >
         Conoce el valor de tu propiedad
       </button>

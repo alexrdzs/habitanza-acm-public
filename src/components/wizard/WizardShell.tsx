@@ -35,16 +35,17 @@ export function WizardShell({
   };
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-6">
-      <div className="overflow-hidden rounded-card-lg border border-neutral-200 bg-white shadow-sm">
-        <div className="border-b border-neutral-100 bg-neutral-50/50 p-6 md:p-8">
+    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-5">
+      <div className="overflow-hidden rounded-card-lg border border-neutral-200 bg-parchment-card shadow-[0_1px_2px_rgba(16,32,26,0.04),0_12px_28px_-16px_rgba(16,32,26,0.18)]">
+        <div className="facet-rule" />
+        <div className="border-b border-neutral-200/70 p-6 md:p-8">
           {step && (
-            <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-brand-600">
-              Paso {step.current} de {step.total}
+            <p className="mb-2 font-mono text-[11px] font-medium uppercase tracking-[0.15em] text-neutral-500">
+              {String(step.current).padStart(2, '0')} / {String(step.total).padStart(2, '0')}
             </p>
           )}
           <h2 className="text-xl font-bold text-neutral-900 md:text-2xl">{title}</h2>
-          <p className="mt-1 text-neutral-500">{description}</p>
+          <p className="mt-1.5 text-neutral-500">{description}</p>
         </div>
         <div className="p-6 md:p-8">{children}</div>
       </div>
@@ -66,7 +67,7 @@ export function WizardShell({
             <button
               onClick={handleNext}
               disabled={nextDisabled || isNextLoading}
-              className="flex items-center gap-2 rounded-pill bg-brand-500 px-8 py-3 font-medium text-white shadow-sm transition-all active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex items-center gap-2 rounded-pill bg-brand-500 px-8 py-3 font-medium text-white shadow-sm transition-all active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-brand-600"
             >
               {isNextLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
