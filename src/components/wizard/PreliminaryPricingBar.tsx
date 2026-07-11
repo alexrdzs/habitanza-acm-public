@@ -15,7 +15,12 @@ interface Props {
 // dark-on-light treatment it'd need on a parchment card.
 export function PreliminaryPricingBar({ estimate }: Props) {
   return (
-    <div className="pt-20 pb-1">
+    // pb-14 isn't decorative -- the Mín/Máx tick labels below are absolutely
+    // positioned (so they don't contribute to this container's height) and
+    // extend well past the bar itself; without this the next element in
+    // flow renders overlapping them instead of below them.
+    <div className="pt-20 pb-14">
+
       <div className="relative mx-1">
         <div
           className="h-2 rounded-full shadow-inner"
