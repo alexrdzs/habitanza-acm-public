@@ -26,6 +26,14 @@ The reveal step closes with a swipeable carousel of real client testimonials (`s
 
 The teaser screen ends with a "Hablemos ahora" WhatsApp CTA featuring a real Habitanza advisor (`shared/advisors.ts`) — randomized per visit between the two configured advisors so the team can compare inbound WhatsApp volume between them. The wa.me message is pre-filled with the visitor's property type and colonia for context.
 
+## Team vs. advisors — two separate data files, on purpose
+
+`shared/advisors.ts` (Rogelio, Tere) is the pool actually used for the WhatsApp CTA rotation and the reveal screen's "firma" attribution — who's in it is a lead-routing decision. `shared/team.ts` is the full active roster (pulled from the internal agent directory) shown on the Hero's photo/name marquee purely as a "real people work here" trust signal. Adding someone to `team.ts` does **not** put them in the CTA rotation; that's a separate, deliberate change to `advisors.ts`.
+
+## Link previews (Open Graph)
+
+`public/og-image.png` is a static 1200×630 image (rendered once from a one-off HTML mockup styled to match the app's ink/emerald/brass palette, not generated from the live page) so links shared in WhatsApp/iMessage/etc. show a real image and title instead of a bare URL. If the brand visuals change meaningfully, re-render and replace this file — it won't update itself.
+
 ## Commands
 
 ```bash
@@ -46,8 +54,7 @@ See `env.example`. At minimum, set `MAKE_WEBHOOK_URL` in Vercel before this can 
 - [ ] Legal review of `src/pages/PrivacyNoticePage.tsx` — the aviso de privacidad shipped here is a starting draft (not reviewed by counsel) and has a placeholder contact email
 - [ ] Add more/refresh `shared/testimonials.ts` if Habitanza wants to rotate in newer client quotes
 - [ ] Re-derive `PRICE_PER_M2_CONSTRUCCION` / `PRICE_PER_M2_TERRENO` in `shared/pricing.ts` as more of the portfolio's sales close — most colonias currently rest on a single comp
-- [ ] Point the subdomain (e.g. `valua.habitanza.com`) at this Vercel project, then update the canonical/OG URLs in `index.html`, `public/robots.txt`, and `public/sitemap.xml` to match
-- [ ] Add a real Open Graph image (`og:image`) once one exists — omitted for now rather than referencing a broken asset
+- [ ] Point the subdomain (e.g. `valua.habitanza.com`) at this Vercel project, then update the canonical/OG URLs in `index.html`, `public/robots.txt`, and `public/sitemap.xml` to match -- and re-render `public/og-image.png` if the domain changes before launch (it's a static PNG, not generated from the live URL)
 - [ ] Consider adding real `telephone`/`streetAddress` to the `RealEstateAgent` JSON-LD in `index.html` if Habitanza wants richer local-business search results
 - [ ] Set `VITE_GOOGLE_MAPS_API_KEY` in Vercel and restrict it to this domain in Google Cloud Console for the real map to render on the location step (falls back gracefully to a static pin card without it)
 - [ ] Keep `shared/advisors.ts` current if Rogelio or Tere's number/photo changes, or if the team wants to add/remove who appears in the CTA rotation
