@@ -45,7 +45,7 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
   }, []);
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 space-y-5 pb-20 duration-700">
+    <div className="animate-in fade-in slide-in-from-bottom-4 space-y-6 pb-20 duration-700">
       {/* The one screen staged like a certificate being issued (dark ink
           ground, brass trim) rather than a form -- deliberately not the
           final ACM, but the one moment meant to feel like a payoff. */}
@@ -64,13 +64,13 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
             Ya tenemos todo para trabajar tu estimado de valor.
           </p>
 
-          <p className="relative mt-4 max-w-xl text-sm leading-relaxed text-neutral-300 md:text-base">
+          <p className="relative mt-5 max-w-xl text-sm leading-relaxed text-neutral-300 md:text-base">
             <span className="font-semibold text-white">{advisorFirstName}</span> estará trabajando una propuesta
             para ti porque conoce a fondo {colonia}, pero desde ahora te podemos compartir algo que sabemos basado
             en nuestra experiencia y tendencias del mercado.
           </p>
 
-          <div className="relative mt-6 border-t border-white/10 pt-5">
+          <div className="relative mt-8 border-t border-white/10 pt-6">
             <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-brass-soft">Rango de precio</p>
             <h3 className="mt-1 text-base font-bold text-white">
               Tu propiedad estaría en un rango de {formatCurrency(estimate.low)} a {formatCurrency(estimate.high)}
@@ -78,8 +78,8 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
             <PreliminaryPricingBar estimate={estimate} />
           </div>
 
-          <div className="relative mt-6 flex flex-col gap-4 border-t border-white/10 pt-5 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-3">
+          <div className="relative mt-8 flex flex-col items-center gap-5 border-t border-white/10 pt-6 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
+            <div className="flex flex-col items-center gap-2 sm:flex-row sm:items-center sm:gap-3">
               <AdvisorAvatar
                 advisor={advisor}
                 className="h-11 w-11 border-2 border-white/25 bg-white/10"
@@ -95,7 +95,7 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
               href={whatsappLink(advisor, message)}
               target="_blank"
               rel="noreferrer"
-              className="flex flex-shrink-0 items-center justify-center gap-1.5 rounded-pill bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-transform active:scale-95 hover:bg-brand-600"
+              className="flex w-full flex-shrink-0 items-center justify-center gap-1.5 rounded-pill bg-brand-500 px-5 py-3 text-sm font-semibold text-white shadow-sm transition-transform active:scale-95 hover:bg-brand-600 sm:w-auto sm:py-2.5"
             >
               <MessageCircle className="h-4 w-4" />
               Hablemos ahora
@@ -104,13 +104,13 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
         </div>
       </div>
 
-      <div className="space-y-4 rounded-card-lg border border-neutral-200 bg-parchment-card p-6 md:p-8">
+      <div className="space-y-5 rounded-card-lg border border-neutral-200 bg-parchment-card p-6 md:p-8">
         <div>
           <p className="text-[11px] font-bold uppercase tracking-wider text-brass">Mercado de la zona</p>
           <h3 className="mt-1 text-base font-bold text-neutral-900">Referencias reales en {colonia}</h3>
         </div>
 
-        <div className="rounded-xl border border-dashed border-neutral-300 bg-neutral-50 px-4 py-3">
+        <div className="rounded-xl border border-dashed border-neutral-300 bg-neutral-50 px-4 py-3.5">
           <p className="text-[10px] font-bold uppercase tracking-wide text-neutral-400">
             Nota sobre la zona [placeholder]
           </p>
