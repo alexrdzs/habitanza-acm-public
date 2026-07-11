@@ -10,6 +10,13 @@ export const NEIGHBORHOOD_COORDINATES: Record<string, { lat: number; lng: number
   'Hacienda de Valle Escondido': { lat: 19.5719563, lng: -99.3088356 },
   'Rancho San Juan': { lat: 19.5869926, lng: -99.302409 },
   'Fincas de Sayavedra': { lat: 19.5792689, lng: -99.3222996 },
+  // These four sourced from Pulppo's location catalog (resolver_ubicacion),
+  // not a published listing -- still real, verified coordinates, just no
+  // active property to sample from yet.
+  'Club de Golf Valle Escondido': { lat: 19.5614362, lng: -99.3069787 },
+  'Club de Golf Chiluca': { lat: 19.5439857, lng: -99.30489589999999 },
+  'La Estadía': { lat: 19.5354335, lng: -99.2993504 },
+  'Prado Largo': { lat: 19.5554838, lng: -99.3104417 },
 };
 
 // Fallback center — roughly the middle of the six colonias above — used

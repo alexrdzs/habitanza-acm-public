@@ -13,12 +13,20 @@ export const ZONA_ESMERALDA_COLONIAS = [
   'Rancho San Juan',
 ] as const;
 
-// Additional real colonias (same sourcing method as the primary list above)
-// shown behind the location step's "Ver más" expansion instead of in the
-// main carousel -- kept separate because the primary six are what Habitanza
-// actually specializes in. Deliberately short: only add a name here once
-// it's verified against the live portfolio, not guessed to pad the list.
-export const ZONA_ESMERALDA_COLONIAS_EXTENDED = ['Fincas de Sayavedra'] as const;
+// Additional real colonias shown behind the location step's "Ver más"
+// expansion instead of in the main carousel -- kept separate because the
+// primary six are what Habitanza actually specializes in (real listings,
+// real pricing baselines). These four (plus Fincas de Sayavedra) are
+// verified against Pulppo's own location catalog via resolver_ubicacion,
+// not guessed -- they have real coordinates but no active listings yet, so
+// they get the default price/m² fallback and no "Mercado de la zona" comps.
+export const ZONA_ESMERALDA_COLONIAS_EXTENDED = [
+  'Fincas de Sayavedra',
+  'Club de Golf Valle Escondido',
+  'Club de Golf Chiluca',
+  'La Estadía',
+  'Prado Largo',
+] as const;
 
 // Sentinel value for "my colonia isn't in the list" — paired with the
 // free-text colonia_otra field so the campaign isn't limited to this seed

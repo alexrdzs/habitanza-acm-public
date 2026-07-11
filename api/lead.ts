@@ -21,7 +21,13 @@ const ZONA_ESMERALDA_COLONIAS = [
   'Rancho San Juan',
 ] as const;
 // Keep in sync with ZONA_ESMERALDA_COLONIAS_EXTENDED in shared/validation.ts.
-const ZONA_ESMERALDA_COLONIAS_EXTENDED = ['Fincas de Sayavedra'] as const;
+const ZONA_ESMERALDA_COLONIAS_EXTENDED = [
+  'Fincas de Sayavedra',
+  'Club de Golf Valle Escondido',
+  'Club de Golf Chiluca',
+  'La Estadía',
+  'Prado Largo',
+] as const;
 const OTHER_COLONIA_VALUE = 'otra';
 const PUBLIC_PROPERTY_TYPES = ['Casa', 'Departamento', 'Terreno'] as const;
 const PROPERTY_CONDITIONS = ['Para reformar', 'Buen estado', 'Remodelada', 'Nueva'] as const;
