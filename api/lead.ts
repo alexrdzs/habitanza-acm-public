@@ -20,6 +20,8 @@ const ZONA_ESMERALDA_COLONIAS = [
   'Hacienda de Valle Escondido',
   'Rancho San Juan',
 ] as const;
+// Keep in sync with ZONA_ESMERALDA_COLONIAS_EXTENDED in shared/validation.ts.
+const ZONA_ESMERALDA_COLONIAS_EXTENDED = ['Fincas de Sayavedra'] as const;
 const OTHER_COLONIA_VALUE = 'otra';
 const PUBLIC_PROPERTY_TYPES = ['Casa', 'Departamento', 'Terreno'] as const;
 const PROPERTY_CONDITIONS = ['Para reformar', 'Buen estado', 'Remodelada', 'Nueva'] as const;
@@ -128,7 +130,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const timeline = body.timeline;
   const consentimiento = body.consentimiento === true;
 
-  const isKnownColonia = (ZONA_ESMERALDA_COLONIAS as readonly string[]).includes(colonia);
+  const isKnownColonia =
+    (ZONA_ESMERALDA_COLONIAS as readonly string[]).includes(colonia) ||
+    (ZONA_ESMERALDA_COLONIAS_EXTENDED as readonly string[]).includes(colonia);
   const isOtherColonia = colonia === OTHER_COLONIA_VALUE;
   const isTerreno = tipoPropiedad === 'Terreno';
 

@@ -13,6 +13,13 @@ export const ZONA_ESMERALDA_COLONIAS = [
   'Rancho San Juan',
 ] as const;
 
+// Additional real colonias (same sourcing method as the primary list above)
+// shown behind the location step's "Ver más" expansion instead of in the
+// main carousel -- kept separate because the primary six are what Habitanza
+// actually specializes in. Deliberately short: only add a name here once
+// it's verified against the live portfolio, not guessed to pad the list.
+export const ZONA_ESMERALDA_COLONIAS_EXTENDED = ['Fincas de Sayavedra'] as const;
+
 // Sentinel value for "my colonia isn't in the list" — paired with the
 // free-text colonia_otra field so the campaign isn't limited to this seed
 // list. Review/expand the list above against the real campaign area.

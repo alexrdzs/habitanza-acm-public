@@ -22,8 +22,9 @@ const SELECTED_ZOOM = 15;
 
 // Google's Maps JS API doesn't animate zoom changes on its own (panTo does
 // animate, setZoom snaps) -- this steps one level at a time so picking a
-// colonia feels like flying in rather than jump-cutting.
-function smoothZoomTo(map: google.maps.Map, targetZoom: number) {
+// colonia feels like flying in rather than jump-cutting. Exported for reuse
+// by AnalyzingMap.tsx.
+export function smoothZoomTo(map: google.maps.Map, targetZoom: number) {
   const current = map.getZoom();
   if (current === undefined || current === targetZoom) return;
   const next = current + (targetZoom > current ? 1 : -1);

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Check } from 'lucide-react';
 import { WizardShell } from './WizardShell';
+import { AnalyzingMap } from './AnalyzingMap';
 import { cn } from '../../lib/utils';
 
 interface Stage {
@@ -33,7 +34,7 @@ const EXIT_DURATION_MS = 500;
 
 type Phase = 'running' | 'complete' | 'exiting';
 
-export function WizardAnalyzingStep({ onDone }: { onDone: () => void }) {
+export function WizardAnalyzingStep({ colonia, onDone }: { colonia: string; onDone: () => void }) {
   const [stageIndex, setStageIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>('running');
 
@@ -55,8 +56,6 @@ export function WizardAnalyzingStep({ onDone }: { onDone: () => void }) {
     };
   }, [onDone]);
 
-  const progress = (stageIndex + 1) / STAGES.length;
-  const blurPx = Math.max(0, 10 - stageIndex * 3.5);
   const isComplete = phase !== 'running';
 
   return (
@@ -68,39 +67,23 @@ export function WizardAnalyzingStep({ onDone }: { onDone: () => void }) {
     >
       <WizardShell title="Analizando tu zona" description="Estamos preparando tu primera referencia de valor.">
         <div className="flex flex-col items-center gap-8 py-4">
-          {/* Radar-scan ring behind a sharpening trio of property-card
-              silhouettes, cross-fading into a completion stamp once every
-              stage has finished so the cut to the next screen reads as a
-              deliberate beat rather than an abrupt jump. */}
+          {/* A real map, not an abstract loading animation: starts zoomed
+              out over the whole zone, then narrows into the visitor's
+              colonia and its real comps once we reach that stage --
+              cross-fading into a completion stamp once every stage has
+              finished so the cut to the next screen reads as a deliberate
+              beat rather than an abrupt jump. */}
           <div className="relative flex h-36 w-full items-center justify-center overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-50">
             {!isComplete ? (
               <>
+                <AnalyzingMap colonia={colonia} narrow={stageIndex >= 1} />
                 <div
-                  className="absolute inset-0 animate-spin opacity-40 [animation-duration:2.4s]"
+                  className="pointer-events-none absolute inset-0 animate-spin opacity-30 [animation-duration:2.4s]"
                   style={{
                     background:
                       'conic-gradient(from 0deg, transparent 0deg, var(--color-emerald-glow) 25deg, transparent 70deg)',
                   }}
                 />
-                {/* Scrolling, not a static trio -- suggests pulling through
-                    many references rather than looking at 3 fixed cards. */}
-                <div className="relative w-full overflow-hidden">
-                  <div className="marquee-track flex items-center gap-2.5" style={{ animationDuration: '6s' }}>
-                    {Array.from({ length: 12 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className="h-20 w-16 flex-shrink-0 rounded-lg border border-neutral-300 bg-white shadow-sm transition-[filter] duration-700 ease-out"
-                        style={{ filter: `blur(${blurPx}px)`, opacity: 0.5 + progress * 0.5 }}
-                      >
-                        <div className="h-11 w-full rounded-t-lg bg-neutral-200" />
-                        <div className="space-y-1 p-1.5">
-                          <div className="h-1.5 w-3/4 rounded-full bg-neutral-200" />
-                          <div className="h-1.5 w-1/2 rounded-full bg-neutral-200" />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
               </>
             ) : (
               <div className="flex animate-in flex-col items-center gap-2 zoom-in-95 fade-in duration-500">

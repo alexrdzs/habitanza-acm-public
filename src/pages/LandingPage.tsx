@@ -142,7 +142,9 @@ export function LandingPage() {
           />
         )}
 
-        {step === 'analyzing' && <WizardAnalyzingStep onDone={() => setStep('contact')} />}
+        {step === 'analyzing' && (
+          <WizardAnalyzingStep colonia={resolvedColonia} onDone={() => setStep('contact')} />
+        )}
 
         {step === 'contact' && (
           <WizardContactStep

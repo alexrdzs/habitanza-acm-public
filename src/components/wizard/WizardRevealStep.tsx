@@ -26,6 +26,7 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
   const advisor = useMemo(() => ADVISORS[Math.floor(Math.random() * ADVISORS.length)], []);
   const advisorFirstName = advisor.name.split(' ')[0];
   const comps = COMPARABLE_LISTINGS[colonia] ?? [];
+  const hasComps = comps.length > 0;
   const message = buildWhatsAppMessage(advisor, tipoPropiedad, colonia);
 
   // The sticky bottom CTA only makes sense once the inline one next to the
@@ -65,9 +66,19 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
           </p>
 
           <p className="relative mt-5 max-w-xl text-sm leading-relaxed text-neutral-300 md:text-base">
-            <span className="font-semibold text-white">{advisorFirstName}</span> estará trabajando una propuesta
-            para ti porque conoce a fondo {colonia}, pero desde ahora te podemos compartir algo que sabemos basado
-            en nuestra experiencia y tendencias del mercado.
+            {hasComps ? (
+              <>
+                <span className="font-semibold text-white">{advisorFirstName}</span> estará trabajando una
+                propuesta para ti porque conoce a fondo {colonia}, pero desde ahora te podemos compartir algo que
+                sabemos basado en nuestra experiencia y tendencias del mercado.
+              </>
+            ) : (
+              <>
+                <span className="font-semibold text-white">{advisorFirstName}</span> estará trabajando una
+                propuesta para ti, y desde ahora te podemos compartir algo que sabemos basado en nuestra
+                experiencia y tendencias del mercado en {colonia}.
+              </>
+            )}
           </p>
 
           <div className="relative mt-8 border-t border-white/10 pt-6">
@@ -107,7 +118,9 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
       <div className="space-y-5 rounded-card-lg border border-neutral-200 bg-parchment-card p-6 md:p-8">
         <div>
           <p className="text-[11px] font-bold uppercase tracking-wider text-brass">Mercado de la zona</p>
-          <h3 className="mt-1 text-base font-bold text-neutral-900">Referencias reales en {colonia}</h3>
+          <h3 className="mt-1 text-base font-bold text-neutral-900">
+            {hasComps ? `Referencias reales en ${colonia}` : `Armando referencias para ${colonia}`}
+          </h3>
         </div>
 
         <div className="rounded-xl border border-dashed border-neutral-300 bg-neutral-50 px-4 py-3.5">
@@ -119,7 +132,7 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
           </p>
         </div>
 
-        {comps.length > 0 && (
+        {hasComps ? (
           <div className="space-y-3 md:flex md:gap-3 md:space-y-0">
             <div className="md:w-1/2">
               <ComparablesMap listings={comps} />
@@ -128,6 +141,11 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
               <ComparableListingCards listings={comps} />
             </div>
           </div>
+        ) : (
+          <p className="text-sm leading-relaxed text-neutral-500">
+            Todavía no tenemos comparables específicos de {colonia} en nuestro sistema — tu asesor los incluirá al
+            preparar tu Análisis Comparativo de Mercado completo.
+          </p>
         )}
       </div>
 

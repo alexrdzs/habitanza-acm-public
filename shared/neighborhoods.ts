@@ -9,6 +9,7 @@ export const NEIGHBORHOOD_COORDINATES: Record<string, { lat: number; lng: number
   'Lomas de Valle Escondido': { lat: 19.5572671, lng: -99.29931789999999 },
   'Hacienda de Valle Escondido': { lat: 19.5719563, lng: -99.3088356 },
   'Rancho San Juan': { lat: 19.5869926, lng: -99.302409 },
+  'Fincas de Sayavedra': { lat: 19.5792689, lng: -99.3222996 },
 };
 
 // Fallback center — roughly the middle of the six colonias above — used
