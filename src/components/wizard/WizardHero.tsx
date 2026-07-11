@@ -1,4 +1,4 @@
-import { ShieldCheck, Clock, MapPin, LineChart, MessageCircle, Building2, FileCheck2 } from 'lucide-react';
+import { ShieldCheck, Clock, MapPin, LineChart, MessageCircle, Building2 } from 'lucide-react';
 import { TestimonialsCarousel } from './TestimonialsCarousel';
 import { TeamSection } from './TeamSection';
 import { MethodologySection } from './MethodologySection';
@@ -7,16 +7,12 @@ interface Props {
   onStart: () => void;
 }
 
-const VALUE_ITEMS = [
-  { icon: LineChart, label: 'Un rango de precio de tu zona, en minutos' },
-  { icon: MessageCircle, label: 'Un asesor real, dedicado a tu fraccionamiento' },
-  { icon: FileCheck2, label: 'Tu Análisis Comparativo de Mercado (ACM) completo' },
-];
-
+// Leads with local expertise -- "especialistas en la zona" is the whole
+// narrative this page is built around, not just one item in a list.
 const TRUST_MARKS = [
+  { icon: MapPin, label: 'Especialistas en la zona' },
   { icon: ShieldCheck, label: 'Sin costo, sin compromiso' },
   { icon: Clock, label: 'Respuesta en menos de 48 horas' },
-  { icon: MapPin, label: 'Especialistas en la zona' },
 ];
 
 const EXPERTISE_CARDS = [
@@ -64,26 +60,12 @@ export function WizardHero({ onStart }: Props) {
           ¿Cuánto vale hoy tu casa?
         </h1>
         <p className="mx-auto max-w-sm text-base leading-relaxed text-neutral-600 md:text-lg">
-          Una primera referencia en minutos, y un Análisis Comparativo de Mercado hecho a la medida por un asesor que
-          conoce tu fraccionamiento.
+          Somos expertos en Zona Esmeralda: una primera referencia en minutos y un Análisis Comparativo de Mercado
+          hecho a la medida por tu asesor personal.
         </p>
       </div>
 
       <CtaButton onStart={onStart} />
-
-      {/* What you actually get, spelled out for anyone still reading before
-          scrolling back up to the button above -- this page should read as
-          an offer of value, not the minimum copy needed to get a click. */}
-      <div className="mx-auto flex max-w-xs flex-col gap-2.5 text-left">
-        {VALUE_ITEMS.map(({ icon: Icon, label }) => (
-          <div key={label} className="flex items-start gap-2.5">
-            <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-emerald-deep/10">
-              <Icon className="h-3 w-3 text-emerald-deep" />
-            </div>
-            <p className="text-sm font-medium leading-snug text-neutral-700">{label}</p>
-          </div>
-        ))}
-      </div>
 
       <div className="facet-rule mx-auto max-w-xs" />
 
@@ -94,14 +76,6 @@ export function WizardHero({ onStart }: Props) {
             <p className="text-left text-[13px] font-medium leading-snug text-neutral-600">{label}</p>
           </div>
         ))}
-      </div>
-
-      <div className="inline-flex items-center gap-2 rounded-pill border border-neutral-200 bg-parchment-card px-4 py-2 shadow-sm">
-        <span className="h-1.5 w-1.5 rounded-full bg-brand-500" />
-        <p className="text-[12px] font-medium text-neutral-600">
-          <span className="font-mono font-semibold text-neutral-900">+10</span> propiedades activas en Zona
-          Esmeralda · asesores dedicados a tu fraccionamiento
-        </p>
       </div>
 
       <TeamSection />
