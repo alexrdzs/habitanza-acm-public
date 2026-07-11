@@ -28,3 +28,10 @@ export function whatsappLink(advisor: Advisor, message: string): string {
   const withCountryCode = digits.startsWith('52') ? digits : `52${digits}`;
   return `https://wa.me/${withCountryCode}?text=${encodeURIComponent(message)}`;
 }
+
+// Shared by every WhatsApp CTA on the reveal screen (the inline button next
+// to the firma block and the sticky bottom bar) so the pre-filled message
+// can't drift between the two.
+export function buildWhatsAppMessage(advisor: Advisor, tipoPropiedad: string, colonia: string): string {
+  return `Hola ${advisor.name.split(' ')[0]}, acabo de recibir una estimación preliminar para mi ${tipoPropiedad.toLowerCase()} en ${colonia} y me gustaría platicar sobre mi Análisis Comparativo de Mercado.`;
+}

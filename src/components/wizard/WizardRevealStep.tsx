@@ -1,11 +1,12 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { MessageCircle } from 'lucide-react';
 import { PreliminaryPricingBar } from './PreliminaryPricingBar';
 import { ComparablesMap } from './ComparablesMap';
 import { ComparableListingCards } from './ComparableListingCards';
 import { MethodologySection } from './MethodologySection';
 import { AdvisorCTA } from './AdvisorCTA';
 import { AdvisorAvatar } from './AdvisorAvatar';
-import { ADVISORS } from '@shared/advisors';
+import { ADVISORS, whatsappLink, buildWhatsAppMessage } from '@shared/advisors';
 import { COMPARABLE_LISTINGS } from '@shared/comparableListings';
 import type { PreliminaryEstimate } from '@shared/pricing';
 import { formatCurrency } from '../../lib/utils';
@@ -25,13 +26,33 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
   const advisor = useMemo(() => ADVISORS[Math.floor(Math.random() * ADVISORS.length)], []);
   const advisorFirstName = advisor.name.split(' ')[0];
   const comps = COMPARABLE_LISTINGS[colonia] ?? [];
+  const message = buildWhatsAppMessage(advisor, tipoPropiedad, colonia);
+
+  // The sticky bottom CTA only makes sense once the inline one next to the
+  // firma has scrolled out of view -- otherwise there'd be two identical
+  // WhatsApp buttons on screen at once.
+  const heroCardRef = useRef<HTMLDivElement>(null);
+  const [isStickyBarVisible, setIsStickyBarVisible] = useState(false);
+
+  useEffect(() => {
+    const el = heroCardRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) => setIsStickyBarVisible(!entry.isIntersecting), {
+      threshold: 0,
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 space-y-5 pb-20 duration-700">
       {/* The one screen staged like a certificate being issued (dark ink
           ground, brass trim) rather than a form -- deliberately not the
           final ACM, but the one moment meant to feel like a payoff. */}
-      <div className="relative overflow-hidden rounded-card-lg bg-gradient-to-b from-ink-soft to-ink p-px shadow-[0_24px_48px_-24px_rgba(16,32,26,0.55)]">
+      <div
+        ref={heroCardRef}
+        className="relative overflow-hidden rounded-card-lg bg-gradient-to-b from-ink-soft to-ink p-px shadow-[0_24px_48px_-24px_rgba(16,32,26,0.55)]"
+      >
         <div className="relative overflow-hidden rounded-[calc(var(--radius-card-lg)-1px)] p-6 md:p-10">
           <div className="pointer-events-none absolute -left-10 -top-16 h-56 w-56 rounded-full bg-emerald-glow/25 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-20 -right-10 h-64 w-64 rounded-full bg-brass/20 blur-3xl" />
@@ -57,17 +78,28 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
             <PreliminaryPricingBar estimate={estimate} />
           </div>
 
-          <div className="relative mt-6 flex items-center gap-3 border-t border-white/10 pt-5">
-            <AdvisorAvatar
-              advisor={advisor}
-              className="h-11 w-11 border-2 border-white/25 bg-white/10"
-              iconClassName="h-5 w-5 text-white/70"
-            />
-            <div>
-              <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-neutral-500">Firma</p>
-              <p className="text-sm font-bold text-white">{advisor.name}</p>
-              <p className="text-xs text-neutral-400">{advisor.roleLabel}</p>
+          <div className="relative mt-6 flex flex-col gap-4 border-t border-white/10 pt-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3">
+              <AdvisorAvatar
+                advisor={advisor}
+                className="h-11 w-11 border-2 border-white/25 bg-white/10"
+                iconClassName="h-5 w-5 text-white/70"
+              />
+              <div>
+                <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-neutral-500">Firma</p>
+                <p className="text-sm font-bold text-white">{advisor.name}</p>
+                <p className="text-xs text-neutral-400">{advisor.roleLabel}</p>
+              </div>
             </div>
+            <a
+              href={whatsappLink(advisor, message)}
+              target="_blank"
+              rel="noreferrer"
+              className="flex flex-shrink-0 items-center justify-center gap-1.5 rounded-pill bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-transform active:scale-95 hover:bg-brand-600"
+            >
+              <MessageCircle className="h-4 w-4" />
+              Hablemos ahora
+            </a>
           </div>
         </div>
       </div>
@@ -101,7 +133,7 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
 
       <MethodologySection />
 
-      <AdvisorCTA advisor={advisor} tipoPropiedad={tipoPropiedad} colonia={colonia} />
+      <AdvisorCTA advisor={advisor} tipoPropiedad={tipoPropiedad} colonia={colonia} visible={isStickyBarVisible} />
     </div>
   );
 }
