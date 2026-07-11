@@ -75,18 +75,22 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
           <h3 className="relative mt-2 text-lg font-bold leading-snug text-white md:text-xl">
             Tu propiedad estaría en un rango de {formatCurrency(estimate.low)} a {formatCurrency(estimate.high)}
           </h3>
+          <p className="relative mt-2 text-xs text-neutral-400 md:text-sm">
+            Es un promedio de {colonia} — tu Análisis Comparativo de Mercado lo ajusta a las características
+            exactas de tu propiedad.
+          </p>
           <PreliminaryPricingBar estimate={estimate} />
 
           <p className="relative mt-4 border-t border-white/10 pt-6 text-sm leading-relaxed text-neutral-300 md:text-base">
-            En los próximos días yo estaré trabajando en un estimado de valor con comparables y te lo enviaré
-            personalmente. Gracias por tu confianza.
+            En los próximos días prepararé tu Análisis Comparativo de Mercado: comparables homologados a tu
+            propiedad y una estrategia de precio para vender mejor. Gracias por tu confianza.
           </p>
 
-          <div className="relative mt-6 flex items-center justify-between gap-3 border-t border-white/10 pt-6">
-            <div className="flex min-w-0 flex-1 items-center gap-3">
+          <div className="relative mt-6 flex items-center justify-between gap-2 border-t border-white/10 pt-6">
+            <div className="flex min-w-0 flex-1 items-center gap-2.5">
               <AdvisorAvatar
                 advisor={advisor}
-                className="h-12 w-12 flex-shrink-0 border-2 border-white/25 bg-white/10"
+                className="h-11 w-11 flex-shrink-0 border-2 border-white/25 bg-white/10"
                 iconClassName="h-5 w-5 text-white/70"
               />
               <div className="min-w-0">
@@ -99,7 +103,7 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
               href={whatsappLink(advisor, message)}
               target="_blank"
               rel="noreferrer"
-              className="flex flex-shrink-0 items-center gap-1.5 rounded-pill bg-brand-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm transition-transform active:scale-95 hover:bg-brand-600"
+              className="flex flex-shrink-0 items-center gap-1.5 rounded-pill bg-brand-500 px-3 py-2.5 text-sm font-semibold text-white shadow-sm transition-transform active:scale-95 hover:bg-brand-600"
             >
               <MessageCircle className="h-4 w-4" />
               Chatear
