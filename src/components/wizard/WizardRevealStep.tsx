@@ -60,17 +60,17 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
           ground, brass trim) -- kept short and focused on just the price so
           it reads as a quick, dramatic beat instead of a wall of text. */}
       <div className="relative overflow-hidden rounded-card-lg bg-gradient-to-b from-ink-soft to-ink p-px shadow-[0_24px_48px_-24px_rgba(16,32,26,0.55)]">
-        <div className="relative overflow-hidden rounded-[calc(var(--radius-card-lg)-1px)] p-6 md:p-10">
+        <div className="relative overflow-hidden rounded-[calc(var(--radius-card-lg)-1px)] p-7 pb-9 md:p-10">
           <div className="pointer-events-none absolute -left-10 -top-16 h-56 w-56 rounded-full bg-emerald-glow/25 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-20 -right-10 h-64 w-64 rounded-full bg-brass/20 blur-3xl" />
 
           <p className="relative font-mono text-[10px] uppercase tracking-[0.15em] text-brass-soft">
             Rango de precio
           </p>
-          <h3 className="relative mt-1 text-lg font-bold text-white md:text-xl">
+          <h3 className="relative mt-2 text-lg font-bold leading-snug text-white md:text-xl">
             Tu propiedad estaría en un rango de {formatCurrency(estimate.low)} a {formatCurrency(estimate.high)}
           </h3>
-          <p className="relative mt-1 text-xs text-neutral-400 md:text-sm">
+          <p className="relative mt-2 text-xs text-neutral-400 md:text-sm">
             Con base en nuestra experiencia y tendencias del mercado.
           </p>
           <PreliminaryPricingBar estimate={estimate} />

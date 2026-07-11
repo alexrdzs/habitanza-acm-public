@@ -15,7 +15,7 @@ interface Props {
 // dark-on-light treatment it'd need on a parchment card.
 export function PreliminaryPricingBar({ estimate }: Props) {
   return (
-    <div className="pt-20 pb-2">
+    <div className="pt-20 pb-1">
       <div className="relative mx-1">
         <div
           className="h-2 rounded-full shadow-inner"
