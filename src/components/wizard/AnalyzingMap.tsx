@@ -19,39 +19,45 @@ function MapFallback() {
   );
 }
 
-// Starts zoomed out over the whole Zona Esmeralda showing every colonia,
-// then narrows into the visitor's specific colonia and its real comps once
-// `narrow` flips true -- a visual for "pulling many references, then
-// focusing on yours" rather than an abstract loading animation.
+const OVERVIEW_ZOOM = 11;
+
+// Starts zoomed out centered on the visitor's own colonia (with the rest of
+// the zone's colonias scattered around it as dots for context), then
+// narrows into that colonia's real comps once `narrow` flips true -- a
+// visual for "pulling many references, then focusing on yours" rather than
+// an abstract loading animation.
 export function AnalyzingMap({ colonia, narrow }: Props) {
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string | undefined;
   const { isLoaded } = useLoadScript({ googleMapsApiKey: apiKey || '' });
   const mapRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.Marker[]>([]);
+  const overviewCenter = NEIGHBORHOOD_COORDINATES[colonia] ?? ZONA_ESMERALDA_CENTER;
 
-  const showOverview = useCallback((map: google.maps.Map) => {
-    markersRef.current.forEach((m) => m.setMap(null));
-    markersRef.current = [];
-    Object.values(NEIGHBORHOOD_COORDINATES).forEach((coord) => {
-      markersRef.current.push(
-        new google.maps.Marker({
-          position: coord,
-          map,
-          icon: {
-            path: google.maps.SymbolPath.CIRCLE,
-            scale: 5,
-            fillColor: '#9CA89C',
-            fillOpacity: 1,
-            strokeColor: '#ffffff',
-            strokeWeight: 1.5,
-          },
-        })
-      );
-    });
-    const bounds = new google.maps.LatLngBounds();
-    Object.values(NEIGHBORHOOD_COORDINATES).forEach((coord) => bounds.extend(coord));
-    map.fitBounds(bounds, 20);
-  }, []);
+  const showOverview = useCallback(
+    (map: google.maps.Map) => {
+      markersRef.current.forEach((m) => m.setMap(null));
+      markersRef.current = [];
+      Object.values(NEIGHBORHOOD_COORDINATES).forEach((coord) => {
+        markersRef.current.push(
+          new google.maps.Marker({
+            position: coord,
+            map,
+            icon: {
+              path: google.maps.SymbolPath.CIRCLE,
+              scale: 5,
+              fillColor: '#9CA89C',
+              fillOpacity: 1,
+              strokeColor: '#ffffff',
+              strokeWeight: 1.5,
+            },
+          })
+        );
+      });
+      map.setCenter(overviewCenter);
+      map.setZoom(OVERVIEW_ZOOM);
+    },
+    [overviewCenter]
+  );
 
   const narrowToColonia = useCallback(
     (map: google.maps.Map) => {
@@ -108,8 +114,8 @@ export function AnalyzingMap({ colonia, narrow }: Props) {
       {isLoaded ? (
         <GoogleMap
           mapContainerStyle={{ width: '100%', height: '100%' }}
-          center={ZONA_ESMERALDA_CENTER}
-          zoom={12}
+          center={overviewCenter}
+          zoom={OVERVIEW_ZOOM}
           onLoad={onLoad}
           options={{ styles: MAP_STYLES, disableDefaultUI: true, gestureHandling: 'none', clickableIcons: false }}
         />

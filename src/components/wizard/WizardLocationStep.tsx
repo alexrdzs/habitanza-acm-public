@@ -7,7 +7,6 @@ import {
 } from '@shared/validation';
 import { COMPARABLE_LISTINGS } from '@shared/comparableListings';
 import { WizardShell } from './WizardShell';
-import { NeighborhoodMap } from './NeighborhoodMap';
 import { inputClass, labelClass } from './formStyles';
 import { cn } from '../../lib/utils';
 
@@ -35,10 +34,10 @@ function ColoniaCard({ colonia, active, onSelect }: ColoniaCardProps) {
   const [imgFailed, setImgFailed] = useState(false);
 
   return (
-    <button type="button" onClick={onSelect} className="flex w-[118px] flex-shrink-0 snap-start flex-col gap-1.5 text-left">
+    <button type="button" onClick={onSelect} className="flex w-full flex-col gap-1.5 text-left">
       <div
         className={cn(
-          'relative aspect-square w-full overflow-hidden rounded-2xl border-2 bg-neutral-100 transition-all',
+          'relative aspect-[4/3] w-full overflow-hidden rounded-2xl border-2 bg-neutral-100 transition-all',
           active ? 'border-brand-500' : 'border-transparent'
         )}
       >
@@ -92,39 +91,28 @@ export function WizardLocationStep(props: Props) {
       onNext={props.onContinue}
       nextDisabled={!canContinue}
     >
-      <div className="flex flex-col gap-5">
-        <NeighborhoodMap colonia={mapLabel} />
-
+      <div className="flex flex-col gap-4">
         <div>
           <label className={labelClass}>Fraccionamiento / colonia *</label>
-          <div className="-mx-1 flex snap-x gap-2.5 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="grid grid-cols-2 gap-3">
             {ZONA_ESMERALDA_COLONIAS.map((c) => (
               <ColoniaCard key={c} colonia={c} active={props.colonia === c} onSelect={() => props.setColonia(c)} />
             ))}
-
-            <button
-              type="button"
-              onClick={() => setShowMore((v) => !v)}
-              className="flex w-[118px] flex-shrink-0 snap-start flex-col gap-1.5 text-left"
-            >
-              <div
-                className={cn(
-                  'relative flex aspect-square w-full flex-col items-center justify-center gap-1.5 rounded-2xl border-2 border-dashed transition-all',
-                  showMore
-                    ? 'border-brand-500 bg-brand-500/5 text-brand-600'
-                    : 'border-neutral-300 text-neutral-400 hover:border-neutral-400 hover:bg-neutral-50'
-                )}
-              >
-                {isExtendedSelection && !showMore && (
-                  <span className="absolute right-1.5 top-1.5 h-2.5 w-2.5 rounded-full bg-brand-500" />
-                )}
-                {showMore ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
-              </div>
-              <p className="line-clamp-2 text-xs font-semibold leading-tight text-neutral-800">
-                {!showMore && isExtendedSelection ? mapLabel || 'Ver más' : showMore ? 'Ver menos' : 'Ver más'}
-              </p>
-            </button>
           </div>
+
+          <button
+            type="button"
+            onClick={() => setShowMore((v) => !v)}
+            className={cn(
+              'mt-3 flex w-full items-center justify-center gap-2 rounded-input border-2 border-dashed px-4 py-3 text-sm font-semibold transition-all',
+              showMore || isExtendedSelection
+                ? 'border-brand-500 bg-brand-500/5 text-brand-600'
+                : 'border-neutral-300 text-neutral-500 hover:border-neutral-400 hover:bg-neutral-50'
+            )}
+          >
+            {showMore ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            {!showMore && isExtendedSelection ? mapLabel || 'Ver más opciones' : showMore ? 'Ver menos' : 'Ver más opciones'}
+          </button>
         </div>
 
         {showMore && (

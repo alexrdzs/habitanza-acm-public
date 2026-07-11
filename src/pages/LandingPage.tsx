@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Logo } from '../components/Logo';
 import { WizardHero } from '../components/wizard/WizardHero';
 import { WizardLocationStep } from '../components/wizard/WizardLocationStep';
@@ -44,6 +44,13 @@ export function LandingPage() {
   const [estimate, setEstimate] = useState<PreliminaryEstimate | null>(null);
 
   const resolvedColonia = colonia === OTHER_COLONIA_VALUE ? coloniaOtra : colonia;
+
+  // Each step is its own "page" -- if the visitor scrolled down before
+  // continuing, the next step should still start from the top instead of
+  // wherever the previous scroll position happened to land.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [step]);
 
   async function handleContactSubmit() {
     setErrorMessage('');
