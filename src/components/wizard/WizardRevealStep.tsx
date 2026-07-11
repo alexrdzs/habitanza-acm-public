@@ -76,14 +76,13 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
             Tu propiedad estaría en un rango de {formatCurrency(estimate.low)} a {formatCurrency(estimate.high)}
           </h3>
           <p className="relative mt-2 text-xs text-neutral-400 md:text-sm">
-            Es un promedio de {colonia} — tu Análisis Comparativo de Mercado lo ajusta a las características
-            exactas de tu propiedad.
+            Es un promedio de {colonia} — platicando contigo, te doy el número exacto para tu propiedad.
           </p>
           <PreliminaryPricingBar estimate={estimate} />
 
           <p className="relative mt-4 border-t border-white/10 pt-6 text-sm leading-relaxed text-neutral-300 md:text-base">
-            En los próximos días prepararé tu Análisis Comparativo de Mercado: comparables homologados a tu
-            propiedad y una estrategia de precio para vender mejor. Gracias por tu confianza.
+            Cuando platiquemos, te armo un cálculo personalizado de tu propiedad y la estrategia exacta para
+            venderla mejor y más rápido. Escríbeme y lo empezamos hoy mismo.
           </p>
 
           <div className="relative mt-6 flex items-center justify-between gap-2 border-t border-white/10 pt-6">
