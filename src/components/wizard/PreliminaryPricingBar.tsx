@@ -1,4 +1,5 @@
 import { formatCurrency } from '../../lib/utils';
+import { AnimatedCurrency } from './AnimatedCurrency';
 import type { PreliminaryEstimate } from '@shared/pricing';
 
 interface Props {
@@ -34,7 +35,7 @@ export function PreliminaryPricingBar({ estimate }: Props) {
           <div className="flex flex-col items-center">
             <div className="relative mb-1.5 flex flex-col items-center whitespace-nowrap rounded-lg bg-parchment-card px-3 py-1.5 shadow-lg ring-1 ring-brass/60">
               <span className="font-mono text-sm font-semibold tabular-nums text-ink">
-                {formatCurrency(estimate.mid)}
+                <AnimatedCurrency value={estimate.mid} durationMs={1050} delayMs={300} />
               </span>
               <span className="text-[8px] font-bold uppercase tracking-wider text-emerald-deep">Estimado</span>
               <div className="absolute -bottom-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 bg-parchment-card" />
