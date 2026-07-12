@@ -9,6 +9,7 @@ import { AdvisorCTA } from './AdvisorCTA';
 import { AdvisorAvatar } from './AdvisorAvatar';
 import { ADVISORS, whatsappLink, buildWhatsAppMessage } from '@shared/advisors';
 import { COMPARABLE_LISTINGS } from '@shared/comparableListings';
+import { COPY } from '@shared/copy';
 import type { PreliminaryEstimate } from '@shared/pricing';
 import { formatCurrency } from '../../lib/utils';
 
@@ -53,12 +54,8 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
           reads as the screen's title), left-aligned once there's enough
           width for it to sit naturally beside the card below. */}
       <div className="text-center md:text-left">
-        <h2 className="text-xl font-bold leading-snug text-neutral-900 md:text-2xl">
-          Muchas gracias, {firstName}.
-        </h2>
-        <p className="mt-1 text-base text-neutral-500">
-          Con esta información podemos darte un rango aproximado.
-        </p>
+        <h2 className="text-xl font-bold leading-snug text-neutral-900 md:text-2xl">{COPY.reveal.greeting(firstName)}</h2>
+        <p className="mt-1 text-base text-neutral-500">{COPY.reveal.subtext}</p>
       </div>
 
       {/* The one card staged like a certificate being issued (dark ink
@@ -88,27 +85,23 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
           />
 
           <p className="relative font-mono text-[10px] uppercase tracking-[0.15em] text-brass-soft">
-            Rango de precio
+            {COPY.reveal.rangoEyebrow}
           </p>
           <h3 className="relative mt-2 text-lg font-bold leading-snug tabular-nums text-white md:text-xl">
-            Tu propiedad estaría en un rango de{' '}
+            {COPY.reveal.headlinePrefix}{' '}
             <span className="animate-in fade-in slide-in-from-bottom-1 fill-mode-both duration-500 delay-100">
               {formatCurrency(estimate.low)}
             </span>{' '}
-            a{' '}
+            {COPY.reveal.headlineJoiner}{' '}
             <span className="animate-in fade-in slide-in-from-bottom-1 fill-mode-both duration-500 delay-200">
               {formatCurrency(estimate.high)}
             </span>
           </h3>
-          <p className="relative mt-2 text-xs text-neutral-400 md:text-sm">
-            Es un promedio de {colonia} basado en datos históricos y nuestra experiencia en la zona.
-          </p>
+          <p className="relative mt-2 text-xs text-neutral-400 md:text-sm">{COPY.reveal.caption(colonia)}</p>
           <PreliminaryPricingBar estimate={estimate} />
 
           <p className="relative mt-4 border-t border-white/10 pt-6 text-sm leading-relaxed text-neutral-300 md:text-base">
-            {advisorFirstName} es tu {advisor.gender === 'f' ? 'asesora experta' : 'asesor experto'} en la zona y muy
-            pronto se pondrá en contacto contigo para resolver cualquier duda o agendar una cita. Así podrán
-            platicar en persona y definir el valor ideal para tu propiedad.
+            {COPY.reveal.advisorParagraph(advisorFirstName, advisor.gender)}
           </p>
 
           {/* Centered rather than left-aligned -- on mobile this reads as a
@@ -130,7 +123,7 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
               className="mt-4 flex w-full items-center justify-center gap-2 rounded-pill bg-brand-500 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-transform active:scale-95 hover:bg-brand-600"
             >
               <MessageCircle className="h-4 w-4" />
-              Chatear ahora
+              {COPY.reveal.ctaLabel(advisorFirstName)}
             </a>
           </div>
         </div>
@@ -138,18 +131,18 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
 
       <div className="space-y-5 rounded-card-lg border border-neutral-200/70 bg-parchment-card/80 p-6 backdrop-blur-md md:p-8">
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-wider text-brass">Mercado de la zona</p>
+          <p className="text-[11px] font-bold uppercase tracking-wider text-brass">{COPY.reveal.mercadoEyebrow}</p>
           <h3 className="mt-1 text-base font-bold text-neutral-900">
-            {hasComps ? `Referencias reales en ${colonia}` : `Armando referencias para ${colonia}`}
+            {hasComps ? COPY.reveal.mercadoTitleWithComps(colonia) : COPY.reveal.mercadoTitleNoComps(colonia)}
           </h3>
         </div>
 
         <div className="rounded-xl border border-dashed border-neutral-300 bg-neutral-50 px-4 py-3.5">
           <p className="text-[10px] font-bold uppercase tracking-wide text-neutral-400">
-            Nota sobre la zona [placeholder]
+            {COPY.reveal.notaPlaceholderTag}
           </p>
           <p className="mt-1 text-sm italic leading-relaxed text-neutral-500">
-            Espacio reservado para una nota específica sobre {colonia} — texto por definir.
+            {COPY.reveal.notaPlaceholderBody(colonia)}
           </p>
         </div>
 
@@ -163,10 +156,7 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
             </div>
           </div>
         ) : (
-          <p className="text-sm leading-relaxed text-neutral-500">
-            Todavía no tenemos comparables específicos de {colonia} en nuestro sistema — tu asesor los incluirá al
-            preparar tu Análisis Comparativo de Mercado completo.
-          </p>
+          <p className="text-sm leading-relaxed text-neutral-500">{COPY.reveal.noCompsBody(colonia)}</p>
         )}
       </div>
 

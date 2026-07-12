@@ -1,5 +1,6 @@
 import { PUBLIC_PROPERTY_TYPES, AMENITIES } from '@shared/validation';
 import type { PropertyCondition, Amenity } from '@shared/validation';
+import { COPY } from '@shared/copy';
 import { WizardShell } from './WizardShell';
 import { ConditionQuickPicker } from './ConditionQuickPicker';
 import { SegmentedControl } from './SegmentedControl';
@@ -54,8 +55,8 @@ export function WizardBasicsStep(props: Props) {
 
   return (
     <WizardShell
-      title="Cuéntanos de tu propiedad"
-      description="Esta información sirve para usar comparables equivalentes."
+      title={COPY.basics.title}
+      description={COPY.basics.description}
       step={{ current: 2, total: 3 }}
       onBack={props.onBack}
       onNext={props.onContinue}
@@ -63,7 +64,7 @@ export function WizardBasicsStep(props: Props) {
     >
       <div className="grid grid-cols-2 gap-3">
         <div className={cn(boxClass, 'col-span-2')}>
-          <label className={labelClass}>Tipo de propiedad *</label>
+          <label className={labelClass}>{COPY.basics.fieldLabels.tipoPropiedad}</label>
           <SegmentedControl
             options={PUBLIC_PROPERTY_TYPES}
             value={props.tipoPropiedad}
@@ -73,12 +74,14 @@ export function WizardBasicsStep(props: Props) {
 
         {!isTerreno && (
           <div className={boxClass}>
-            <label className={labelClass}>m² construcción *</label>
+            <label className={labelClass}>{COPY.basics.fieldLabels.m2Construccion}</label>
             <ThousandsInput value={props.m2Construccion} onChange={props.setM2Construccion} placeholder="220" />
           </div>
         )}
         <div className={cn(boxClass, isTerreno && 'col-span-2')}>
-          <label className={labelClass}>m² terreno {isTerreno ? '*' : '(opcional)'}</label>
+          <label className={labelClass}>
+            {isTerreno ? COPY.basics.fieldLabels.m2TerrenoRequired : COPY.basics.fieldLabels.m2TerrenoOptional}
+          </label>
           <ThousandsInput value={props.m2Terreno} onChange={props.setM2Terreno} placeholder="350" />
         </div>
 
@@ -86,7 +89,7 @@ export function WizardBasicsStep(props: Props) {
           <>
             <div className={cn(boxClass, 'col-span-2 space-y-4')}>
               <div>
-                <label className={labelClass}>Recámaras</label>
+                <label className={labelClass}>{COPY.basics.fieldLabels.recamaras}</label>
                 <SegmentedControl
                   options={ROOM_COUNT_OPTIONS}
                   value={props.recamaras}
@@ -95,7 +98,7 @@ export function WizardBasicsStep(props: Props) {
                 />
               </div>
               <div>
-                <label className={labelClass}>Baños</label>
+                <label className={labelClass}>{COPY.basics.fieldLabels.banos}</label>
                 <SegmentedControl
                   options={ROOM_COUNT_OPTIONS}
                   value={props.banos}
@@ -107,7 +110,7 @@ export function WizardBasicsStep(props: Props) {
 
             <div className={cn(boxClass, 'col-span-2')}>
               <ConditionQuickPicker
-                label="Estado general de la propiedad"
+                label={COPY.basics.fieldLabels.condicion}
                 value={props.condicion}
                 onChange={props.setCondicion}
               />
@@ -116,7 +119,7 @@ export function WizardBasicsStep(props: Props) {
         )}
 
         <div className={cn(boxClass, 'col-span-2')}>
-          <label className={labelClass}>Características especiales (opcional)</label>
+          <label className={labelClass}>{COPY.basics.fieldLabels.caracteristicas}</label>
           <div className="grid grid-cols-2 gap-2">
             {AMENITIES.map((a) => {
               const active = props.amenidades.includes(a);

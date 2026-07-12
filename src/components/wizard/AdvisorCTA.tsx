@@ -1,5 +1,6 @@
 import { MessageCircle } from 'lucide-react';
 import { whatsappLink, buildWhatsAppMessage, type Advisor } from '@shared/advisors';
+import { COPY } from '@shared/copy';
 import { AdvisorAvatar } from './AdvisorAvatar';
 import { cn } from '../../lib/utils';
 
@@ -42,7 +43,7 @@ export function AdvisorCTA({ advisor, tipoPropiedad, colonia, visible }: Props) 
           className="flex flex-shrink-0 items-center gap-1 rounded-pill bg-brand-500 px-3 py-2.5 text-sm font-semibold text-white shadow-sm transition-transform active:scale-95 hover:bg-brand-600"
         >
           <MessageCircle className="h-4 w-4" />
-          Chatear ahora
+          {COPY.advisorCta.ctaLabel}
         </a>
       </div>
     </div>

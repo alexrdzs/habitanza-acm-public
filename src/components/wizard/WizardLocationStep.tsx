@@ -6,6 +6,7 @@ import {
   OTHER_COLONIA_VALUE,
 } from '@shared/validation';
 import { COMPARABLE_LISTINGS } from '@shared/comparableListings';
+import { COPY } from '@shared/copy';
 import { WizardShell } from './WizardShell';
 import { inputClass, labelClass } from './formStyles';
 import { cn } from '../../lib/utils';
@@ -146,14 +147,14 @@ export function WizardLocationStep(props: Props) {
 
   return (
     <WizardShell
-      title="¿Dónde está tu propiedad?"
-      description="Sabemos que cada zona es diferente por lo que ajustamos el cálculo para cada uno."
+      title={COPY.location.title}
+      description={COPY.location.description}
       step={{ current: 1, total: 3 }}
       onBack={props.onBack}
     >
       <div className="flex flex-col gap-4">
         <div>
-          <label className={labelClass}>Fraccionamiento *</label>
+          <label className={labelClass}>{COPY.location.fieldLabel}</label>
           <div className="grid grid-cols-2 gap-3">
             {ZONA_ESMERALDA_COLONIAS.map((c) => (
               <ColoniaCard
@@ -197,10 +198,10 @@ export function WizardLocationStep(props: Props) {
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-sm font-bold leading-tight text-neutral-900">
-                {!showMore && isExtendedSelection ? mapLabel || 'Ver más opciones' : 'Ver más opciones'}
+                {!showMore && isExtendedSelection ? mapLabel || COPY.location.moreOptionsTitle : COPY.location.moreOptionsTitle}
               </p>
               <p className="text-xs text-neutral-500">
-                {ZONA_ESMERALDA_COLONIAS_EXTENDED.length} fraccionamientos más cerca de ti
+                {COPY.location.moreOptionsSubtitle(ZONA_ESMERALDA_COLONIAS_EXTENDED.length)}
               </p>
             </div>
             {showMore ? (
@@ -213,7 +214,7 @@ export function WizardLocationStep(props: Props) {
 
         {showMore && (
           <div className="animate-in fade-in slide-in-from-top-2 flex flex-col gap-3 rounded-2xl border border-neutral-200/70 bg-parchment-card/80 p-4 backdrop-blur-md duration-300">
-            <p className={labelClass}>Otros fraccionamientos cercanos</p>
+            <p className={labelClass}>{COPY.location.expandedPanelLabel}</p>
             <div className="flex flex-col gap-2">
               {ZONA_ESMERALDA_COLONIAS_EXTENDED.map((c) => (
                 <ColoniaPill
@@ -225,7 +226,7 @@ export function WizardLocationStep(props: Props) {
                 />
               ))}
               <ColoniaPill
-                label="Otro fraccionamiento"
+                label={COPY.location.otherLabel}
                 active={props.colonia === OTHER_COLONIA_VALUE}
                 disabled={isAdvancing}
                 dashed
@@ -236,7 +237,7 @@ export function WizardLocationStep(props: Props) {
             {props.colonia === OTHER_COLONIA_VALUE && (
               <div className="animate-in fade-in slide-in-from-top-1 flex flex-col gap-3 duration-200">
                 <div>
-                  <label className={labelClass}>¿Cuál?</label>
+                  <label className={labelClass}>{COPY.location.otherInputLabel}</label>
                   <input
                     className={inputClass}
                     value={props.coloniaOtra}
@@ -251,7 +252,7 @@ export function WizardLocationStep(props: Props) {
                   disabled={!canContinueOtra}
                   className="rounded-pill bg-brand-500 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-brand-600"
                 >
-                  Continuar
+                  {COPY.location.continueLabel}
                 </button>
               </div>
             )}

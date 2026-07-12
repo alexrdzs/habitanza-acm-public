@@ -1,5 +1,6 @@
 import { useRef, type FormEvent } from 'react';
 import { REFERRAL_SOURCES } from '@shared/validation';
+import { COPY } from '@shared/copy';
 import { WizardShell } from './WizardShell';
 import { inputClass, labelClass } from './formStyles';
 import { cn } from '../../lib/utils';
@@ -33,11 +34,11 @@ export function WizardContactStep(props: Props) {
 
   return (
     <WizardShell
-      title="Cuéntanos de ti"
-      description="Enviaremos este análisis y toda la información."
+      title={COPY.contact.title}
+      description={COPY.contact.description}
       step={{ current: 3, total: 3 }}
       onBack={props.onBack}
-      nextLabel="Ver mi estimación"
+      nextLabel={COPY.contact.nextLabel}
       isNextLoading={props.isSubmitting}
       formRef={formRef}
     >
@@ -55,7 +56,7 @@ export function WizardContactStep(props: Props) {
         />
 
         <div>
-          <label className={labelClass}>Nombre completo *</label>
+          <label className={labelClass}>{COPY.contact.fieldLabels.nombre}</label>
           <input
             className={inputClass}
             value={props.nombre}
@@ -66,7 +67,7 @@ export function WizardContactStep(props: Props) {
         </div>
 
         <div>
-          <label className={labelClass}>Teléfono / WhatsApp *</label>
+          <label className={labelClass}>{COPY.contact.fieldLabels.telefono}</label>
           <input
             type="tel"
             inputMode="tel"
@@ -80,13 +81,13 @@ export function WizardContactStep(props: Props) {
         </div>
 
         <div>
-          <label className={labelClass}>¿Cómo nos conociste? (opcional)</label>
+          <label className={labelClass}>{COPY.contact.fieldLabels.comoNosConociste}</label>
           <select
             className={inputClass}
             value={props.comoNosConociste}
             onChange={(e) => props.setComoNosConociste(e.target.value)}
           >
-            <option value="">Seleccionar...</option>
+            <option value="">{COPY.contact.fieldLabels.comoNosConocisteSelectPlaceholder}</option>
             {REFERRAL_SOURCES.map((r) => (
               <option key={r.value} value={r.value}>
                 {r.label}
@@ -99,7 +100,7 @@ export function WizardContactStep(props: Props) {
               value={props.comoNosConocisteOtro}
               onChange={(e) => props.setComoNosConocisteOtro(e.target.value)}
               maxLength={120}
-              placeholder="¿Cómo nos conociste?"
+              placeholder={COPY.contact.fieldLabels.comoNosConocisteOtroPlaceholder}
               autoFocus
             />
           )}
@@ -114,11 +115,11 @@ export function WizardContactStep(props: Props) {
             required
           />
           <span>
-            Acepto el{' '}
+            {COPY.contact.consent.prefix}
             <a href="/aviso-de-privacidad" target="_blank" rel="noreferrer" className="text-brand-600 underline">
-              aviso de privacidad
-            </a>{' '}
-            y autorizo que un asesor de Habitanza me contacte por WhatsApp. *
+              {COPY.contact.consent.linkLabel}
+            </a>
+            {COPY.contact.consent.suffix}
           </span>
         </label>
 

@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { Star, Quote } from 'lucide-react';
 import { TESTIMONIALS, type Testimonial } from '@shared/testimonials';
+import { COPY } from '@shared/copy';
 import { cn } from '../../lib/utils';
 
 function TestimonialCard({ t }: { t: Testimonial }) {
@@ -38,9 +39,9 @@ export function TestimonialsCarousel() {
     <div className="space-y-3">
       <div className="text-center">
         <p className="font-mono text-[10px] font-medium uppercase tracking-[0.15em] text-neutral-400">
-          ¿Qué dicen nuestros clientes?
+          {COPY.testimonials.eyebrow}
         </p>
-        <h3 className="mt-1 text-sm font-bold text-neutral-600">Testimonios de quienes ya trabajaron con nosotros</h3>
+        <h3 className="mt-1 text-sm font-bold text-neutral-600">{COPY.testimonials.title}</h3>
       </div>
 
       <div

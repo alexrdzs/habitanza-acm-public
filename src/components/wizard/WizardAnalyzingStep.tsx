@@ -1,32 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Check } from 'lucide-react';
+import { COPY } from '@shared/copy';
 import { WizardShell } from './WizardShell';
 import { AnalyzingMap } from './AnalyzingMap';
 import { cn } from '../../lib/utils';
 
-interface Stage {
-  label: string;
-  detail: string;
-}
-
-const STAGES: Stage[] = [
-  {
-    label: 'Ubicando tu propiedad',
-    detail: 'Cruzamos tu fraccionamiento con el mapa de la zona para entender el entorno exacto que mueve tu valor.',
-  },
-  {
-    label: 'Revisando nuestro portafolio activo',
-    detail: 'Tenemos inventario real en tu zona — comparamos contra propiedades que existen, no las adivinamos.',
-  },
-  {
-    label: 'Ajustando por el estado de tu propiedad',
-    detail: 'Una casa remodelada no vale lo mismo que una para renovar: lo consideramos desde el primer cálculo.',
-  },
-  {
-    label: 'Preparando tu estimación',
-    detail: 'Tu Análisis Comparativo de Mercado completo lo arma un asesor humano, no un algoritmo genérico.',
-  },
-];
+const STAGES = COPY.analyzing.stages;
 
 const STAGE_DURATION_MS = 950;
 const COMPLETE_HOLD_MS = 850;
@@ -65,7 +44,7 @@ export function WizardAnalyzingStep({ colonia, onDone }: { colonia: string; onDo
         phase === 'exiting' ? '-translate-y-3 opacity-0' : 'translate-y-0 opacity-100'
       )}
     >
-      <WizardShell title="Analizando tu zona" description="Estamos preparando tu primera referencia de valor.">
+      <WizardShell title={COPY.analyzing.title} description={COPY.analyzing.description}>
         <div className="flex flex-col items-center gap-8 py-4">
           {/* A real map, not an abstract loading animation: starts zoomed
               out over the whole zone, then narrows into the visitor's
@@ -90,7 +69,7 @@ export function WizardAnalyzingStep({ colonia, onDone }: { colonia: string; onDo
                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-deep text-white shadow-lg">
                   <Check className="h-7 w-7" strokeWidth={3} />
                 </div>
-                <p className="text-sm font-bold text-neutral-800">Referencia lista</p>
+                <p className="text-sm font-bold text-neutral-800">{COPY.analyzing.completeLabel}</p>
               </div>
             )}
           </div>

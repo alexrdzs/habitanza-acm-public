@@ -8,6 +8,7 @@ import { WizardContactStep } from '../components/wizard/WizardContactStep';
 import { WizardRevealStep } from '../components/wizard/WizardRevealStep';
 import { OTHER_COLONIA_VALUE, normalizePhone, type PropertyCondition, type Amenity } from '@shared/validation';
 import { estimatePreliminaryRange, type PreliminaryEstimate } from '@shared/pricing';
+import { COPY } from '@shared/copy';
 
 type Step = 'hero' | 'location' | 'basics' | 'analyzing' | 'contact' | 'reveal';
 
@@ -194,10 +195,10 @@ export function LandingPage() {
             />
           ) : (
             <div className="animate-in fade-in slide-in-from-bottom-4 space-y-3 rounded-card-lg border border-neutral-200/70 bg-parchment-card/80 p-8 text-center shadow-sm backdrop-blur-md duration-500">
-              <h2 className="text-xl font-bold text-neutral-900">Gracias, {nombre.split(' ')[0]}</h2>
-              <p className="text-neutral-600">
-                Un asesor te contacta por WhatsApp en menos de 48 horas con el valor estimado de tu propiedad.
-              </p>
+              <h2 className="text-xl font-bold text-neutral-900">
+                {COPY.submittedFallback.title(nombre.split(' ')[0])}
+              </h2>
+              <p className="text-neutral-600">{COPY.submittedFallback.body}</p>
             </div>
           ))}
       </main>

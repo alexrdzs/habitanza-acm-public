@@ -1,5 +1,6 @@
 import { Sparkles, CheckCircle2, Hammer } from 'lucide-react';
 import type { PropertyCondition } from '@shared/validation';
+import { COPY } from '@shared/copy';
 import { cn } from '../../lib/utils';
 
 // A 3-choice quick picker for the public wizard (Nueva / Buen estado /
@@ -7,23 +8,13 @@ import { cn } from '../../lib/utils';
 // PropertyCondition strings -- "Necesita renovación" maps to 'Para
 // reformar' so a broker later sees the same familiar value used across
 // the authenticated ACM tool. 'Remodelada' is intentionally not offered
-// here; a quick public form doesn't need that level of nuance.
-const OPTIONS: { label: string; value: PropertyCondition; icon: typeof Sparkles; detail: string; activeClasses: string }[] = [
-  { label: 'Nueva', value: 'Nueva', icon: Sparkles, detail: 'Nunca habitada o recién construida', activeClasses: 'border-sky-400 bg-sky-400' },
-  {
-    label: 'Buen estado',
-    value: 'Buen estado',
-    icon: CheckCircle2,
-    detail: 'Lista para habitar, mantenimiento al día',
-    activeClasses: 'border-brand-500 bg-brand-500',
-  },
-  {
-    label: 'Necesita renovación',
-    value: 'Para reformar',
-    icon: Hammer,
-    detail: 'Requiere trabajo antes de habitarse',
-    activeClasses: 'border-amber-500 bg-amber-500',
-  },
+// here; a quick public form doesn't need that level of nuance. Labels and
+// details come from COPY.basics.conditionOptions; value/icon/color stay
+// here since they're tied to validation and design, not copy.
+const OPTIONS: { value: PropertyCondition; icon: typeof Sparkles; activeClasses: string; copyKey: keyof typeof COPY.basics.conditionOptions }[] = [
+  { value: 'Nueva', icon: Sparkles, activeClasses: 'border-sky-400 bg-sky-400', copyKey: 'nueva' },
+  { value: 'Buen estado', icon: CheckCircle2, activeClasses: 'border-brand-500 bg-brand-500', copyKey: 'buenEstado' },
+  { value: 'Para reformar', icon: Hammer, activeClasses: 'border-amber-500 bg-amber-500', copyKey: 'necesitaRenovacion' },
 ];
 
 interface Props {
@@ -40,6 +31,7 @@ export function ConditionQuickPicker({ value, onChange, label }: Props) {
         {OPTIONS.map((opt) => {
           const isActive = value === opt.value;
           const Icon = opt.icon;
+          const { label, detail } = COPY.basics.conditionOptions[opt.copyKey];
           return (
             <button
               key={opt.value}
@@ -54,9 +46,9 @@ export function ConditionQuickPicker({ value, onChange, label }: Props) {
             >
               <Icon className={cn('h-5 w-5 transition-transform duration-300', isActive ? 'scale-110 text-white' : 'text-neutral-400')} />
               <span className={cn('text-[13px] font-semibold leading-tight', isActive ? 'text-white' : 'text-neutral-500')}>
-                {opt.label}
+                {label}
               </span>
-              {isActive && <span className="text-[10.5px] leading-snug text-white/80">{opt.detail}</span>}
+              {isActive && <span className="text-[10.5px] leading-snug text-white/80">{detail}</span>}
             </button>
           );
         })}
