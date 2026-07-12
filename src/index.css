@@ -139,6 +139,19 @@
   .animate-glow-pulse {
     animation: glow-pulse 5s ease-in-out infinite;
   }
+
+  /* Draws the pricing bar in from the left, like a line being plotted,
+     instead of just fading in flat. transform-origin left keeps the scale
+     anchored at the start of the bar rather than growing from its center. */
+  @keyframes draw-line {
+    from { transform: scaleX(0); opacity: 0; }
+    to { transform: scaleX(1); opacity: 1; }
+  }
+
+  .animate-draw-line {
+    transform-origin: left center;
+    animation: draw-line 800ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,5 +1,4 @@
 import { formatCurrency } from '../../lib/utils';
-import { AnimatedCurrency } from './AnimatedCurrency';
 import type { PreliminaryEstimate } from '@shared/pricing';
 
 interface Props {
@@ -23,19 +22,25 @@ export function PreliminaryPricingBar({ estimate }: Props) {
     <div className="pt-20 pb-14">
 
       <div className="relative mx-1">
+        {/* Draws in from the left instead of just appearing -- the bar
+            reads as being plotted, then the pin lands once it's done. */}
         <div
-          className="h-2 rounded-full shadow-inner"
+          className="h-2 animate-draw-line rounded-full shadow-inner"
           style={{
             background: 'linear-gradient(90deg, var(--color-brass-soft) 0%, var(--color-emerald-glow) 50%, var(--color-brass-soft) 100%)',
           }}
         />
 
-        {/* Estimado pin, pinned at 50% -- true for both formula branches. */}
-        <div className="absolute z-10" style={{ left: '50%', bottom: '8px', transform: 'translateX(-50%)' }}>
+        {/* Estimado pin, pinned at 50% -- true for both formula branches.
+            Lands last, once the line has finished drawing, as the payoff. */}
+        <div
+          className="absolute z-10 animate-in fade-in zoom-in-90 fill-mode-both duration-500 delay-700"
+          style={{ left: '50%', bottom: '8px', transform: 'translateX(-50%)' }}
+        >
           <div className="flex flex-col items-center">
             <div className="relative mb-1.5 flex flex-col items-center whitespace-nowrap rounded-lg bg-parchment-card px-3 py-1.5 shadow-lg ring-1 ring-brass/60">
               <span className="font-mono text-sm font-semibold tabular-nums text-ink">
-                <AnimatedCurrency value={estimate.mid} durationMs={1050} delayMs={300} />
+                {formatCurrency(estimate.mid)}
               </span>
               <span className="text-[8px] font-bold uppercase tracking-wider text-emerald-deep">Estimado</span>
               <div className="absolute -bottom-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 bg-parchment-card" />
@@ -44,8 +49,13 @@ export function PreliminaryPricingBar({ estimate }: Props) {
           </div>
         </div>
 
-        {/* Min / Max ticks below the bar. */}
-        <div className="absolute z-0" style={{ left: '0%', top: '12px' }}>
+        {/* Min / Max ticks below the bar, fading in as the line passes
+            their position -- Mín near the start of the draw, Máx near
+            the end. */}
+        <div
+          className="absolute z-0 animate-in fade-in fill-mode-both duration-400 delay-300"
+          style={{ left: '0%', top: '12px' }}
+        >
           <div className="mx-auto h-2.5 w-0.5 rounded-full bg-white/30" />
           <div className="mt-1.5 flex flex-col whitespace-nowrap">
             <span className="font-mono text-[11px] font-semibold tabular-nums text-neutral-200">
@@ -54,7 +64,10 @@ export function PreliminaryPricingBar({ estimate }: Props) {
             <span className="text-[9px] font-bold uppercase tracking-wider text-neutral-400">Mín</span>
           </div>
         </div>
-        <div className="absolute z-0" style={{ right: '0%', top: '12px' }}>
+        <div
+          className="absolute z-0 animate-in fade-in fill-mode-both duration-400 delay-500"
+          style={{ right: '0%', top: '12px' }}
+        >
           <div className="ml-auto h-2.5 w-0.5 rounded-full bg-white/30" />
           <div className="mt-1.5 flex flex-col items-end whitespace-nowrap">
             <span className="font-mono text-[11px] font-semibold tabular-nums text-neutral-200">

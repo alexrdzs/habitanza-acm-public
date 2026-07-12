@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { MessageCircle } from 'lucide-react';
 import { PreliminaryPricingBar } from './PreliminaryPricingBar';
-import { AnimatedCurrency } from './AnimatedCurrency';
 import { ComparablesMap } from './ComparablesMap';
 import { ComparableListingCards } from './ComparableListingCards';
 import { MethodologySection } from './MethodologySection';
@@ -10,6 +9,7 @@ import { AdvisorAvatar } from './AdvisorAvatar';
 import { ADVISORS, whatsappLink, buildWhatsAppMessage } from '@shared/advisors';
 import { COMPARABLE_LISTINGS } from '@shared/comparableListings';
 import type { PreliminaryEstimate } from '@shared/pricing';
+import { formatCurrency } from '../../lib/utils';
 
 interface Props {
   estimate: PreliminaryEstimate;
@@ -89,8 +89,14 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
             Rango de precio
           </p>
           <h3 className="relative mt-2 text-lg font-bold leading-snug tabular-nums text-white md:text-xl">
-            Tu propiedad estaría en un rango de <AnimatedCurrency value={estimate.low} durationMs={850} /> a{' '}
-            <AnimatedCurrency value={estimate.high} durationMs={950} delayMs={100} />
+            Tu propiedad estaría en un rango de{' '}
+            <span className="animate-in fade-in slide-in-from-bottom-1 fill-mode-both duration-500 delay-100">
+              {formatCurrency(estimate.low)}
+            </span>{' '}
+            a{' '}
+            <span className="animate-in fade-in slide-in-from-bottom-1 fill-mode-both duration-500 delay-200">
+              {formatCurrency(estimate.high)}
+            </span>
           </h3>
           <p className="relative mt-2 text-xs text-neutral-400 md:text-sm">
             Es un promedio de {colonia} — platicando contigo, te doy el número exacto para tu propiedad.
