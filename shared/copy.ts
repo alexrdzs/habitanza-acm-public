@@ -44,13 +44,11 @@ export const COPY = {
     eyebrow: 'Tu equipo en la zona',
     title: 'Tu equipo de profesionales',
     subline: 'Expertos en Zona Esmeralda, Bosque Real, Satélite, Lomas Verdes y sus alrededores.',
-    // A company-wide validation, signed by the Director -- not a personal
-    // aside from Alex, so it's shown with his full name and title, not just
-    // a first name like a casual quote bubble would.
-    endorsement: {
-      tag: 'Validado por Habitanza',
-      quote: 'con más de 15 años de experiencia en Zona Esmeralda, conocemos muy bien el mercado y qué lo hace único.',
-    },
+    // Plain statement about Habitanza as a team -- not a quote or an
+    // endorsement attributed to any one person, so it carries no name,
+    // avatar, or "signed by" framing.
+    experienceStatement:
+      'Más de 15 años de experiencia en Zona Esmeralda — conocemos muy bien el mercado y qué lo hace único.',
     checklist: [
       {
         title: 'Estaremos contigo en todo el proceso',

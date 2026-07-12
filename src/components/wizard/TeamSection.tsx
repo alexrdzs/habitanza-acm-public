@@ -1,13 +1,7 @@
-import { CheckCircle2, BadgeCheck } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 import { TEAM_MEMBERS } from '@shared/team';
 import { COPY } from '@shared/copy';
 import { AdvisorAvatar } from './AdvisorAvatar';
-
-// Alex is the first entry in the team roster (see shared/team.ts), and the
-// endorsement below is his signature as Director on a company-wide
-// statement -- not his personal aside -- so it's shown with his full name
-// and title, not just a first name like a casual quote would be.
-const ALEX = TEAM_MEMBERS[0];
 
 // The full active roster (see shared/team.ts) as a plain photo+name
 // marquee -- no cards, no titles, just faces -- so this reads as "here are
@@ -40,19 +34,7 @@ export function TeamSection() {
         </div>
       </div>
 
-      <div className="flex items-center gap-3 rounded-xl border border-neutral-200/70 bg-white/40 p-3">
-        <AdvisorAvatar advisor={ALEX} className="h-11 w-11 flex-shrink-0 border-2 border-white shadow-sm" iconClassName="h-5 w-5 text-neutral-400" />
-        <div>
-          <p className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide text-emerald-deep">
-            <BadgeCheck className="h-3 w-3" />
-            {COPY.team.endorsement.tag}
-          </p>
-          <p className="text-xs font-bold text-neutral-900">
-            {ALEX.name} · {ALEX.roleLabel}
-          </p>
-          <p className="mt-0.5 text-xs leading-relaxed text-neutral-600">{COPY.team.endorsement.quote}</p>
-        </div>
-      </div>
+      <p className="text-center text-xs font-semibold text-emerald-deep">{COPY.team.experienceStatement}</p>
 
       <ul className="space-y-3 border-t border-neutral-200 pt-4">
         {COPY.team.checklist.map(({ title, detail }) => (
