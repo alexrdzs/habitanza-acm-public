@@ -48,7 +48,7 @@ export const COPY = {
     // endorsement attributed to any one person, so it carries no name,
     // avatar, or "signed by" framing.
     experienceStatement:
-      'Más de 15 años de experiencia en Zona Esmeralda — conocemos muy bien el mercado y qué lo hace único.',
+      'Más de 15 años de experiencia en Zona Esmeralda. Conocemos muy bien el mercado y qué lo hace único.',
     checklist: [
       {
         title: 'Estaremos contigo en todo el proceso',
@@ -71,7 +71,7 @@ export const COPY = {
     steps: [
       {
         title: 'Homologamos tu propiedad',
-        detail: 'Tamaño, condición y ubicación, frente al mercado real de tu zona — no un promedio genérico de internet.',
+        detail: 'Tamaño, condición y ubicación, frente al mercado real de tu zona, no un promedio genérico de internet.',
       },
       {
         title: 'Cruzamos contra portafolio activo',
@@ -91,7 +91,7 @@ export const COPY = {
 
   location: {
     title: '¿Dónde está tu propiedad?',
-    description: 'Cada zona es diferente — ajustamos el cálculo según la tuya.',
+    description: 'Cada zona es diferente, así que ajustamos el cálculo según la tuya.',
     fieldLabel: 'Fraccionamiento *',
     moreOptionsTitle: 'Ver más opciones',
     moreOptionsSubtitle: (count: number) => `${count} fraccionamientos más cerca de ti`,
@@ -150,7 +150,7 @@ export const COPY = {
       },
       {
         label: 'Revisando nuestro portafolio activo',
-        detail: 'Tenemos inventario real en tu zona — comparamos contra propiedades que existen, no las adivinamos.',
+        detail: 'Tenemos inventario real en tu zona: comparamos contra propiedades que existen, no las adivinamos.',
       },
       {
         label: 'Ajustando por el estado de tu propiedad',
@@ -179,9 +179,9 @@ export const COPY = {
     mercadoTitleWithComps: (colonia: string) => `Referencias reales en ${colonia}`,
     mercadoTitleNoComps: (colonia: string) => `Armando referencias para ${colonia}`,
     notaPlaceholderTag: 'Nota sobre la zona [placeholder]',
-    notaPlaceholderBody: (colonia: string) => `Espacio reservado para una nota específica sobre ${colonia} — texto por definir.`,
+    notaPlaceholderBody: (colonia: string) => `Espacio reservado para una nota específica sobre ${colonia}: texto por definir.`,
     noCompsBody: (colonia: string) =>
-      `Todavía no tenemos comparables específicos de ${colonia} en nuestro sistema — tu asesor los incluirá al ` +
+      `Todavía no tenemos comparables específicos de ${colonia} en nuestro sistema, pero tu asesor los incluirá al ` +
       'preparar tu Análisis Comparativo de Mercado completo.',
   },
 
