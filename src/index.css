@@ -31,9 +31,10 @@
   --color-ink: #10201A;
   --color-ink-soft: #17281F;
 
-  /* Parchment — the page ground. Warm, paper-like, with a faint green-grey
-     bias rather than a stark or cream-default white. */
-  --color-parchment: #F6F4ED;
+  /* Parchment — the page ground. Kept the name for minimal diff, but the
+     value is now a cool, very light neutral gray rather than the earlier
+     warm beige. Cards keep a near-white tone so they still lift off it. */
+  --color-parchment: #F5F6F6;
   --color-parchment-card: #FDFCF8;
 
   /* Brass — a muted gold hairline accent for seal/ledger-style trim. */
@@ -125,6 +126,18 @@
 
   .marquee-track-reverse:hover {
     animation-play-state: paused;
+  }
+
+  /* Slow breathing glow — used on the reveal screen's price card to echo
+     the analyzing screen's "processing" feel without implying the card is
+     still loading; a gentle ambient pulse, not a spinner. */
+  @keyframes glow-pulse {
+    0%, 100% { opacity: 0.25; transform: scale(1); }
+    50% { opacity: 0.45; transform: scale(1.12); }
+  }
+
+  .animate-glow-pulse {
+    animation: glow-pulse 5s ease-in-out infinite;
   }
 }
 

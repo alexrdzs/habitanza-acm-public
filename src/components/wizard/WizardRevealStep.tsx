@@ -47,8 +47,10 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 space-y-5 pb-20 duration-700">
       {/* Plain page text, not a card -- the greeting shouldn't be the thing
-          that makes the first card feel heavy. */}
-      <div>
+          that makes the first card feel heavy. Centered on mobile (where it
+          reads as the screen's title), left-aligned once there's enough
+          width for it to sit naturally beside the card below. */}
+      <div className="text-center md:text-left">
         <h2 className="text-xl font-bold leading-snug text-neutral-900 md:text-2xl">
           Estamos listos, {firstName}.
         </h2>
@@ -66,8 +68,22 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
         className="relative overflow-hidden rounded-card-lg bg-gradient-to-b from-ink-soft to-ink p-px shadow-[0_24px_48px_-24px_rgba(16,32,26,0.55)]"
       >
         <div className="relative overflow-hidden rounded-[calc(var(--radius-card-lg)-1px)] p-7 md:p-10">
-          <div className="pointer-events-none absolute -left-10 -top-16 h-56 w-56 rounded-full bg-emerald-glow/25 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-20 -right-10 h-64 w-64 rounded-full bg-brass/20 blur-3xl" />
+          {/* Same ambient language as the analyzing screen's radar sweep --
+              a breathing glow plus a slow, very low-opacity rotating sheen
+              -- so the reveal reads as a live, tended result rather than a
+              static screenshot, without implying the card is still loading. */}
+          <div className="pointer-events-none absolute -left-10 -top-16 h-56 w-56 rounded-full bg-emerald-glow/25 blur-3xl animate-glow-pulse" />
+          <div
+            className="pointer-events-none absolute -bottom-20 -right-10 h-64 w-64 rounded-full bg-brass/20 blur-3xl animate-glow-pulse"
+            style={{ animationDelay: '1.5s' }}
+          />
+          <div
+            className="pointer-events-none absolute inset-0 animate-spin opacity-[0.08] [animation-duration:9s]"
+            style={{
+              background:
+                'conic-gradient(from 0deg, transparent 0deg, var(--color-emerald-glow) 50deg, transparent 130deg)',
+            }}
+          />
 
           <p className="relative font-mono text-[10px] uppercase tracking-[0.15em] text-brass-soft">
             Rango de precio
