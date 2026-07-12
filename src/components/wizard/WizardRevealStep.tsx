@@ -111,22 +111,18 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
             platicar en persona y definir el valor ideal para tu propiedad.
           </p>
 
-          {/* Stacked rather than side-by-side -- "Chatear ahora" plus a job
-              title like "Director Comercial" don't both fit next to a name
-              in one row without truncating, so the identity gets its own
-              full-width row and the CTA gets its own full-width row below. */}
-          <div className="relative mt-6 border-t border-white/10 pt-6">
-            <div className="flex items-center gap-2.5">
-              <AdvisorAvatar
-                advisor={advisor}
-                className="h-11 w-11 flex-shrink-0 border-2 border-white/25 bg-white/10"
-                iconClassName="h-5 w-5 text-white/70"
-              />
-              <div className="min-w-0">
-                <p className="truncate text-sm font-bold text-white">{advisor.name}</p>
-                <p className="truncate text-xs text-neutral-400">{advisor.roleLabel}</p>
-              </div>
-            </div>
+          {/* Centered rather than left-aligned -- on mobile this reads as a
+              tidy signature block (photo, name, title) instead of a form
+              row, and it no longer needs to fight the CTA for horizontal
+              space now that the button sits full-width below it. */}
+          <div className="relative mt-6 flex flex-col items-center border-t border-white/10 pt-6 text-center">
+            <AdvisorAvatar
+              advisor={advisor}
+              className="h-14 w-14 flex-shrink-0 border-2 border-white/25 bg-white/10"
+              iconClassName="h-6 w-6 text-white/70"
+            />
+            <p className="mt-2 text-sm font-bold text-white">{advisor.name}</p>
+            <p className="text-xs text-neutral-400">{advisor.roleLabel}</p>
             <a
               href={whatsappLink(advisor, message)}
               target="_blank"

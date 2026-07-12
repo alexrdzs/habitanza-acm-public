@@ -35,7 +35,6 @@ export function LandingPage() {
   // Contact
   const [nombre, setNombre] = useState('');
   const [telefono, setTelefono] = useState('');
-  const [timeline, setTimeline] = useState('');
   const [comoNosConociste, setComoNosConociste] = useState('');
   const [comoNosConocisteOtro, setComoNosConocisteOtro] = useState('');
   const [consentimiento, setConsentimiento] = useState(false);
@@ -83,7 +82,6 @@ export function LandingPage() {
           recamaras: parseRoomCount(recamaras),
           banos: parseRoomCount(banos),
           amenidades: amenidades.length > 0 ? amenidades : undefined,
-          timeline: timeline || undefined,
           comoNosConociste: comoNosConociste || undefined,
           comoNosConocisteOtro: comoNosConociste === 'otro' ? comoNosConocisteOtro || undefined : undefined,
           consentimiento,
@@ -171,8 +169,6 @@ export function LandingPage() {
             setNombre={setNombre}
             telefono={telefono}
             setTelefono={setTelefono}
-            timeline={timeline}
-            setTimeline={setTimeline}
             comoNosConociste={comoNosConociste}
             setComoNosConociste={setComoNosConociste}
             comoNosConocisteOtro={comoNosConocisteOtro}

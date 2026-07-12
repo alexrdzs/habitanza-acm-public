@@ -143,7 +143,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const amenidades = Array.isArray(body.amenidades)
     ? body.amenidades.filter((a): a is Amenity => (AMENITIES as readonly string[]).includes(a))
     : undefined;
-  const timeline = body.timeline;
   const comoNosConociste = (REFERRAL_SOURCES as readonly string[]).includes(body.comoNosConociste ?? '')
     ? (body.comoNosConociste as ReferralSource)
     : undefined;
@@ -190,7 +189,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     recamaras,
     banos,
     amenidades,
-    timeline,
     comoNosConociste,
     comoNosConocisteOtro,
     fuente: 'landing-valuacion',

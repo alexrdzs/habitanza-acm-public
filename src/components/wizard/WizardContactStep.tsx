@@ -1,5 +1,5 @@
 import { useRef, type FormEvent } from 'react';
-import { TIMELINE_OPTIONS, REFERRAL_SOURCES } from '@shared/validation';
+import { REFERRAL_SOURCES } from '@shared/validation';
 import { WizardShell } from './WizardShell';
 import { inputClass, labelClass } from './formStyles';
 import { cn } from '../../lib/utils';
@@ -9,8 +9,6 @@ interface Props {
   setNombre: (v: string) => void;
   telefono: string;
   setTelefono: (v: string) => void;
-  timeline: string;
-  setTimeline: (v: string) => void;
   comoNosConociste: string;
   setComoNosConociste: (v: string) => void;
   comoNosConocisteOtro: string;
@@ -82,25 +80,13 @@ export function WizardContactStep(props: Props) {
         </div>
 
         <div>
-          <label className={labelClass}>¿Cuándo te gustaría vender?</label>
-          <select className={inputClass} value={props.timeline} onChange={(e) => props.setTimeline(e.target.value)}>
-            <option value="">Prefiero no decir</option>
-            {TIMELINE_OPTIONS.map((t) => (
-              <option key={t.value} value={t.value}>
-                {t.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
           <label className={labelClass}>¿Cómo nos conociste? (opcional)</label>
           <select
             className={inputClass}
             value={props.comoNosConociste}
             onChange={(e) => props.setComoNosConociste(e.target.value)}
           >
-            <option value="">Prefiero no decir</option>
+            <option value="">Seleccionar...</option>
             {REFERRAL_SOURCES.map((r) => (
               <option key={r.value} value={r.value}>
                 {r.label}

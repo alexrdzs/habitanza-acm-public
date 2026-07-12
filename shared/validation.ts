@@ -57,13 +57,6 @@ export const AMENITIES = [
 ] as const;
 export type Amenity = (typeof AMENITIES)[number];
 
-export const TIMELINE_OPTIONS = [
-  { value: 'ya', label: 'Ya quiero vender' },
-  { value: 'proximos_meses', label: 'En los próximos meses' },
-  { value: 'solo_valor', label: 'Solo quiero saber el valor' },
-] as const;
-export type SellTimeline = (typeof TIMELINE_OPTIONS)[number]['value'];
-
 export const REFERRAL_SOURCES = [
   { value: 'publicidad', label: 'Publicidad' },
   { value: 'redes_sociales', label: 'Redes Sociales' },
@@ -84,7 +77,6 @@ export interface LeadSubmission {
   recamaras?: number;
   banos?: number;
   amenidades?: Amenity[];
-  timeline?: SellTimeline;
   comoNosConociste?: ReferralSource;
   comoNosConocisteOtro?: string;
   consentimiento: boolean;
