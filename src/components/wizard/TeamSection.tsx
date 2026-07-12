@@ -28,7 +28,7 @@ const TEAM_CHECKLIST = [
 // same screen so the two don't read as one continuous conveyor.
 export function TeamSection() {
   return (
-    <div className="space-y-5 rounded-card-lg border border-neutral-200 bg-parchment-card p-6 text-left md:p-8">
+    <div className="space-y-5 rounded-card-lg border border-neutral-200/70 bg-parchment-card/80 p-6 text-left backdrop-blur-md md:p-8">
       <div className="text-center">
         <p className="font-mono text-[10px] font-medium uppercase tracking-[0.15em] text-brass">
           Tu equipo en la zona

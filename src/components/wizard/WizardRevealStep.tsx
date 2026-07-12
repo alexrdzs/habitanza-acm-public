@@ -134,7 +134,7 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
         </div>
       </div>
 
-      <div className="space-y-5 rounded-card-lg border border-neutral-200 bg-parchment-card p-6 md:p-8">
+      <div className="space-y-5 rounded-card-lg border border-neutral-200/70 bg-parchment-card/80 p-6 backdrop-blur-md md:p-8">
         <div>
           <p className="text-[11px] font-bold uppercase tracking-wider text-brass">Mercado de la zona</p>
           <h3 className="mt-1 text-base font-bold text-neutral-900">

@@ -212,7 +212,7 @@ export function WizardLocationStep(props: Props) {
         </div>
 
         {showMore && (
-          <div className="animate-in fade-in slide-in-from-top-2 flex flex-col gap-3 rounded-2xl border border-neutral-200 bg-parchment-card p-4 duration-300">
+          <div className="animate-in fade-in slide-in-from-top-2 flex flex-col gap-3 rounded-2xl border border-neutral-200/70 bg-parchment-card/80 p-4 backdrop-blur-md duration-300">
             <p className={labelClass}>Otras colonias cercanas</p>
             <div className="flex flex-col gap-2">
               {ZONA_ESMERALDA_COLONIAS_EXTENDED.map((c) => (

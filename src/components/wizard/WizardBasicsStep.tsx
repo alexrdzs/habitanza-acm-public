@@ -10,7 +10,7 @@ import { cn } from '../../lib/utils';
 
 const ROOM_COUNT_OPTIONS = ['1', '2', '3', '4', '5+'];
 
-const boxClass = 'rounded-2xl border border-neutral-200 bg-parchment-card p-4';
+const boxClass = 'rounded-2xl border border-neutral-200/70 bg-parchment-card/80 p-4 backdrop-blur-md';
 
 const AMENITY_ICONS: Record<Amenity, typeof Trees> = {
   'Jardín': Trees,

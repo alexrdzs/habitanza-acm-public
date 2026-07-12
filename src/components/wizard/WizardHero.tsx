@@ -87,7 +87,7 @@ export function WizardHero({ onStart }: Props) {
           {[...EXPERTISE_CARDS, ...EXPERTISE_CARDS].map(({ icon: Icon, title, detail }, i) => (
             <div
               key={`${title}-${i}`}
-              className="flex w-[168px] flex-shrink-0 flex-col gap-2.5 rounded-2xl border border-neutral-200 bg-parchment-card p-4 text-left shadow-[0_8px_20px_-10px_rgba(16,32,26,0.25)]"
+              className="flex w-[168px] flex-shrink-0 flex-col gap-2.5 rounded-2xl border border-neutral-200/70 bg-parchment-card/80 p-4 text-left shadow-[0_8px_20px_-10px_rgba(16,32,26,0.25)] backdrop-blur-md"
             >
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-deep/10">
                 <Icon className="h-4 w-4 text-emerald-deep" />

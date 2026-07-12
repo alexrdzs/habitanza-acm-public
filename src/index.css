@@ -64,7 +64,10 @@
 @layer base {
   body {
     @apply text-neutral-800 antialiased;
-    background-color: var(--color-parchment);
+    /* Very subtle -- a faint top-to-bottom shift within the same gray, not
+       a visible band. Mostly there so the glass cards have something to
+       pick up as they blur the page behind them while scrolling. */
+    background: linear-gradient(180deg, #F9FAFA 0%, var(--color-parchment) 45%, #EEF0EF 100%);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 

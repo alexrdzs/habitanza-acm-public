@@ -110,15 +110,19 @@ export function LandingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-parchment">
+    <div className="min-h-screen">
       {/* A compact chrome bar rather than a logo floating on the page canvas
           -- sticky so it stays reachable, and translucent/blurred so it
           reads as a frosted pane sitting above the content, not another
-          flat block. Mirrors the bottom AdvisorCTA bar's glass treatment. */}
-      <header className="sticky top-0 z-30 flex justify-center border-b border-neutral-200/70 bg-parchment-card/80 py-3.5 shadow-[0_8px_24px_-18px_rgba(16,32,26,0.25)] backdrop-blur-md">
-        <Logo className="h-6 text-neutral-900" />
+          flat block. Left-aligned and width-matched to main's container so
+          the logo sits on the same left edge as the content below it,
+          instead of centered like a hero banner. */}
+      <header className="sticky top-0 z-30 border-b border-neutral-200/70 bg-parchment-card/80 shadow-[0_8px_24px_-18px_rgba(16,32,26,0.25)] backdrop-blur-md">
+        <div className="mx-auto flex max-w-md items-center px-4 py-3 md:max-w-xl lg:max-w-2xl">
+          <Logo className="h-5 text-neutral-900" />
+        </div>
       </header>
-      <main className="mx-auto max-w-md px-4 pb-20 md:max-w-xl lg:max-w-2xl">
+      <main className="mx-auto max-w-md px-4 pt-8 pb-20 md:max-w-xl lg:max-w-2xl">
         {step === 'hero' && <WizardHero onStart={() => setStep('location')} />}
 
         {step === 'location' && (
@@ -185,7 +189,7 @@ export function LandingPage() {
               colonia={resolvedColonia}
             />
           ) : (
-            <div className="animate-in fade-in slide-in-from-bottom-4 space-y-3 rounded-card-lg border border-neutral-200 bg-parchment-card p-8 text-center shadow-sm duration-500">
+            <div className="animate-in fade-in slide-in-from-bottom-4 space-y-3 rounded-card-lg border border-neutral-200/70 bg-parchment-card/80 p-8 text-center shadow-sm backdrop-blur-md duration-500">
               <h2 className="text-xl font-bold text-neutral-900">Gracias, {nombre.split(' ')[0]}</h2>
               <p className="text-neutral-600">
                 Un asesor te contacta por WhatsApp en menos de 48 horas con el valor estimado de tu propiedad.

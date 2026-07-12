@@ -5,7 +5,7 @@ import { cn } from '../../lib/utils';
 
 function TestimonialCard({ t }: { t: Testimonial }) {
   return (
-    <div className="flex w-[78%] flex-shrink-0 snap-center flex-col gap-2.5 rounded-2xl border border-neutral-200 bg-parchment-card p-4 text-left">
+    <div className="flex w-[78%] flex-shrink-0 snap-center flex-col gap-2.5 rounded-2xl border border-neutral-200/70 bg-parchment-card/80 p-4 text-left backdrop-blur-md">
       <div className="flex items-center justify-between">
         <Quote className="h-4 w-4 text-emerald-deep/40" />
         <div className="flex gap-0.5">
