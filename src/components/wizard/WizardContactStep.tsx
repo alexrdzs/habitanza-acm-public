@@ -1,7 +1,8 @@
 import { useRef, type FormEvent } from 'react';
-import { TIMELINE_OPTIONS } from '@shared/validation';
+import { TIMELINE_OPTIONS, REFERRAL_SOURCES } from '@shared/validation';
 import { WizardShell } from './WizardShell';
 import { inputClass, labelClass } from './formStyles';
+import { cn } from '../../lib/utils';
 
 interface Props {
   nombre: string;
@@ -10,6 +11,10 @@ interface Props {
   setTelefono: (v: string) => void;
   timeline: string;
   setTimeline: (v: string) => void;
+  comoNosConociste: string;
+  setComoNosConociste: (v: string) => void;
+  comoNosConocisteOtro: string;
+  setComoNosConocisteOtro: (v: string) => void;
   consentimiento: boolean;
   setConsentimiento: (v: boolean) => void;
   empresa: string;
@@ -30,8 +35,8 @@ export function WizardContactStep(props: Props) {
 
   return (
     <WizardShell
-      title="Ya casi está"
-      description="Dinos a dónde enviamos tu estimación preliminar y tu Análisis Comparativo de Mercado (ACM) completo."
+      title="Cuéntanos de ti"
+      description="Enviaremos este análisis y toda la información."
       step={{ current: 3, total: 3 }}
       onBack={props.onBack}
       nextLabel="Ver mi estimación"
@@ -86,6 +91,32 @@ export function WizardContactStep(props: Props) {
               </option>
             ))}
           </select>
+        </div>
+
+        <div>
+          <label className={labelClass}>¿Cómo nos conociste? (opcional)</label>
+          <select
+            className={inputClass}
+            value={props.comoNosConociste}
+            onChange={(e) => props.setComoNosConociste(e.target.value)}
+          >
+            <option value="">Prefiero no decir</option>
+            {REFERRAL_SOURCES.map((r) => (
+              <option key={r.value} value={r.value}>
+                {r.label}
+              </option>
+            ))}
+          </select>
+          {props.comoNosConociste === 'otro' && (
+            <input
+              className={cn(inputClass, 'mt-2')}
+              value={props.comoNosConocisteOtro}
+              onChange={(e) => props.setComoNosConocisteOtro(e.target.value)}
+              maxLength={120}
+              placeholder="¿Cómo nos conociste?"
+              autoFocus
+            />
+          )}
         </div>
 
         <label className="flex items-start gap-2 text-sm text-neutral-600">

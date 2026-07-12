@@ -147,13 +147,13 @@ export function WizardLocationStep(props: Props) {
   return (
     <WizardShell
       title="¿Dónde está tu propiedad?"
-      description="Ubicamos tu fraccionamiento para comparar contra la zona correcta."
+      description="Sabemos que cada zona es diferente por lo que ajustamos el cálculo para cada uno."
       step={{ current: 1, total: 3 }}
       onBack={props.onBack}
     >
       <div className="flex flex-col gap-4">
         <div>
-          <label className={labelClass}>Fraccionamiento / colonia *</label>
+          <label className={labelClass}>Fraccionamiento *</label>
           <div className="grid grid-cols-2 gap-3">
             {ZONA_ESMERALDA_COLONIAS.map((c) => (
               <ColoniaCard
@@ -200,7 +200,7 @@ export function WizardLocationStep(props: Props) {
                 {!showMore && isExtendedSelection ? mapLabel || 'Ver más opciones' : 'Ver más opciones'}
               </p>
               <p className="text-xs text-neutral-500">
-                {ZONA_ESMERALDA_COLONIAS_EXTENDED.length} colonias más cerca de ti
+                {ZONA_ESMERALDA_COLONIAS_EXTENDED.length} fraccionamientos más cerca de ti
               </p>
             </div>
             {showMore ? (
@@ -213,7 +213,7 @@ export function WizardLocationStep(props: Props) {
 
         {showMore && (
           <div className="animate-in fade-in slide-in-from-top-2 flex flex-col gap-3 rounded-2xl border border-neutral-200/70 bg-parchment-card/80 p-4 backdrop-blur-md duration-300">
-            <p className={labelClass}>Otras colonias cercanas</p>
+            <p className={labelClass}>Otros fraccionamientos cercanos</p>
             <div className="flex flex-col gap-2">
               {ZONA_ESMERALDA_COLONIAS_EXTENDED.map((c) => (
                 <ColoniaPill
@@ -225,7 +225,7 @@ export function WizardLocationStep(props: Props) {
                 />
               ))}
               <ColoniaPill
-                label="Otra colonia"
+                label="Otro fraccionamiento"
                 active={props.colonia === OTHER_COLONIA_VALUE}
                 disabled={isAdvancing}
                 dashed

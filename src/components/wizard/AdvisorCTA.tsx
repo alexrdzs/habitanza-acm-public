@@ -28,8 +28,8 @@ export function AdvisorCTA({ advisor, tipoPropiedad, colonia, visible }: Props) 
         visible ? 'translate-y-0' : 'translate-y-full pointer-events-none'
       )}
     >
-      <div className="mx-auto flex max-w-md items-center gap-3 px-4 py-3">
-        <AdvisorAvatar advisor={advisor} className="h-10 w-10 border border-neutral-200" iconClassName="h-4 w-4" />
+      <div className="mx-auto flex max-w-md items-center gap-2 px-4 py-3">
+        <AdvisorAvatar advisor={advisor} className="h-9 w-9 flex-shrink-0 border border-neutral-200" iconClassName="h-4 w-4" />
         <div className="min-w-0 flex-1">
           <p className="truncate text-xs font-bold text-neutral-900">{advisor.name}</p>
           <p className="truncate text-[10.5px] text-neutral-500">{advisor.roleLabel}</p>
@@ -39,10 +39,10 @@ export function AdvisorCTA({ advisor, tipoPropiedad, colonia, visible }: Props) 
           target="_blank"
           rel="noreferrer"
           tabIndex={visible ? 0 : -1}
-          className="flex flex-shrink-0 items-center gap-1.5 rounded-pill bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-transform active:scale-95 hover:bg-brand-600"
+          className="flex flex-shrink-0 items-center gap-1 rounded-pill bg-brand-500 px-3 py-2.5 text-sm font-semibold text-white shadow-sm transition-transform active:scale-95 hover:bg-brand-600"
         >
           <MessageCircle className="h-4 w-4" />
-          Hablemos ahora
+          Chatear ahora
         </a>
       </div>
     </div>

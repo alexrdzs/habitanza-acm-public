@@ -5,7 +5,7 @@ import { ConditionQuickPicker } from './ConditionQuickPicker';
 import { SegmentedControl } from './SegmentedControl';
 import { ThousandsInput } from './ThousandsInput';
 import { labelClass } from './formStyles';
-import { Check, Trees, Waves, ShieldCheck, Car, DoorClosed, Sun } from 'lucide-react';
+import { Check, Trees, Waves, Wifi, Flame, Gamepad2, Mountain } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 const ROOM_COUNT_OPTIONS = ['1', '2', '3', '4', '5+'];
@@ -13,12 +13,12 @@ const ROOM_COUNT_OPTIONS = ['1', '2', '3', '4', '5+'];
 const boxClass = 'rounded-2xl border border-neutral-200/70 bg-parchment-card/80 p-4 backdrop-blur-md';
 
 const AMENITY_ICONS: Record<Amenity, typeof Trees> = {
-  'Jardín': Trees,
-  'Alberca': Waves,
-  'Seguridad 24h': ShieldCheck,
-  'Estacionamiento techado': Car,
-  'Cuarto de servicio': DoorClosed,
-  'Terraza': Sun,
+  'Casa inteligente': Wifi,
+  'Calefacción integrada': Flame,
+  'Jardín muy amplio': Trees,
+  'Salón de juegos': Gamepad2,
+  'Alberca o Jacuzzi': Waves,
+  'Vistas panorámicas': Mountain,
 };
 
 interface Props {
@@ -54,8 +54,8 @@ export function WizardBasicsStep(props: Props) {
 
   return (
     <WizardShell
-      title="Cuéntanos sobre tu propiedad"
-      description="Estos datos nos permiten preparar una primera referencia de valor."
+      title="Cuéntanos de tu propiedad"
+      description="Esta información sirve para usar comparables equivalentes."
       step={{ current: 2, total: 3 }}
       onBack={props.onBack}
       onNext={props.onContinue}
@@ -116,7 +116,7 @@ export function WizardBasicsStep(props: Props) {
         )}
 
         <div className={cn(boxClass, 'col-span-2')}>
-          <label className={labelClass}>Amenidades (opcional)</label>
+          <label className={labelClass}>Características especiales (opcional)</label>
           <div className="grid grid-cols-2 gap-2">
             {AMENITIES.map((a) => {
               const active = props.amenidades.includes(a);

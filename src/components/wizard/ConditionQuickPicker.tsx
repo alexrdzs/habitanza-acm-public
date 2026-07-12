@@ -8,10 +8,22 @@ import { cn } from '../../lib/utils';
 // reformar' so a broker later sees the same familiar value used across
 // the authenticated ACM tool. 'Remodelada' is intentionally not offered
 // here; a quick public form doesn't need that level of nuance.
-const OPTIONS: { label: string; value: PropertyCondition; icon: typeof Sparkles; detail: string }[] = [
-  { label: 'Nueva', value: 'Nueva', icon: Sparkles, detail: 'Nunca habitada o recién construida' },
-  { label: 'Buen estado', value: 'Buen estado', icon: CheckCircle2, detail: 'Lista para habitar, mantenimiento al día' },
-  { label: 'Necesita renovación', value: 'Para reformar', icon: Hammer, detail: 'Requiere trabajo antes de habitarse' },
+const OPTIONS: { label: string; value: PropertyCondition; icon: typeof Sparkles; detail: string; activeClasses: string }[] = [
+  { label: 'Nueva', value: 'Nueva', icon: Sparkles, detail: 'Nunca habitada o recién construida', activeClasses: 'border-sky-400 bg-sky-400' },
+  {
+    label: 'Buen estado',
+    value: 'Buen estado',
+    icon: CheckCircle2,
+    detail: 'Lista para habitar, mantenimiento al día',
+    activeClasses: 'border-brand-500 bg-brand-500',
+  },
+  {
+    label: 'Necesita renovación',
+    value: 'Para reformar',
+    icon: Hammer,
+    detail: 'Requiere trabajo antes de habitarse',
+    activeClasses: 'border-amber-500 bg-amber-500',
+  },
 ];
 
 interface Props {
@@ -36,7 +48,7 @@ export function ConditionQuickPicker({ value, onChange, label }: Props) {
               className={cn(
                 'flex flex-col items-center gap-1 rounded-input border px-2 py-3 text-center transition-all duration-300 ease-out',
                 isActive
-                  ? 'flex-[1.7] border-emerald-deep bg-emerald-deep shadow-sm'
+                  ? `flex-[1.7] shadow-sm ${opt.activeClasses}`
                   : 'flex-1 scale-[0.96] border-neutral-200 opacity-55 hover:opacity-90'
               )}
             >

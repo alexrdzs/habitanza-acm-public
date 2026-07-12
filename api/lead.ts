@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 // Type-only import — erased entirely at build time, so it carries no
 // runtime module resolution risk (see the note below on why the runtime
 // values it would otherwise pull in must be inlined instead).
-import type { LeadSubmission, Amenity } from '../shared/validation';
+import type { LeadSubmission, Amenity, ReferralSource } from '../shared/validation';
 
 // Vercel compiles this function with Node's native TypeScript type-stripping
 // (types erased, syntax otherwise untouched) rather than bundling — it does
@@ -31,7 +31,17 @@ const ZONA_ESMERALDA_COLONIAS_EXTENDED = [
 const OTHER_COLONIA_VALUE = 'otra';
 const PUBLIC_PROPERTY_TYPES = ['Casa', 'Departamento', 'Terreno'] as const;
 const PROPERTY_CONDITIONS = ['Para reformar', 'Buen estado', 'Remodelada', 'Nueva'] as const;
-const AMENITIES = ['Jardín', 'Alberca', 'Seguridad 24h', 'Estacionamiento techado', 'Cuarto de servicio', 'Terraza'] as const;
+// Keep in sync with AMENITIES in shared/validation.ts.
+const AMENITIES = [
+  'Casa inteligente',
+  'Calefacción integrada',
+  'Jardín muy amplio',
+  'Salón de juegos',
+  'Alberca o Jacuzzi',
+  'Vistas panorámicas',
+] as const;
+// Keep in sync with REFERRAL_SOURCES in shared/validation.ts.
+const REFERRAL_SOURCES = ['publicidad', 'redes_sociales', 'recomendacion', 'otro'] as const;
 
 function normalizePhone(raw: string): string | null {
   const digits = raw.replace(/\D/g, '');
@@ -134,6 +144,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     ? body.amenidades.filter((a): a is Amenity => (AMENITIES as readonly string[]).includes(a))
     : undefined;
   const timeline = body.timeline;
+  const comoNosConociste = (REFERRAL_SOURCES as readonly string[]).includes(body.comoNosConociste ?? '')
+    ? (body.comoNosConociste as ReferralSource)
+    : undefined;
+  const comoNosConocisteOtro =
+    comoNosConociste === 'otro' ? sanitizeText(body.comoNosConocisteOtro, 120) || undefined : undefined;
   const consentimiento = body.consentimiento === true;
 
   const isKnownColonia =
@@ -176,6 +191,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     banos,
     amenidades,
     timeline,
+    comoNosConociste,
+    comoNosConocisteOtro,
     fuente: 'landing-valuacion',
     zona: 'zona-esmeralda',
     creadoEn: new Date().toISOString(),

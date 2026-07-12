@@ -4,6 +4,7 @@ import { PreliminaryPricingBar } from './PreliminaryPricingBar';
 import { ComparablesMap } from './ComparablesMap';
 import { ComparableListingCards } from './ComparableListingCards';
 import { MethodologySection } from './MethodologySection';
+import { TestimonialsCarousel } from './TestimonialsCarousel';
 import { AdvisorCTA } from './AdvisorCTA';
 import { AdvisorAvatar } from './AdvisorAvatar';
 import { ADVISORS, whatsappLink, buildWhatsAppMessage } from '@shared/advisors';
@@ -24,6 +25,7 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
   // also appears on the persistent WhatsApp bar below -- and so the team
   // can compare inbound contact between Rogelio and Tere.
   const advisor = useMemo(() => ADVISORS[Math.floor(Math.random() * ADVISORS.length)], []);
+  const advisorFirstName = advisor.name.split(' ')[0];
   const comps = COMPARABLE_LISTINGS[colonia] ?? [];
   const hasComps = comps.length > 0;
   const message = buildWhatsAppMessage(advisor, tipoPropiedad, colonia);
@@ -52,10 +54,10 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
           width for it to sit naturally beside the card below. */}
       <div className="text-center md:text-left">
         <h2 className="text-xl font-bold leading-snug text-neutral-900 md:text-2xl">
-          Estamos listos, {firstName}.
+          Muchas gracias, {firstName}.
         </h2>
         <p className="mt-1 text-base text-neutral-500">
-          Basado en nuestra experiencia y tendencias del mercado, tenemos un primer rango para ti.
+          Con esta información podemos darte un rango aproximado.
         </p>
       </div>
 
@@ -99,24 +101,28 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
             </span>
           </h3>
           <p className="relative mt-2 text-xs text-neutral-400 md:text-sm">
-            Es un promedio de {colonia} — platicando contigo, te doy el número exacto para tu propiedad.
+            Es un promedio de {colonia} basado en datos históricos y nuestra experiencia en la zona.
           </p>
           <PreliminaryPricingBar estimate={estimate} />
 
           <p className="relative mt-4 border-t border-white/10 pt-6 text-sm leading-relaxed text-neutral-300 md:text-base">
-            Cuando platiquemos, te armo un cálculo personalizado de tu propiedad y la estrategia exacta para
-            venderla mejor y más rápido. Escríbeme y lo empezamos hoy mismo.
+            {advisorFirstName} es tu {advisor.gender === 'f' ? 'asesora experta' : 'asesor experto'} en la zona y muy
+            pronto se pondrá en contacto contigo para resolver cualquier duda o agendar una cita. Así podrán
+            platicar en persona y definir el valor ideal para tu propiedad.
           </p>
 
-          <div className="relative mt-6 flex items-center justify-between gap-2 border-t border-white/10 pt-6">
-            <div className="flex min-w-0 flex-1 items-center gap-2.5">
+          {/* Stacked rather than side-by-side -- "Chatear ahora" plus a job
+              title like "Director Comercial" don't both fit next to a name
+              in one row without truncating, so the identity gets its own
+              full-width row and the CTA gets its own full-width row below. */}
+          <div className="relative mt-6 border-t border-white/10 pt-6">
+            <div className="flex items-center gap-2.5">
               <AdvisorAvatar
                 advisor={advisor}
                 className="h-11 w-11 flex-shrink-0 border-2 border-white/25 bg-white/10"
                 iconClassName="h-5 w-5 text-white/70"
               />
               <div className="min-w-0">
-                <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-neutral-500">Firma</p>
                 <p className="truncate text-sm font-bold text-white">{advisor.name}</p>
                 <p className="truncate text-xs text-neutral-400">{advisor.roleLabel}</p>
               </div>
@@ -125,10 +131,10 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
               href={whatsappLink(advisor, message)}
               target="_blank"
               rel="noreferrer"
-              className="flex flex-shrink-0 items-center gap-1.5 rounded-pill bg-brand-500 px-3 py-2.5 text-sm font-semibold text-white shadow-sm transition-transform active:scale-95 hover:bg-brand-600"
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-pill bg-brand-500 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-transform active:scale-95 hover:bg-brand-600"
             >
               <MessageCircle className="h-4 w-4" />
-              Chatear
+              Chatear ahora
             </a>
           </div>
         </div>
@@ -169,6 +175,11 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
       </div>
 
       <MethodologySection />
+
+      {/* Repeated from the Hero, deliberately -- someone who scrolled all
+          the way to a price should get one more nudge of social proof right
+          before deciding whether to reach out. */}
+      <TestimonialsCarousel />
 
       <AdvisorCTA advisor={advisor} tipoPropiedad={tipoPropiedad} colonia={colonia} visible={isStickyBarVisible} />
     </div>

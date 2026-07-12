@@ -3,23 +3,27 @@ import { TEAM_MEMBERS } from '@shared/team';
 import { AdvisorAvatar } from './AdvisorAvatar';
 
 // Sourced from Habitanza's own "Presentación de Servicios" deck (team intro
-// slide) -- the accompaniment/tech/alliances promises and the years-of-
-// experience + zone-specialization line are their real positioning, not
-// copy invented for this page.
+// slide) -- the accompaniment/tech/alliances promises are their real
+// positioning, not copy invented for this page.
 const TEAM_CHECKLIST = [
   {
     title: 'Estaremos contigo en todo el proceso',
-    detail: 'Desde el análisis inicial hasta la escrituración.',
+    detail: 'Desde la estrategia hasta firmar escrituras.',
   },
   {
-    title: 'Tecnología para tomar mejores decisiones',
-    detail: 'Datos reales de tu zona, no estimaciones genéricas.',
+    title: 'Tecnología trabajando a tu favor',
+    detail: 'Las mejores herramientas para mejores resultados.',
   },
   {
-    title: 'Alianzas clave para una transacción sin contratiempos',
-    detail: 'Desde brokers hipotecarios hasta notarías.',
+    title: 'Alianzas clave con toda la industria',
+    detail: 'Desde brokers hasta notarías.',
   },
 ];
+
+// The years-of-experience line reads more like a person talking to you than
+// a stat when it's attributed to someone real -- Alex is the first entry in
+// the team roster (see shared/team.ts), so this just reuses that record.
+const ALEX = TEAM_MEMBERS[0];
 
 // The full active roster (see shared/team.ts) as a plain photo+name
 // marquee -- no cards, no titles, just faces -- so this reads as "here are
@@ -33,8 +37,10 @@ export function TeamSection() {
         <p className="font-mono text-[10px] font-medium uppercase tracking-[0.15em] text-brass">
           Tu equipo en la zona
         </p>
-        <h3 className="mt-1 text-base font-bold text-neutral-900">Conoce a tu equipo de profesionales</h3>
-        <p className="mt-1 text-sm text-neutral-500">El mejor equipo, con las mejores herramientas.</p>
+        <h3 className="mt-1 text-base font-bold text-neutral-900">Tu equipo de profesionales</h3>
+        <p className="mt-1 text-sm text-neutral-500">
+          Expertos en Zona Esmeralda, Bosque Real, Satélite, Lomas Verdes y sus alrededores.
+        </p>
       </div>
 
       <div className="-mx-6 overflow-hidden py-1 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)] md:-mx-8">
@@ -52,9 +58,15 @@ export function TeamSection() {
         </div>
       </div>
 
-      <p className="text-center text-xs font-semibold text-emerald-deep">
-        Más de 15 años de experiencia · especialistas en Zona Esmeralda, Satélite, Lomas Verdes y sus alrededores
-      </p>
+      <div className="flex items-center gap-3 rounded-xl border border-neutral-200/70 bg-white/40 p-3">
+        <AdvisorAvatar advisor={ALEX} className="h-11 w-11 flex-shrink-0 border-2 border-white shadow-sm" iconClassName="h-5 w-5 text-neutral-400" />
+        <div>
+          <p className="text-xs font-bold text-neutral-900">{ALEX.name.split(' ')[0]}</p>
+          <p className="mt-0.5 text-xs leading-relaxed text-neutral-600">
+            con más de 15 años de experiencia en Zona Esmeralda, conocemos muy bien el mercado y qué lo hace único.
+          </p>
+        </div>
+      </div>
 
       <ul className="space-y-3 border-t border-neutral-200 pt-4">
         {TEAM_CHECKLIST.map(({ title, detail }) => (

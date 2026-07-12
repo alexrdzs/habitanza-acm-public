@@ -12,7 +12,7 @@ interface Stage {
 const STAGES: Stage[] = [
   {
     label: 'Ubicando tu propiedad',
-    detail: 'Cruzamos tu colonia con el mapa de la zona para entender el entorno exacto que mueve tu valor.',
+    detail: 'Cruzamos tu fraccionamiento con el mapa de la zona para entender el entorno exacto que mueve tu valor.',
   },
   {
     label: 'Revisando nuestro portafolio activo',

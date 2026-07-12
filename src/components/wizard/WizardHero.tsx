@@ -1,4 +1,4 @@
-import { ShieldCheck, Clock, MapPin, LineChart, MessageCircle, Building2 } from 'lucide-react';
+import { ShieldCheck, Award, Database, MapPin, LineChart, MessageCircle, Building2 } from 'lucide-react';
 import { TestimonialsCarousel } from './TestimonialsCarousel';
 import { TeamSection } from './TeamSection';
 import { MethodologySection } from './MethodologySection';
@@ -7,12 +7,10 @@ interface Props {
   onStart: () => void;
 }
 
-// Leads with local expertise -- "especialistas en la zona" is the whole
-// narrative this page is built around, not just one item in a list.
 const TRUST_MARKS = [
-  { icon: MapPin, label: 'Especialistas en la zona' },
-  { icon: ShieldCheck, label: 'Sin costo, sin compromiso' },
-  { icon: Clock, label: 'Respuesta en menos de 48 horas' },
+  { icon: ShieldCheck, label: 'Sin ningún costo' },
+  { icon: Award, label: 'Hecho por expertos' },
+  { icon: Database, label: 'Con data actualizada' },
 ];
 
 const EXPERTISE_CARDS = [
@@ -56,12 +54,15 @@ export function WizardHero({ onStart }: Props) {
         <p className="font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-emerald-deep">
           Zona Esmeralda · Atizapán de Zaragoza
         </p>
-        <h1 className="text-[2.15rem] font-extrabold leading-[1.08] tracking-tight text-neutral-900 md:text-5xl">
-          ¿Cuánto vale hoy tu casa?
-        </h1>
+        <div className="space-y-1.5">
+          <h1 className="text-[2.15rem] font-extrabold leading-[1.08] tracking-tight text-neutral-900 md:text-5xl">
+            ¿Cuánto vale mi casa hoy?
+          </h1>
+          <p className="text-sm font-semibold text-emerald-deep md:text-base">Análisis de mercado y competencia</p>
+        </div>
         <p className="mx-auto max-w-sm text-base leading-relaxed text-neutral-600 md:text-lg">
-          Somos expertos en Zona Esmeralda: una primera referencia en minutos y un Análisis Comparativo de Mercado
-          hecho a la medida por tu asesor personal.
+          En Habitanza te podemos ayudar a conocer el valor de tu propiedad al día de hoy con conocimiento real de
+          la zona.
         </p>
       </div>
 

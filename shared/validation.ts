@@ -43,17 +43,17 @@ export type PublicPropertyType = (typeof PUBLIC_PROPERTY_TYPES)[number];
 export const PROPERTY_CONDITIONS = ['Para reformar', 'Buen estado', 'Remodelada', 'Nueva'] as const;
 export type PropertyCondition = (typeof PROPERTY_CONDITIONS)[number];
 
-// Optional amenity chips on the basics step — not used by the preliminary
-// pricing formula, just extra context passed to the broker building the
-// real ACM (matches BrokerNotes-style qualitative signal in the
-// authenticated tool).
+// Optional "Características especiales" chips on the basics step — not used
+// by the preliminary pricing formula, just extra context passed to the
+// broker building the real ACM (matches BrokerNotes-style qualitative
+// signal in the authenticated tool).
 export const AMENITIES = [
-  'Jardín',
-  'Alberca',
-  'Seguridad 24h',
-  'Estacionamiento techado',
-  'Cuarto de servicio',
-  'Terraza',
+  'Casa inteligente',
+  'Calefacción integrada',
+  'Jardín muy amplio',
+  'Salón de juegos',
+  'Alberca o Jacuzzi',
+  'Vistas panorámicas',
 ] as const;
 export type Amenity = (typeof AMENITIES)[number];
 
@@ -63,6 +63,14 @@ export const TIMELINE_OPTIONS = [
   { value: 'solo_valor', label: 'Solo quiero saber el valor' },
 ] as const;
 export type SellTimeline = (typeof TIMELINE_OPTIONS)[number]['value'];
+
+export const REFERRAL_SOURCES = [
+  { value: 'publicidad', label: 'Publicidad' },
+  { value: 'redes_sociales', label: 'Redes Sociales' },
+  { value: 'recomendacion', label: 'Recomendación' },
+  { value: 'otro', label: 'Otro' },
+] as const;
+export type ReferralSource = (typeof REFERRAL_SOURCES)[number]['value'];
 
 export interface LeadSubmission {
   nombre: string;
@@ -77,6 +85,8 @@ export interface LeadSubmission {
   banos?: number;
   amenidades?: Amenity[];
   timeline?: SellTimeline;
+  comoNosConociste?: ReferralSource;
+  comoNosConocisteOtro?: string;
   consentimiento: boolean;
   empresa?: string; // honeypot — must stay empty
 }
