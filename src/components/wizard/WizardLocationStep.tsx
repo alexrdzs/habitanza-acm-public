@@ -5,7 +5,7 @@ import {
   ZONA_ESMERALDA_COLONIAS_EXTENDED,
   OTHER_COLONIA_VALUE,
 } from '@shared/validation';
-import { COMPARABLE_LISTINGS } from '@shared/comparableListings';
+import { coloniaPhoto, sampleListingPhotos } from '@shared/comparableListings';
 import { COPY } from '@shared/copy';
 import { WizardShell } from './WizardShell';
 import { inputClass, labelClass } from './formStyles';
@@ -24,18 +24,10 @@ interface Props {
 // checkmark register before the screen changes, not a network wait.
 const AUTO_ADVANCE_DELAY_MS = 400;
 
-function coloniaPhoto(colonia: string): string | undefined {
-  return COMPARABLE_LISTINGS[colonia]?.[0]?.photo;
-}
-
-// Real listing photos (not tied to any specific hidden colonia) used purely
-// as a decorative "browse more" teaser on the expand trigger, echoing an
-// Airbnb-style "show all photos" tile.
-const TEASER_PHOTOS = [
-  coloniaPhoto('Rancho San Juan'),
-  coloniaPhoto('Hacienda de Valle Escondido'),
-  coloniaPhoto('Condado de Sayavedra'),
-].filter((p): p is string => !!p);
+// A decorative "browse more" teaser on the expand trigger, echoing an
+// Airbnb-style "show all photos" tile. Derived from whatever listings exist
+// in shared/comparableListings.ts, not tied to specific colonia names.
+const TEASER_PHOTOS = sampleListingPhotos(3);
 
 interface ColoniaCardProps {
   colonia: string;

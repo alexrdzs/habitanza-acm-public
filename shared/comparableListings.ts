@@ -4,6 +4,14 @@
 // in validation.ts. These are reference listings for social/spatial proof
 // -- not the literal comparables behind the preliminary price formula in
 // pricing.ts -- so copy referencing them should stay honest about that.
+//
+// This object is the single source of truth for every comparable listing
+// and photo used across the wizard. To add, remove, or update a listing,
+// edit the array for its colonia below -- every consumer (the reveal
+// screen's map/cards, the location step's photo grid and "show more"
+// teaser, the analyzing screen's map) reads through the helpers here or
+// through COMPARABLE_LISTINGS directly, none of them hardcode a listing or
+// photo of their own.
 export interface ComparableListing {
   tipo: string;
   precio: number;
@@ -109,3 +117,27 @@ export const COMPARABLE_LISTINGS: Record<string, ComparableListing[]> = {
     },
   ],
 };
+
+// The primary listing photo for a given colonia, if it has one. The
+// canonical way to look up a single photo -- components should call this
+// instead of reaching into COMPARABLE_LISTINGS directly.
+export function coloniaPhoto(colonia: string): string | undefined {
+  return COMPARABLE_LISTINGS[colonia]?.[0]?.photo;
+}
+
+// A representative sample of photos across different colonias, for purely
+// decorative "browse more" teasers (e.g. the location step's "Ver más
+// opciones" tile) that aren't tied to any specific hidden colonia. Walks
+// COMPARABLE_LISTINGS in declaration order, so it's derived from whatever
+// listings actually exist here -- it never goes stale if a listing is
+// added, removed, or loses its photo, unlike hardcoding colonia names in
+// the component that wants a teaser.
+export function sampleListingPhotos(count: number): string[] {
+  const photos: string[] = [];
+  for (const listings of Object.values(COMPARABLE_LISTINGS)) {
+    const photo = listings[0]?.photo;
+    if (photo) photos.push(photo);
+    if (photos.length >= count) break;
+  }
+  return photos;
+}
