@@ -111,8 +111,9 @@ export function LandingPage() {
 
   return (
     <div className="min-h-screen bg-parchment">
-      <header className="flex justify-center py-6">
+      <header className="flex flex-col items-center gap-4 pt-6 pb-2">
         <Logo className="h-8 text-neutral-900" />
+        <div className="facet-rule mx-auto w-full max-w-xs" />
       </header>
       <main className="mx-auto max-w-md px-4 pb-20 md:max-w-xl lg:max-w-2xl">
         {step === 'hero' && <WizardHero onStart={() => setStep('location')} />}
