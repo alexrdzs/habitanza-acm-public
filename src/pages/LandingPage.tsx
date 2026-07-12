@@ -111,9 +111,12 @@ export function LandingPage() {
 
   return (
     <div className="min-h-screen bg-parchment">
-      <header className="flex flex-col items-center gap-4 pt-6 pb-2">
-        <Logo className="h-8 text-neutral-900" />
-        <div className="facet-rule mx-auto w-full max-w-xs" />
+      {/* A compact chrome bar rather than a logo floating on the page canvas
+          -- sticky so it stays reachable, and translucent/blurred so it
+          reads as a frosted pane sitting above the content, not another
+          flat block. Mirrors the bottom AdvisorCTA bar's glass treatment. */}
+      <header className="sticky top-0 z-30 flex justify-center border-b border-neutral-200/70 bg-parchment-card/80 py-3.5 shadow-[0_8px_24px_-18px_rgba(16,32,26,0.25)] backdrop-blur-md">
+        <Logo className="h-6 text-neutral-900" />
       </header>
       <main className="mx-auto max-w-md px-4 pb-20 md:max-w-xl lg:max-w-2xl">
         {step === 'hero' && <WizardHero onStart={() => setStep('location')} />}

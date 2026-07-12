@@ -22,7 +22,9 @@ export function AdvisorCTA({ advisor, tipoPropiedad, colonia, visible }: Props) 
     <div
       aria-hidden={!visible}
       className={cn(
-        'fixed inset-x-0 bottom-0 z-40 border-t border-neutral-200 bg-parchment-card/95 shadow-[0_-8px_24px_-16px_rgba(16,32,26,0.25)] backdrop-blur-sm transition-transform duration-300 ease-out',
+        // Same frosted-glass recipe as the header bar (translucent parchment
+        // + backdrop blur), so the two read as a matching pair of chrome.
+        'fixed inset-x-0 bottom-0 z-40 border-t border-neutral-200/70 bg-parchment-card/80 shadow-[0_-8px_24px_-18px_rgba(16,32,26,0.25)] backdrop-blur-md transition-transform duration-300 ease-out',
         visible ? 'translate-y-0' : 'translate-y-full pointer-events-none'
       )}
     >
