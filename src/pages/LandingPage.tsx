@@ -10,7 +10,7 @@ import { OTHER_COLONIA_VALUE, normalizePhone, type PropertyAge, type Amenity } f
 import { estimatePreliminaryRange, type PreliminaryEstimate } from '@shared/pricing';
 import { COPY } from '@shared/copy';
 
-type Step = 'hero' | 'location' | 'basics' | 'analyzing' | 'contact' | 'reveal';
+type Step = 'hero' | 'location' | 'basics' | 'contact' | 'analyzing' | 'reveal';
 
 function parseRoomCount(v: string): number | undefined {
   if (!v) return undefined;
@@ -117,7 +117,12 @@ export function LandingPage() {
           m2Terreno: m2Terreno ? Number(m2Terreno) : undefined,
         })
       );
-      setStep('reveal');
+      // The analyzing animation now plays after contact info is submitted
+      // (not before it) -- the estimate above is already computed from the
+      // visitor's real answers, so this reads as "processing your actual
+      // data" rather than a generic pre-roll before asking for a phone
+      // number.
+      setStep('analyzing');
     } catch (err) {
       setErrorMessage(err instanceof Error ? err.message : 'No se pudo enviar tu solicitud.');
     } finally {
@@ -163,12 +168,8 @@ export function LandingPage() {
             amenidades={amenidades}
             setAmenidades={setAmenidades}
             onBack={() => setStep('location')}
-            onContinue={() => setStep('analyzing')}
+            onContinue={() => setStep('contact')}
           />
-        )}
-
-        {step === 'analyzing' && (
-          <WizardAnalyzingStep colonia={resolvedColonia} onDone={() => setStep('contact')} />
         )}
 
         {step === 'contact' && (
@@ -190,6 +191,10 @@ export function LandingPage() {
             onBack={() => setStep('basics')}
             onSubmit={handleContactSubmit}
           />
+        )}
+
+        {step === 'analyzing' && (
+          <WizardAnalyzingStep colonia={resolvedColonia} onDone={() => setStep('reveal')} />
         )}
 
         {step === 'reveal' &&
