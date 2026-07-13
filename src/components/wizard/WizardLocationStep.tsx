@@ -5,7 +5,7 @@ import {
   ZONA_ESMERALDA_COLONIAS_EXTENDED,
   OTHER_COLONIA_VALUE,
 } from '@shared/validation';
-import { coloniaPhoto, sampleListingPhotos } from '@shared/comparableListings';
+import { coloniaPhoto, sampleListingPhotos, optimizedPhotoUrl } from '@shared/comparableListings';
 import { COPY } from '@shared/copy';
 import { WizardShell } from './WizardShell';
 import { inputClass, labelClass } from './formStyles';
@@ -55,9 +55,12 @@ function ColoniaCard({ colonia, active, disabled, onSelect }: ColoniaCardProps) 
       >
         {photo && !imgFailed ? (
           <img
-            src={photo}
+            src={optimizedPhotoUrl(photo, 240)}
+            srcSet={`${optimizedPhotoUrl(photo, 240)} 240w, ${optimizedPhotoUrl(photo, 480)} 480w`}
+            sizes="(min-width: 640px) 240px, 45vw"
             alt={colonia}
             loading="lazy"
+            decoding="async"
             className="h-full w-full object-cover"
             referrerPolicy="no-referrer"
             onError={() => setImgFailed(true)}
@@ -75,7 +78,7 @@ function ColoniaCard({ colonia, active, disabled, onSelect }: ColoniaCardProps) 
           </div>
         )}
       </div>
-      <p className="line-clamp-2 text-xs font-semibold leading-tight text-neutral-800">{colonia}</p>
+      <p className="line-clamp-2 text-sm font-semibold leading-tight text-neutral-800">{colonia}</p>
     </button>
   );
 }
@@ -143,11 +146,9 @@ export function WizardLocationStep(props: Props) {
       description={COPY.location.description}
       step={{ current: 1, total: 3 }}
       onBack={props.onBack}
-      hideFacetRule
     >
       <div className="flex flex-col gap-4">
         <div>
-          <label className={labelClass}>{COPY.location.fieldLabel}</label>
           <div className="grid grid-cols-2 gap-3">
             {ZONA_ESMERALDA_COLONIAS.map((c) => (
               <ColoniaCard
@@ -176,9 +177,11 @@ export function WizardLocationStep(props: Props) {
               {TEASER_PHOTOS.map((photo, i) => (
                 <img
                   key={photo}
-                  src={photo}
+                  src={optimizedPhotoUrl(photo, 80)}
                   alt=""
                   aria-hidden="true"
+                  loading="lazy"
+                  decoding="async"
                   referrerPolicy="no-referrer"
                   className={cn(
                     'absolute h-9 w-9 rounded-lg border-2 border-white object-cover shadow-sm',

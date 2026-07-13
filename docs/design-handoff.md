@@ -45,7 +45,7 @@ Six steps, tracked by a `step` state machine: `hero → location → basics → 
 **On screen, top to bottom:**
 1. Eyebrow ("Zona Esmeralda · Atizapán de Zaragoza"), headline **"¿Cuánto vale mi casa hoy?"**, a short colored tagline ("Análisis de mercado y competencia"), and one line of body copy ("Conoce el valor real de tu propiedad hoy, con datos de tu zona.").
 2. Primary CTA — **"Conoce el valor de tu propiedad."**
-3. A facet-rule hairline, then three trust marks: **Sin ningún costo · Asesores locales · Con data actualizada.**
+3. Three trust marks: **Sin ningún costo · Asesores locales · Con data actualizada.**
 4. **Team section** (a glass card): eyebrow "Tu equipo en la zona," title "Tu equipo de profesionales," a subline naming the zones covered, a reverse-scrolling marquee of the full real team roster (photo + first/last name, no titles), a plain company-wide statement ("Más de 15 años de experiencia en Zona Esmeralda. Conocemos muy bien el mercado y qué lo hace único." — deliberately **not** attributed to any one person, no avatar or name attached to it), and a 3-item checklist (acompañamiento, tecnología, alianzas).
 5. An auto-scrolling marquee of four "why us" expertise cards (Conocimiento local, Método basado en datos, Acompañamiento real, Portafolio activo) — scrolls the opposite direction from the team marquee above it so the two don't read as one continuous conveyor.
 6. **Metodología** card (shared component, also reused on the reveal screen — see below).

@@ -19,17 +19,12 @@ export function PreliminaryPricingBar({ estimate }: Props) {
     // positioned (so they don't contribute to this container's height) and
     // extend well past the bar itself; without this the next element in
     // flow renders overlapping them instead of below them.
-    <div className="pt-20 pb-14">
+    <div className="pt-24 pb-20">
 
       <div className="relative mx-1">
         {/* Draws in from the left instead of just appearing -- the bar
             reads as being plotted, then the pin lands once it's done. */}
-        <div
-          className="h-2 animate-draw-line rounded-full shadow-inner"
-          style={{
-            background: 'linear-gradient(90deg, var(--color-brass-soft) 0%, var(--color-emerald-glow) 50%, var(--color-brass-soft) 100%)',
-          }}
-        />
+        <div className="h-2 animate-draw-line rounded-full bg-gradient-to-r from-red-500 via-emerald-400 to-red-500 shadow-inner" />
 
         {/* Estimado pin, pinned at 50% -- true for both formula branches.
             Lands last, once the line has finished drawing, as the payoff. */}
@@ -56,24 +51,24 @@ export function PreliminaryPricingBar({ estimate }: Props) {
           className="absolute z-0 animate-in fade-in fill-mode-both duration-400 delay-300"
           style={{ left: '0%', top: '12px' }}
         >
-          <div className="mx-auto h-2.5 w-0.5 rounded-full bg-white/30" />
+          <div className="mx-auto h-2.5 w-0.5 rounded-full bg-red-500" />
           <div className="mt-1.5 flex flex-col whitespace-nowrap">
-            <span className="font-mono text-[11px] font-semibold tabular-nums text-neutral-200">
+            <span className="font-mono text-[11px] font-semibold tabular-nums text-red-700">
               {formatCurrency(estimate.low)}
             </span>
-            <span className="text-[9px] font-bold uppercase tracking-wider text-neutral-400">Mín</span>
+            <span className="text-[9px] font-bold uppercase tracking-wider text-red-600">Mín</span>
           </div>
         </div>
         <div
           className="absolute z-0 animate-in fade-in fill-mode-both duration-400 delay-500"
           style={{ right: '0%', top: '12px' }}
         >
-          <div className="ml-auto h-2.5 w-0.5 rounded-full bg-white/30" />
+          <div className="ml-auto h-2.5 w-0.5 rounded-full bg-red-500" />
           <div className="mt-1.5 flex flex-col items-end whitespace-nowrap">
-            <span className="font-mono text-[11px] font-semibold tabular-nums text-neutral-200">
+            <span className="font-mono text-[11px] font-semibold tabular-nums text-red-700">
               {formatCurrency(estimate.high)}
             </span>
-            <span className="text-[9px] font-bold uppercase tracking-wider text-neutral-400">Máx</span>
+            <span className="text-[9px] font-bold uppercase tracking-wider text-red-600">Máx</span>
           </div>
         </div>
       </div>

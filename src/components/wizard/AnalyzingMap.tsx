@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import { useLoadScript, GoogleMap } from '@react-google-maps/api';
 import { Search } from 'lucide-react';
 import { NEIGHBORHOOD_COORDINATES, ZONA_ESMERALDA_CENTER } from '@shared/neighborhoods';
-import { COMPARABLE_LISTINGS } from '@shared/comparableListings';
+import { readyComparableListings } from '@shared/comparableListings';
 import { MAP_STYLES, smoothZoomTo } from './NeighborhoodMap';
 
 interface Props {
@@ -63,7 +63,7 @@ export function AnalyzingMap({ colonia, narrow }: Props) {
     (map: google.maps.Map) => {
       markersRef.current.forEach((m) => m.setMap(null));
       markersRef.current = [];
-      const comps = COMPARABLE_LISTINGS[colonia] ?? [];
+      const comps = readyComparableListings(colonia);
       const center = NEIGHBORHOOD_COORDINATES[colonia] ?? ZONA_ESMERALDA_CENTER;
       const points = comps.length > 0 ? comps.map((c) => ({ lat: c.lat, lng: c.lng })) : [center];
       points.forEach((p) => {

@@ -27,10 +27,20 @@ const ZONA_ESMERALDA_COLONIAS_EXTENDED = [
   'Club de Golf Chiluca',
   'La Estadía',
   'Prado Largo',
+  // Keep temporary campaign areas in sync with shared/validation.ts.
+  'Bosque Real',
+  'Interlomas',
 ] as const;
 const OTHER_COLONIA_VALUE = 'otra';
 const PUBLIC_PROPERTY_TYPES = ['Casa', 'Departamento', 'Terreno'] as const;
-const PROPERTY_CONDITIONS = ['Para reformar', 'Buen estado', 'Remodelada', 'Nueva'] as const;
+// Keep in sync with PROPERTY_AGE_RANGES in shared/validation.ts.
+const PROPERTY_AGE_RANGES = [
+  'A estrenar',
+  'Menos de 5 años',
+  'Entre 5 y 10 años',
+  'Entre 10 y 20 años',
+  'Más de 20 años',
+] as const;
 // Keep in sync with AMENITIES in shared/validation.ts.
 const AMENITIES = [
   'Casa inteligente',
@@ -58,6 +68,18 @@ function sanitizeText(input: unknown, maxLen: number): string {
 
 const RATE_LIMIT_MAX = 5;
 const RATE_LIMIT_WINDOW_SECONDS = 600;
+
+// Keep in sync with the client-side rule in WizardBasicsStep. These are
+// deliberately conservative guards against incompatible property details.
+function minimumConstructionM2(recamaras?: number, banos?: number): number {
+  const bedrooms = recamaras ?? 0;
+  const bathrooms = banos ?? 0;
+
+  if (bedrooms >= 4 || bathrooms >= 4) return 70;
+  if (bedrooms >= 3 || bathrooms >= 3) return 50;
+  if (bedrooms >= 2 && bathrooms >= 2) return 35;
+  return 1;
+}
 
 // Best-effort fallback only — holds within a single warm serverless
 // instance. Set UPSTASH_REDIS_REST_URL/TOKEN for durable, cross-instance
@@ -123,15 +145,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const colonia = sanitizeText(body.colonia, 120);
   const coloniaOtra = sanitizeText(body.colonia_otra, 120);
   const tipoPropiedad = body.tipoPropiedad;
-  const condicion = (PROPERTY_CONDITIONS as readonly string[]).includes(body.condicion ?? '')
-    ? (body.condicion as LeadSubmission['condicion'])
+  const antiguedad = (PROPERTY_AGE_RANGES as readonly string[]).includes(body.antiguedad ?? '')
+    ? (body.antiguedad as LeadSubmission['antiguedad'])
     : undefined;
   const m2Construccion =
     typeof body.m2Construccion === 'number' && body.m2Construccion > 0 && body.m2Construccion < 100000
       ? Math.round(body.m2Construccion)
       : undefined;
   const m2Terreno =
-    typeof body.m2Terreno === 'number' && body.m2Terreno > 0 && body.m2Terreno < 1000000
+    typeof body.m2Terreno === 'number' && body.m2Terreno >= 50 && body.m2Terreno < 1000000
       ? Math.round(body.m2Terreno)
       : undefined;
   const recamaras =
@@ -164,8 +186,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!tipoPropiedad || !(PUBLIC_PROPERTY_TYPES as readonly string[]).includes(tipoPropiedad)) {
     errors.push('tipoPropiedad');
   }
-  if (isTerreno && !m2Terreno) errors.push('m2Terreno');
-  if (!isTerreno && !m2Construccion) errors.push('m2Construccion');
+  if (!m2Terreno) errors.push('m2Terreno');
+  if (!isTerreno && (!m2Construccion || m2Construccion < minimumConstructionM2(recamaras, banos))) {
+    errors.push('m2Construccion');
+  }
   if (!consentimiento) errors.push('consentimiento');
 
   if (errors.length > 0) {
@@ -183,7 +207,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     telefono,
     colonia: isOtherColonia ? coloniaOtra : colonia,
     tipoPropiedad,
-    condicion,
+    antiguedad,
     m2Construccion,
     m2Terreno,
     recamaras,

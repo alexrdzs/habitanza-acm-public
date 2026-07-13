@@ -6,6 +6,7 @@ import { cn } from '../../lib/utils';
 
 interface Props {
   advisor: Advisor;
+  nombre: string;
   tipoPropiedad: string;
   colonia: string;
   visible: boolean;
@@ -16,8 +17,8 @@ interface Props {
 // visitor is reading. Only slides into view once they've scrolled past the
 // reassurance card, which already has its own inline CTA next to the firma
 // -- showing both at once would be redundant.
-export function AdvisorCTA({ advisor, tipoPropiedad, colonia, visible }: Props) {
-  const message = buildWhatsAppMessage(advisor, tipoPropiedad, colonia);
+export function AdvisorCTA({ advisor, nombre, tipoPropiedad, colonia, visible }: Props) {
+  const message = buildWhatsAppMessage(advisor, nombre, tipoPropiedad, colonia);
 
   return (
     <div

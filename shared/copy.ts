@@ -5,7 +5,7 @@
 // presentation concerns stay in the components -- this file is text only.
 //
 // Enum-like value/label pairs that are also validated server-side
-// (REFERRAL_SOURCES, AMENITIES, PROPERTY_CONDITIONS, PUBLIC_PROPERTY_TYPES)
+// (REFERRAL_SOURCES, AMENITIES, PROPERTY_AGE_RANGES, PUBLIC_PROPERTY_TYPES)
 // live in shared/validation.ts instead, since that file is already the
 // single source of truth for those and duplicating them here would create a
 // second place to keep in sync. Testimonials live in shared/testimonials.ts
@@ -91,8 +91,7 @@ export const COPY = {
 
   location: {
     title: '¿Dónde está tu propiedad?',
-    description: 'Cada zona es diferente, así que ajustamos el cálculo según la tuya.',
-    fieldLabel: 'Fraccionamiento *',
+    description: 'Sabemos que cada zona es diferente, por eso ajustamos el cálculo según dónde esté tu propiedad.',
     moreOptionsTitle: 'Ver más opciones',
     moreOptionsSubtitle: (count: number) => `${count} fraccionamientos más cerca de ti`,
     expandedPanelLabel: 'Otros fraccionamientos cercanos',
@@ -103,27 +102,23 @@ export const COPY = {
 
   basics: {
     title: 'Cuéntanos de tu propiedad',
-    description: 'Así comparamos tu propiedad con las correctas.',
+    description: 'Así podemos compararla con otras similares.',
+    sectionLabels: {
+      tamanoEspacios: 'Tamaño y espacios',
+      adicionales: 'Adicionales',
+    },
     fieldLabels: {
       tipoPropiedad: 'Tipo de propiedad *',
-      m2Construccion: 'm² construcción *',
-      m2TerrenoRequired: 'm² terreno *',
-      m2TerrenoOptional: 'm² terreno (opcional)',
+      m2Construccion: 'Construcción *',
+      m2TerrenoRequired: 'Terreno *',
       recamaras: 'Recámaras',
       banos: 'Baños',
-      condicion: 'Estado general de la propiedad',
-      caracteristicas: 'Características especiales (opcional)',
-    },
-    conditionOptions: {
-      nueva: { label: 'Nueva', detail: 'Nunca habitada o recién construida' },
-      buenEstado: { label: 'Buen estado', detail: 'Lista para habitar, mantenimiento al día' },
-      necesitaRenovacion: { label: 'Necesita renovación', detail: 'Requiere trabajo antes de habitarse' },
     },
   },
 
   contact: {
     title: 'Cuéntanos de ti',
-    description: 'Te enviamos tu rango de valor y el contacto de tu asesor.',
+    description: 'Así podremos ponernos en contacto y compartir el estimado de valor detallado.',
     fieldLabels: {
       nombre: 'Nombre completo *',
       telefono: 'Teléfono / WhatsApp *',
@@ -140,16 +135,16 @@ export const COPY = {
   },
 
   analyzing: {
-    title: 'Analizando tu zona',
-    description: 'Estamos preparando tu primera referencia de valor.',
-    completeLabel: 'Referencia lista',
+    title: 'Analizando la zona',
+    description: 'Estamos preparando un primer estimado de valor.',
+    completeLabel: 'Todo listo',
     stages: [
       {
         label: 'Ubicando tu propiedad',
         detail: 'Cruzamos tu fraccionamiento con el mapa de la zona para entender el entorno exacto que mueve tu valor.',
       },
       {
-        label: 'Revisando nuestro portafolio activo',
+        label: 'Revisando portafolio y similares',
         detail: 'Tenemos inventario real en tu zona: comparamos contra propiedades que existen, no las adivinamos.',
       },
       {
@@ -166,20 +161,24 @@ export const COPY = {
   reveal: {
     greeting: (firstName: string) => `Muchas gracias, ${firstName}.`,
     subtext: 'Con esta información podemos darte un rango aproximado.',
-    rangoEyebrow: 'Rango de precio',
-    headlinePrefix: 'Tu propiedad estaría en un rango de',
-    headlineJoiner: 'a',
-    caption: (colonia: string) => `Es un promedio de ${colonia} basado en datos históricos y nuestra experiencia en la zona.`,
-    advisorParagraph: (advisorFirstName: string, gender: 'm' | 'f') =>
-      `${advisorFirstName} es tu ${gender === 'f' ? 'asesora experta' : 'asesor experto'} en la zona y muy pronto se ` +
-      'pondrá en contacto contigo para resolver cualquier duda o agendar una cita. Así podrán platicar en persona y ' +
-      'definir el valor ideal para tu propiedad.',
-    ctaLabel: (advisorFirstName: string) => `Platicar con ${advisorFirstName}`,
+    headlinePrefix: 'Tu propiedad podría estar en un rango de:',
+    headlineRangePrefix: 'Entre',
+    headlineJoiner: 'y',
+    caption: (colonia: string) => `Esto es un promedio de ${colonia} basado en datos históricos y nuestra experiencia en la zona.`,
+    researchCaption: (colonia: string) =>
+      `Este es un rango preliminar de ${colonia}, basado en datos históricos y nuestra experiencia en la zona.`,
+    advisorParagraph: (advisorFirstName: string, gender: 'm' | 'f', colonia: string) =>
+      `${advisorFirstName} será tu ${gender === 'f' ? 'asesora experta' : 'asesor experto'} en ${colonia}. Muy pronto se ` +
+      'pondrá en contacto para platicar personalmente sobre ' +
+      'la estrategia ideal para vender tu propiedad.',
+    ctaLabel: (advisorFirstName: string) => `Enviar mensaje a ${advisorFirstName}`,
     mercadoEyebrow: 'Mercado de la zona',
     mercadoTitleWithComps: (colonia: string) => `Referencias reales en ${colonia}`,
     mercadoTitleNoComps: (colonia: string) => `Armando referencias para ${colonia}`,
-    notaPlaceholderTag: 'Nota sobre la zona [placeholder]',
-    notaPlaceholderBody: (colonia: string) => `Espacio reservado para una nota específica sobre ${colonia}: texto por definir.`,
+    notaPlaceholderTag: 'Nota sobre la zona',
+    notaPlaceholderBody: (colonia: string) =>
+      `Estamos reuniendo referencias específicas de ${colonia}. Tu Master Broker las revisará contigo para completar el análisis comparativo.`,
+    researchCardsLabel: (count: number) => `${count} referencias en investigación`,
     noCompsBody: (colonia: string) =>
       `Todavía no tenemos comparables específicos de ${colonia} en nuestro sistema, pero tu asesor los incluirá al ` +
       'preparar tu Análisis Comparativo de Mercado completo.',

@@ -21,6 +21,9 @@ export interface ComparableListing {
   photo?: string;
   lat: number;
   lng: number;
+  // Research templates remain in this source of truth but must never appear
+  // in visitor-facing maps or cards.
+  isPlaceholder?: boolean;
 }
 
 export const COMPARABLE_LISTINGS: Record<string, ComparableListing[]> = {
@@ -116,13 +119,60 @@ export const COMPARABLE_LISTINGS: Record<string, ComparableListing[]> = {
       lng: -99.302409,
     },
   ],
+
+  // RESEARCH QUEUE — Bosque Real
+  // Replace every TODO value with a real, active or recently sold comparable.
+  // Add a Pulppo/CDN image URL where available, then delete `isPlaceholder`.
+  // Do not publish zeros or approximate coordinates as completed comparables.
+  'Bosque Real': [
+    { tipo: 'TODO: comparable 1', precio: 0, m2: 0, lat: 0, lng: 0, isPlaceholder: true },
+    { tipo: 'TODO: comparable 2', precio: 0, m2: 0, lat: 0, lng: 0, isPlaceholder: true },
+    { tipo: 'TODO: comparable 3', precio: 0, m2: 0, lat: 0, lng: 0, isPlaceholder: true },
+    { tipo: 'TODO: comparable 4', precio: 0, m2: 0, lat: 0, lng: 0, isPlaceholder: true },
+    { tipo: 'TODO: comparable 5', precio: 0, m2: 0, lat: 0, lng: 0, isPlaceholder: true },
+  ],
+
+  // RESEARCH QUEUE — Interlomas
+  // Same workflow: complete all factual fields, add an optional photo, then
+  // delete `isPlaceholder` on each researched listing.
+  'Interlomas': [
+    { tipo: 'TODO: comparable 1', precio: 0, m2: 0, lat: 0, lng: 0, isPlaceholder: true },
+    { tipo: 'TODO: comparable 2', precio: 0, m2: 0, lat: 0, lng: 0, isPlaceholder: true },
+    { tipo: 'TODO: comparable 3', precio: 0, m2: 0, lat: 0, lng: 0, isPlaceholder: true },
+    { tipo: 'TODO: comparable 4', precio: 0, m2: 0, lat: 0, lng: 0, isPlaceholder: true },
+    { tipo: 'TODO: comparable 5', precio: 0, m2: 0, lat: 0, lng: 0, isPlaceholder: true },
+  ],
 };
 
 // The primary listing photo for a given colonia, if it has one. The
 // canonical way to look up a single photo -- components should call this
 // instead of reaching into COMPARABLE_LISTINGS directly.
+export function readyComparableListings(colonia: string): ComparableListing[] {
+  return (COMPARABLE_LISTINGS[colonia] ?? []).filter((listing) => !listing.isPlaceholder);
+}
+
+// Development/research-only entries. Render them as progress indicators, never
+// as factual listings, prices, or property pins.
+export function pendingComparableListings(colonia: string): ComparableListing[] {
+  return (COMPARABLE_LISTINGS[colonia] ?? []).filter((listing) => listing.isPlaceholder);
+}
+
 export function coloniaPhoto(colonia: string): string | undefined {
-  return COMPARABLE_LISTINGS[colonia]?.[0]?.photo;
+  return readyComparableListings(colonia).find((listing) => listing.photo)?.photo;
+}
+
+// The source listings come straight from Pulppo's CDN at full camera
+// resolution (2-3MB JPEGs, not resized for web) -- fine for a single reveal
+// screen photo, but the location step renders up to 11 of these at once in
+// small (~180px) grid cells, so serving the originals there wastes most of
+// the download on pixels nobody sees. This routes non-local photo URLs
+// through images.weserv.nl (a free resizing/re-encoding proxy) to request an
+// appropriately-sized, modern-format (webp) version instead. Falls back to
+// the original URL for anything already local or unrecognized.
+export function optimizedPhotoUrl(url: string, width: number, quality = 70): string {
+  if (!url.startsWith('http')) return url;
+  const stripped = url.replace(/^https?:\/\//, '');
+  return `https://images.weserv.nl/?url=${encodeURIComponent(stripped)}&w=${width}&q=${quality}&output=webp&fit=cover`;
 }
 
 // A representative sample of photos across different colonias, for purely
@@ -135,7 +185,7 @@ export function coloniaPhoto(colonia: string): string | undefined {
 export function sampleListingPhotos(count: number): string[] {
   const photos: string[] = [];
   for (const listings of Object.values(COMPARABLE_LISTINGS)) {
-    const photo = listings[0]?.photo;
+    const photo = listings.find((listing) => !listing.isPlaceholder && listing.photo)?.photo;
     if (photo) photos.push(photo);
     if (photos.length >= count) break;
   }

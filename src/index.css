@@ -78,33 +78,6 @@
 }
 
 @layer components {
-  /* A slim faceted hairline — a cut-gem nod to "Esmeralda" — used atop
-     step cards and as a section divider. Deliberately restrained: one
-     small diamond mark on a brass-to-transparent line, not an ornament. */
-  .facet-rule {
-    position: relative;
-    height: 1px;
-    background: linear-gradient(
-      to right,
-      transparent,
-      var(--color-brass-soft) 15%,
-      var(--color-brass) 50%,
-      var(--color-brass-soft) 85%,
-      transparent
-    );
-  }
-
-  .facet-rule::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 7px;
-    height: 7px;
-    background: var(--color-emerald-deep);
-    transform: translate(-50%, -50%) rotate(45deg);
-  }
-
   /* Infinite marquee — the track renders its children twice back to back
      and scrolls exactly one set's width, so the loop point is invisible. */
   @keyframes marquee {
