@@ -143,6 +143,7 @@ export function WizardLocationStep(props: Props) {
       description={COPY.location.description}
       step={{ current: 1, total: 3 }}
       onBack={props.onBack}
+      hideFacetRule
     >
       <div className="flex flex-col gap-4">
         <div>

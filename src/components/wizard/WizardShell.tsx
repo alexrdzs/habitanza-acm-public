@@ -48,6 +48,7 @@ interface Props {
   isNextLoading?: boolean;
   step?: { current: number; total: number };
   formRef?: RefObject<HTMLFormElement | null>;
+  hideFacetRule?: boolean;
 }
 
 export function WizardShell({
@@ -61,6 +62,7 @@ export function WizardShell({
   isNextLoading = false,
   step,
   formRef,
+  hideFacetRule = false,
 }: Props) {
   const handleNext = () => {
     if (formRef?.current) {
@@ -73,7 +75,7 @@ export function WizardShell({
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-5">
       <div className="overflow-hidden rounded-card-lg border border-neutral-200/70 bg-parchment-card/80 shadow-[0_1px_2px_rgba(16,32,26,0.04),0_12px_28px_-16px_rgba(16,32,26,0.18)] backdrop-blur-md">
-        <div className="facet-rule" />
+        {!hideFacetRule && <div className="facet-rule" />}
         <div className="border-b border-neutral-200/70 p-6 md:p-8">
           {step && <StepTimeline current={step.current} total={step.total} />}
           <h2 className="text-xl font-bold text-neutral-900 md:text-2xl">{title}</h2>
