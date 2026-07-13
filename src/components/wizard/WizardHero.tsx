@@ -43,8 +43,6 @@ export function WizardHero({ onStart }: Props) {
 
       <CtaButton onStart={onStart} />
 
-      <div className="facet-rule mx-auto max-w-xs" />
-
       <div className="mx-auto flex max-w-lg flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-0 sm:divide-x sm:divide-neutral-300">
         {COPY.hero.trustMarks.map((label, i) => {
           const Icon = TRUST_MARK_ICONS[i];

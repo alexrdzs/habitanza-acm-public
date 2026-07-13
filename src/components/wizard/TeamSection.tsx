@@ -3,7 +3,7 @@ import { TEAM_MEMBERS } from '@shared/team';
 import { COPY } from '@shared/copy';
 import { AdvisorAvatar } from './AdvisorAvatar';
 
-// The full active roster (see shared/team.ts) as a plain photo+name
+// The full active roster (see shared/team.ts) as a plain photo+first-name
 // marquee -- no cards, no titles, just faces -- so this reads as "here are
 // the real professionals behind Habitanza" rather than another form-y
 // module. Scrolls opposite the expertise-card marquee further down this
@@ -28,7 +28,7 @@ export function TeamSection() {
                 className="h-16 w-16 border-2 border-white shadow-sm"
                 iconClassName="h-6 w-6 text-neutral-400"
               />
-              <p className="text-xs font-semibold leading-tight text-neutral-800">{member.name}</p>
+              <p className="text-xs font-semibold leading-tight text-neutral-800">{member.firstName}</p>
             </div>
           ))}
         </div>

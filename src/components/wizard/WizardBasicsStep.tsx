@@ -1,32 +1,60 @@
-import { PUBLIC_PROPERTY_TYPES, AMENITIES } from '@shared/validation';
-import type { PropertyCondition, Amenity } from '@shared/validation';
+import { PUBLIC_PROPERTY_TYPES, AMENITIES, PROPERTY_AGE_RANGES } from '@shared/validation';
+import type { PropertyAge, Amenity } from '@shared/validation';
 import { COPY } from '@shared/copy';
 import { WizardShell } from './WizardShell';
-import { ConditionQuickPicker } from './ConditionQuickPicker';
 import { SegmentedControl } from './SegmentedControl';
 import { ThousandsInput } from './ThousandsInput';
-import { labelClass } from './formStyles';
-import { Check, Trees, Waves, Wifi, Flame, Gamepad2, Mountain } from 'lucide-react';
+import { inputClass } from './formStyles';
+import {
+  Bath,
+  BedDouble,
+  Bot,
+  Building2,
+  CalendarDays,
+  ChevronDown,
+  Eye,
+  Flame,
+  Gamepad2,
+  House,
+  LandPlot,
+  Ruler,
+  Sparkles,
+  Trees,
+  Waves,
+  type LucideIcon,
+} from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 const ROOM_COUNT_OPTIONS = ['1', '2', '3', '4', '5+'];
 
-const boxClass = 'rounded-2xl border border-neutral-200/70 bg-parchment-card/80 p-4 backdrop-blur-md';
+function minimumConstructionM2(recamaras: string, banos: string): number {
+  const bedrooms = recamaras === '5+' ? 5 : Number(recamaras);
+  const bathrooms = banos === '5+' ? 5 : Number(banos);
 
-const AMENITY_ICONS: Record<Amenity, typeof Trees> = {
-  'Casa inteligente': Wifi,
+  if (bedrooms >= 4 || bathrooms >= 4) return 70;
+  if (bedrooms >= 3 || bathrooms >= 3) return 50;
+  if (bedrooms >= 2 && bathrooms >= 2) return 35;
+  return 1;
+}
+
+const AMENITY_ICONS: Record<Amenity, LucideIcon> = {
+  'Casa inteligente': Bot,
   'Calefacción integrada': Flame,
   'Jardín muy amplio': Trees,
   'Salón de juegos': Gamepad2,
   'Alberca o Jacuzzi': Waves,
-  'Vistas panorámicas': Mountain,
+  'Vistas panorámicas': Eye,
 };
+
+// WizardShell already provides the primary surface. Keep field groups flat and
+// let the inputs and selection controls carry their own affordance.
+const boxClass = 'space-y-2';
 
 interface Props {
   tipoPropiedad: string;
   setTipoPropiedad: (v: string) => void;
-  condicion: string;
-  setCondicion: (v: PropertyCondition) => void;
+  antiguedad: string;
+  setAntiguedad: (v: PropertyAge | '') => void;
   m2Construccion: string;
   setM2Construccion: (v: string) => void;
   m2Terreno: string;
@@ -43,9 +71,15 @@ interface Props {
 
 export function WizardBasicsStep(props: Props) {
   const isTerreno = props.tipoPropiedad === 'Terreno';
+  const minimumConstruction = minimumConstructionM2(props.recamaras, props.banos);
+  const hasLotBelowMinimum = props.m2Terreno !== '' && Number(props.m2Terreno) < 50;
+  const hasConstructionBelowMinimum =
+    !isTerreno && props.m2Construccion !== '' && Number(props.m2Construccion) < minimumConstruction;
 
   const canContinue =
-    !!props.tipoPropiedad && (isTerreno ? Number(props.m2Terreno) > 0 : Number(props.m2Construccion) > 0);
+    !!props.tipoPropiedad &&
+    Number(props.m2Terreno) >= 50 &&
+    (isTerreno || Number(props.m2Construccion) >= minimumConstruction);
 
   function toggleAmenity(a: Amenity) {
     props.setAmenidades(
@@ -62,34 +96,61 @@ export function WizardBasicsStep(props: Props) {
       onNext={props.onContinue}
       nextDisabled={!canContinue}
     >
-      <div className="grid grid-cols-2 gap-3">
-        <div className={cn(boxClass, 'col-span-2')}>
-          <label className={labelClass}>{COPY.basics.fieldLabels.tipoPropiedad}</label>
+      <div className="space-y-6 pb-2">
+        <section className="space-y-4">
+          <h3 className="flex items-center gap-2 text-lg font-medium text-neutral-800">
+            <Building2 className="h-5 w-5 text-brand-500" />
+            {COPY.basics.fieldLabels.tipoPropiedad}
+          </h3>
           <SegmentedControl
             options={PUBLIC_PROPERTY_TYPES}
             value={props.tipoPropiedad}
             onChange={props.setTipoPropiedad}
+            className="w-full"
           />
-        </div>
+        </section>
 
-        {!isTerreno && (
-          <div className={boxClass}>
-            <label className={labelClass}>{COPY.basics.fieldLabels.m2Construccion}</label>
-            <ThousandsInput value={props.m2Construccion} onChange={props.setM2Construccion} placeholder="220" />
+        <section className="space-y-4 border-t border-neutral-200 pt-6">
+          <h3 className="flex items-center gap-2 text-lg font-medium text-neutral-800">
+            <Ruler className="h-5 w-5 text-brand-500" />
+            {COPY.basics.sectionLabels.tamanoEspacios}
+          </h3>
+          <div className="grid grid-cols-2 gap-3">
+            {!isTerreno && (
+              <div className={boxClass}>
+                <label className="flex items-center gap-1.5 text-sm font-medium text-neutral-700">
+                  <House className="h-4 w-4 text-neutral-400" />
+                  {COPY.basics.fieldLabels.m2Construccion}
+                </label>
+                <ThousandsInput value={props.m2Construccion} onChange={props.setM2Construccion} placeholder="m²" />
+                {hasConstructionBelowMinimum && (
+                  <p className="text-xs font-medium text-red-600" role="alert">
+                    Con estas habitaciones, la construcción debe ser de al menos {minimumConstruction} m².
+                  </p>
+                )}
+              </div>
+            )}
+            <div className={cn(boxClass, isTerreno && 'col-span-2')}>
+              <label className="flex items-center gap-1.5 text-sm font-medium text-neutral-700">
+                <LandPlot className="h-4 w-4 text-neutral-400" />
+                {COPY.basics.fieldLabels.m2TerrenoRequired}
+              </label>
+              <ThousandsInput value={props.m2Terreno} onChange={props.setM2Terreno} placeholder="m²" />
+              {hasLotBelowMinimum && (
+                <p className="text-xs font-medium text-red-600" role="alert">
+                  El terreno debe ser de al menos 50 m².
+                </p>
+              )}
+            </div>
           </div>
-        )}
-        <div className={cn(boxClass, isTerreno && 'col-span-2')}>
-          <label className={labelClass}>
-            {isTerreno ? COPY.basics.fieldLabels.m2TerrenoRequired : COPY.basics.fieldLabels.m2TerrenoOptional}
-          </label>
-          <ThousandsInput value={props.m2Terreno} onChange={props.setM2Terreno} placeholder="350" />
-        </div>
 
-        {!isTerreno && (
-          <>
-            <div className={cn(boxClass, 'col-span-2 space-y-4')}>
+          {!isTerreno && (
+            <div className="space-y-4">
               <div>
-                <label className={labelClass}>{COPY.basics.fieldLabels.recamaras}</label>
+                <label className="mb-2 flex items-center gap-1.5 text-sm font-medium text-neutral-700">
+                  <BedDouble className="h-4 w-4 text-neutral-400" />
+                  {COPY.basics.fieldLabels.recamaras}
+                </label>
                 <SegmentedControl
                   options={ROOM_COUNT_OPTIONS}
                   value={props.recamaras}
@@ -98,7 +159,10 @@ export function WizardBasicsStep(props: Props) {
                 />
               </div>
               <div>
-                <label className={labelClass}>{COPY.basics.fieldLabels.banos}</label>
+                <label className="mb-2 flex items-center gap-1.5 text-sm font-medium text-neutral-700">
+                  <Bath className="h-4 w-4 text-neutral-400" />
+                  {COPY.basics.fieldLabels.banos}
+                </label>
                 <SegmentedControl
                   options={ROOM_COUNT_OPTIONS}
                   value={props.banos}
@@ -107,47 +171,59 @@ export function WizardBasicsStep(props: Props) {
                 />
               </div>
             </div>
+          )}
+        </section>
 
-            <div className={cn(boxClass, 'col-span-2')}>
-              <ConditionQuickPicker
-                label={COPY.basics.fieldLabels.condicion}
-                value={props.condicion}
-                onChange={props.setCondicion}
-              />
+        <section className="space-y-4 border-t border-neutral-200 pt-6">
+          <h3 className="flex items-center gap-2 text-lg font-medium text-neutral-800">
+            <Sparkles className="h-5 w-5 text-brand-500" />
+            {COPY.basics.sectionLabels.adicionales}
+          </h3>
+          {!isTerreno && (
+            <div className="relative">
+              <CalendarDays className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
+              <select
+                aria-label="Antigüedad de construcción (opcional)"
+                className={cn(inputClass, 'appearance-none pl-10 pr-10')}
+                value={props.antiguedad}
+                onChange={(event) => props.setAntiguedad(event.target.value as PropertyAge | '')}
+              >
+                <option value="">Antigüedad</option>
+                {PROPERTY_AGE_RANGES.map((age) => (
+                  <option key={age} value={age}>
+                    {age}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-700" />
             </div>
-          </>
-        )}
-
-        <div className={cn(boxClass, 'col-span-2')}>
-          <label className={labelClass}>{COPY.basics.fieldLabels.caracteristicas}</label>
-          <div className="grid grid-cols-2 gap-2">
-            {AMENITIES.map((a) => {
-              const active = props.amenidades.includes(a);
-              const Icon = AMENITY_ICONS[a];
-              return (
-                <button
-                  key={a}
-                  type="button"
-                  onClick={() => toggleAmenity(a)}
-                  className={cn(
-                    'flex items-center gap-1.5 rounded-input border px-3 py-2 text-left text-sm font-medium transition-all',
-                    active
-                      ? 'border-emerald-deep bg-emerald-deep/10 text-emerald-deep'
-                      : 'border-neutral-300 text-neutral-600 hover:border-neutral-400 hover:bg-neutral-50'
-                  )}
-                >
-                  <Icon className={cn('h-4 w-4 flex-shrink-0', active ? 'text-emerald-deep' : 'text-neutral-400')} />
-                  <span className="flex-1">{a}</span>
-                  {active && (
-                    <span className="flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-emerald-deep">
-                      <Check className="h-2.5 w-2.5 text-white" strokeWidth={3} />
-                    </span>
-                  )}
-                </button>
-              );
-            })}
+          )}
+          <div>
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
+              {AMENITIES.map((a) => {
+                const active = props.amenidades.includes(a);
+                const Icon = AMENITY_ICONS[a];
+                return (
+                  <button
+                    key={a}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => toggleAmenity(a)}
+                    className={cn(
+                      'flex min-h-16 items-center gap-3 rounded-xl border p-4 text-left text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2',
+                      active
+                        ? 'border-brand-500 bg-brand-500/5 text-neutral-900 shadow-sm'
+                        : 'border-neutral-200 bg-white text-neutral-600 hover:border-neutral-300 hover:bg-neutral-50'
+                    )}
+                  >
+                    <Icon className={cn('h-5 w-5 shrink-0', active ? 'text-brand-500' : 'text-neutral-400')} />
+                    <span>{a}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        </section>
       </div>
     </WizardShell>
   );

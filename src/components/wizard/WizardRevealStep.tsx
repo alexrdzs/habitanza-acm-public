@@ -7,8 +7,8 @@ import { MethodologySection } from './MethodologySection';
 import { TestimonialsCarousel } from './TestimonialsCarousel';
 import { AdvisorCTA } from './AdvisorCTA';
 import { AdvisorAvatar } from './AdvisorAvatar';
-import { ADVISORS, whatsappLink, buildWhatsAppMessage } from '@shared/advisors';
-import { COMPARABLE_LISTINGS } from '@shared/comparableListings';
+import { advisorsForColonia, whatsappLink, buildWhatsAppMessage } from '@shared/advisors';
+import { pendingComparableListings, readyComparableListings } from '@shared/comparableListings';
 import { COPY } from '@shared/copy';
 import type { PreliminaryEstimate } from '@shared/pricing';
 import { formatCurrency } from '../../lib/utils';
@@ -22,14 +22,18 @@ interface Props {
 
 export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: Props) {
   const firstName = nombre.trim().split(' ')[0] || 'gracias';
-  // Randomized once per visit so the same advisor's photo/name shown here
-  // also appears on the persistent WhatsApp bar below -- and so the team
-  // can compare inbound contact between Rogelio and Tere.
-  const advisor = useMemo(() => ADVISORS[Math.floor(Math.random() * ADVISORS.length)], []);
+  // Randomized once per visit from the right coverage pool, so the same
+  // advisor appears in the signature block and persistent WhatsApp bar.
+  const advisor = useMemo(() => {
+    const advisors = advisorsForColonia(colonia);
+    return advisors[Math.floor(Math.random() * advisors.length)];
+  }, [colonia]);
   const advisorFirstName = advisor.name.split(' ')[0];
-  const comps = COMPARABLE_LISTINGS[colonia] ?? [];
+  const comps = readyComparableListings(colonia);
+  const pendingComps = pendingComparableListings(colonia);
   const hasComps = comps.length > 0;
-  const message = buildWhatsAppMessage(advisor, tipoPropiedad, colonia);
+  const hasPendingComps = pendingComps.length > 0;
+  const message = buildWhatsAppMessage(advisor, nombre, tipoPropiedad, colonia);
 
   // The sticky bottom CTA only makes sense once the inline one next to the
   // firma has scrolled out of view -- otherwise there'd be two identical
@@ -48,47 +52,27 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
   }, []);
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 space-y-5 pb-20 duration-700">
+    <div className="animate-in fade-in slide-in-from-bottom-4 space-y-3 pb-20 duration-700 md:space-y-5">
       {/* Plain page text, not a card -- the greeting shouldn't be the thing
           that makes the first card feel heavy. Centered on mobile (where it
           reads as the screen's title), left-aligned once there's enough
           width for it to sit naturally beside the card below. */}
-      <div className="text-center md:text-left">
-        <h2 className="text-xl font-bold leading-snug text-neutral-900 md:text-2xl">{COPY.reveal.greeting(firstName)}</h2>
-        <p className="mt-1 text-base text-neutral-500">{COPY.reveal.subtext}</p>
+      <div className="pb-2 text-center md:text-left">
+        <h2 className="text-lg font-medium leading-snug text-neutral-900 md:text-xl">{COPY.reveal.greeting(firstName)}</h2>
+        <p className="mt-1 text-sm text-neutral-500">{COPY.reveal.subtext}</p>
       </div>
 
-      {/* The one card staged like a certificate being issued (dark ink
-          ground, brass trim): price, a personal note from the advisor in
-          first person, and their signature -- reads as one signed message
-          instead of the price bar dead-ending at the card's edge. */}
+      {/* The result belongs to the same warm, paper-like system as the entry
+          flow. It earns emphasis through scale and spacing, not a separate
+          dark visual language. */}
       <div
         ref={heroCardRef}
-        className="relative overflow-hidden rounded-card-lg bg-gradient-to-b from-ink-soft to-ink p-px shadow-[0_24px_48px_-24px_rgba(16,32,26,0.55)]"
+        className="overflow-hidden rounded-card-lg border border-neutral-200/70 bg-parchment-card/80 shadow-[0_1px_2px_rgba(16,32,26,0.04),0_12px_28px_-16px_rgba(16,32,26,0.18)] backdrop-blur-md"
       >
-        <div className="relative overflow-hidden rounded-[calc(var(--radius-card-lg)-1px)] p-7 md:p-10">
-          {/* Same ambient language as the analyzing screen's radar sweep --
-              a breathing glow plus a slow, very low-opacity rotating sheen
-              -- so the reveal reads as a live, tended result rather than a
-              static screenshot, without implying the card is still loading. */}
-          <div className="pointer-events-none absolute -left-10 -top-16 h-56 w-56 rounded-full bg-emerald-glow/25 blur-3xl animate-glow-pulse" />
-          <div
-            className="pointer-events-none absolute -bottom-20 -right-10 h-64 w-64 rounded-full bg-brass/20 blur-3xl animate-glow-pulse"
-            style={{ animationDelay: '1.5s' }}
-          />
-          <div
-            className="pointer-events-none absolute inset-0 animate-spin opacity-[0.08] [animation-duration:9s]"
-            style={{
-              background:
-                'conic-gradient(from 0deg, transparent 0deg, var(--color-emerald-glow) 50deg, transparent 130deg)',
-            }}
-          />
-
-          <p className="relative font-mono text-[10px] uppercase tracking-[0.15em] text-brass-soft">
-            {COPY.reveal.rangoEyebrow}
-          </p>
-          <h3 className="relative mt-2 text-lg font-bold leading-snug tabular-nums text-white md:text-xl">
-            {COPY.reveal.headlinePrefix}{' '}
+        <div className="p-7 text-center md:p-10">
+          <p className="text-sm font-medium text-neutral-600">{COPY.reveal.headlinePrefix}</p>
+          <h3 className="mt-2 text-2xl font-bold leading-tight tabular-nums text-neutral-900 md:text-4xl">
+            {COPY.reveal.headlineRangePrefix}{' '}
             <span className="animate-in fade-in slide-in-from-bottom-1 fill-mode-both duration-500 delay-100">
               {formatCurrency(estimate.low)}
             </span>{' '}
@@ -97,35 +81,35 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
               {formatCurrency(estimate.high)}
             </span>
           </h3>
-          <p className="relative mt-2 text-xs text-neutral-400 md:text-sm">{COPY.reveal.caption(colonia)}</p>
           <PreliminaryPricingBar estimate={estimate} />
-
-          <p className="relative mt-4 border-t border-white/10 pt-6 text-sm leading-relaxed text-neutral-300 md:text-base">
-            {COPY.reveal.advisorParagraph(advisorFirstName, advisor.gender)}
+          <p className="mx-auto max-w-lg text-center text-xs text-neutral-500 md:text-sm">
+            {hasPendingComps && !hasComps ? COPY.reveal.researchCaption(colonia) : COPY.reveal.caption(colonia)}
           </p>
 
-          {/* Centered rather than left-aligned -- on mobile this reads as a
-              tidy signature block (photo, name, title) instead of a form
-              row, and it no longer needs to fight the CTA for horizontal
-              space now that the button sits full-width below it. */}
-          <div className="relative mt-6 flex flex-col items-center border-t border-white/10 pt-6 text-center">
+          {/* Putting a real person before the follow-up message lets the
+              homeowner understand who is continuing the analysis before
+              being asked to take the next step. */}
+          <div className="mt-8 flex flex-col items-center border-t border-neutral-200/70 pt-6 text-center">
             <AdvisorAvatar
               advisor={advisor}
-              className="h-14 w-14 flex-shrink-0 border-2 border-white/25 bg-white/10"
-              iconClassName="h-6 w-6 text-white/70"
+              className="h-14 w-14 flex-shrink-0 border-2 border-brand-500/70 bg-neutral-100"
+              iconClassName="h-6 w-6 text-neutral-500"
             />
-            <p className="mt-2 text-sm font-bold text-white">{advisor.name}</p>
-            <p className="text-xs text-neutral-400">{advisor.roleLabel}</p>
-            <a
-              href={whatsappLink(advisor, message)}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-4 flex w-full items-center justify-center gap-2 rounded-pill bg-brand-500 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-transform active:scale-95 hover:bg-brand-600"
-            >
-              <MessageCircle className="h-4 w-4" />
-              {COPY.reveal.ctaLabel(advisorFirstName)}
-            </a>
+            <p className="mt-2 text-sm font-bold text-neutral-900">{advisor.name}</p>
+            <p className="text-xs text-neutral-500">{advisor.roleLabel}</p>
           </div>
+          <p className="mx-auto mt-5 max-w-lg text-center text-sm leading-relaxed text-neutral-600 md:text-base">
+            {COPY.reveal.advisorParagraph(advisorFirstName, advisor.gender, colonia)}
+          </p>
+          <a
+            href={whatsappLink(advisor, message)}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-pill bg-brand-500 px-4 py-3 text-sm font-semibold text-white shadow-[0_10px_24px_-8px_rgba(37,211,102,0.55)] transition-transform active:scale-95 hover:bg-brand-600"
+          >
+            <MessageCircle className="h-4 w-4" />
+            {COPY.reveal.ctaLabel(advisorFirstName)}
+          </a>
         </div>
       </div>
 
@@ -137,22 +121,21 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
           </h3>
         </div>
 
-        <div className="rounded-xl border border-dashed border-neutral-300 bg-neutral-50 px-4 py-3.5">
-          <p className="text-[10px] font-bold uppercase tracking-wide text-neutral-400">
-            {COPY.reveal.notaPlaceholderTag}
-          </p>
-          <p className="mt-1 text-sm italic leading-relaxed text-neutral-500">
-            {COPY.reveal.notaPlaceholderBody(colonia)}
-          </p>
+        <div className="border-l-2 border-brass/50 pl-4">
+          <p className="text-sm font-medium text-neutral-700">{COPY.reveal.notaPlaceholderTag}</p>
+          <p className="mt-1 text-sm leading-relaxed text-neutral-500">{COPY.reveal.notaPlaceholderBody(colonia)}</p>
         </div>
 
-        {hasComps ? (
+        {hasComps || hasPendingComps ? (
           <div className="space-y-3 md:flex md:gap-3 md:space-y-0">
             <div className="md:w-1/2">
-              <ComparablesMap listings={comps} />
+              <ComparablesMap listings={comps} colonia={colonia} researchCount={pendingComps.length} />
             </div>
             <div className="md:w-1/2">
-              <ComparableListingCards listings={comps} />
+              <ComparableListingCards
+                listings={hasComps ? comps : pendingComps}
+                researchLabel={hasPendingComps ? COPY.reveal.researchCardsLabel(pendingComps.length) : undefined}
+              />
             </div>
           </div>
         ) : (
@@ -167,7 +150,7 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
           before deciding whether to reach out. */}
       <TestimonialsCarousel />
 
-      <AdvisorCTA advisor={advisor} tipoPropiedad={tipoPropiedad} colonia={colonia} visible={isStickyBarVisible} />
+      <AdvisorCTA advisor={advisor} nombre={nombre} tipoPropiedad={tipoPropiedad} colonia={colonia} visible={isStickyBarVisible} />
     </div>
   );
 }

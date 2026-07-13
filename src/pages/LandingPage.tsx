@@ -6,7 +6,7 @@ import { WizardBasicsStep } from '../components/wizard/WizardBasicsStep';
 import { WizardAnalyzingStep } from '../components/wizard/WizardAnalyzingStep';
 import { WizardContactStep } from '../components/wizard/WizardContactStep';
 import { WizardRevealStep } from '../components/wizard/WizardRevealStep';
-import { OTHER_COLONIA_VALUE, normalizePhone, type PropertyCondition, type Amenity } from '@shared/validation';
+import { OTHER_COLONIA_VALUE, normalizePhone, type PropertyAge, type Amenity } from '@shared/validation';
 import { estimatePreliminaryRange, type PreliminaryEstimate } from '@shared/pricing';
 import { COPY } from '@shared/copy';
 
@@ -18,23 +18,28 @@ function parseRoomCount(v: string): number | undefined {
 }
 
 export function LandingPage() {
-  const [step, setStep] = useState<Step>('hero');
+  // Local-only visual QA shortcut. Vite replaces import.meta.env.DEV with
+  // false in production builds, so this can never bypass lead submission.
+  const previewParams = new URLSearchParams(window.location.search);
+  const isRevealPreview = import.meta.env.DEV && previewParams.get('preview') === 'reveal';
+  const revealPreviewColonia = previewParams.get('colonia') === 'interlomas' ? 'Interlomas' : 'Bosque Real';
+  const [step, setStep] = useState<Step>(() => (isRevealPreview ? 'reveal' : 'hero'));
 
   // Location
-  const [colonia, setColonia] = useState('');
+  const [colonia, setColonia] = useState(() => (isRevealPreview ? revealPreviewColonia : ''));
   const [coloniaOtra, setColoniaOtra] = useState('');
 
   // Property specifics
-  const [tipoPropiedad, setTipoPropiedad] = useState('');
-  const [condicion, setCondicion] = useState<PropertyCondition | ''>('Buen estado');
-  const [m2Construccion, setM2Construccion] = useState('');
-  const [m2Terreno, setM2Terreno] = useState('');
+  const [tipoPropiedad, setTipoPropiedad] = useState('Casa');
+  const [antiguedad, setAntiguedad] = useState<PropertyAge | ''>('');
+  const [m2Construccion, setM2Construccion] = useState(() => (isRevealPreview ? '240' : ''));
+  const [m2Terreno, setM2Terreno] = useState(() => (isRevealPreview ? '320' : ''));
   const [recamaras, setRecamaras] = useState('');
   const [banos, setBanos] = useState('');
   const [amenidades, setAmenidades] = useState<Amenity[]>([]);
 
   // Contact
-  const [nombre, setNombre] = useState('');
+  const [nombre, setNombre] = useState(() => (isRevealPreview ? 'Cliente' : ''));
   const [telefono, setTelefono] = useState('');
   const [comoNosConociste, setComoNosConociste] = useState('');
   const [comoNosConocisteOtro, setComoNosConocisteOtro] = useState('');
@@ -43,7 +48,16 @@ export function LandingPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [estimate, setEstimate] = useState<PreliminaryEstimate | null>(null);
+  const [estimate, setEstimate] = useState<PreliminaryEstimate | null>(() =>
+    isRevealPreview
+      ? estimatePreliminaryRange({
+          tipoPropiedad: 'Casa',
+          colonia: revealPreviewColonia,
+          m2Construccion: 240,
+          m2Terreno: 320,
+        })
+      : null
+  );
 
   const resolvedColonia = colonia === OTHER_COLONIA_VALUE ? coloniaOtra : colonia;
 
@@ -77,7 +91,7 @@ export function LandingPage() {
           colonia,
           colonia_otra: coloniaOtra || undefined,
           tipoPropiedad,
-          condicion: condicion || undefined,
+          antiguedad: antiguedad || undefined,
           m2Construccion: m2Construccion ? Number(m2Construccion) : undefined,
           m2Terreno: m2Terreno ? Number(m2Terreno) : undefined,
           recamaras: parseRoomCount(recamaras),
@@ -99,7 +113,6 @@ export function LandingPage() {
         estimatePreliminaryRange({
           tipoPropiedad,
           colonia: resolvedColonia,
-          condicion: condicion || undefined,
           m2Construccion: m2Construccion ? Number(m2Construccion) : undefined,
           m2Terreno: m2Terreno ? Number(m2Terreno) : undefined,
         })
@@ -114,15 +127,9 @@ export function LandingPage() {
 
   return (
     <div className="min-h-screen">
-      {/* A compact chrome bar rather than a logo floating on the page canvas
-          -- sticky so it stays reachable, and translucent/blurred so it
-          reads as a frosted pane sitting above the content, not another
-          flat block. Left-aligned and width-matched to main's container so
-          the logo sits on the same left edge as the content below it,
-          instead of centered like a hero banner. */}
-      <header className="sticky top-0 z-30 border-b border-neutral-200/70 bg-parchment-card/80 shadow-[0_8px_24px_-18px_rgba(16,32,26,0.25)] backdrop-blur-md">
-        <div className="mx-auto flex max-w-md items-center px-4 py-3 md:max-w-xl lg:max-w-2xl">
-          <Logo className="h-5 text-neutral-900" />
+      <header className="sticky top-0 z-30 border-b border-neutral-200 bg-white">
+        <div className="mx-auto flex max-w-md items-center px-4 py-4 md:max-w-xl lg:max-w-2xl">
+          <Logo className="h-7 text-neutral-900" />
         </div>
       </header>
       <main className="mx-auto max-w-md px-4 pt-8 pb-20 md:max-w-xl lg:max-w-2xl">
@@ -143,8 +150,8 @@ export function LandingPage() {
           <WizardBasicsStep
             tipoPropiedad={tipoPropiedad}
             setTipoPropiedad={setTipoPropiedad}
-            condicion={condicion}
-            setCondicion={setCondicion}
+            antiguedad={antiguedad}
+            setAntiguedad={setAntiguedad}
             m2Construccion={m2Construccion}
             setM2Construccion={setM2Construccion}
             m2Terreno={m2Terreno}

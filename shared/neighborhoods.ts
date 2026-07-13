@@ -17,6 +17,10 @@ export const NEIGHBORHOOD_COORDINATES: Record<string, { lat: number; lng: number
   'Club de Golf Chiluca': { lat: 19.5439857, lng: -99.30489589999999 },
   'La Estadía': { lat: 19.5354335, lng: -99.2993504 },
   'Prado Largo': { lat: 19.5554838, lng: -99.3104417 },
+  // Neighborhood-level centers (OpenStreetMap geocoder, 2026-07-13). These
+  // are only for temporary research dots, never property-level locations.
+  'Bosque Real': { lat: 19.4155848, lng: -99.2843137 },
+  Interlomas: { lat: 19.4024249, lng: -99.2720745 },
 };
 
 // Fallback center — roughly the middle of the six colonias above — used

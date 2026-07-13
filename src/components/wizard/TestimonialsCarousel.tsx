@@ -1,12 +1,13 @@
-import { useRef, useState } from 'react';
 import { Star, Quote } from 'lucide-react';
 import { TESTIMONIALS, type Testimonial } from '@shared/testimonials';
 import { COPY } from '@shared/copy';
-import { cn } from '../../lib/utils';
 
-function TestimonialCard({ t }: { t: Testimonial }) {
+function TestimonialCard({ t, isDuplicate = false }: { t: Testimonial; isDuplicate?: boolean }) {
   return (
-    <div className="flex w-[78%] flex-shrink-0 snap-center flex-col gap-2.5 rounded-2xl border border-neutral-200/70 bg-parchment-card/80 p-4 text-left backdrop-blur-md">
+    <div
+      aria-hidden={isDuplicate || undefined}
+      className="flex w-[78vw] max-w-[324px] flex-shrink-0 flex-col gap-2.5 rounded-2xl border border-neutral-200/70 bg-parchment-card/80 p-4 text-left backdrop-blur-md"
+    >
       <div className="flex items-center justify-between">
         <Quote className="h-4 w-4 text-emerald-deep/40" />
         <div className="flex gap-0.5">
@@ -25,18 +26,8 @@ function TestimonialCard({ t }: { t: Testimonial }) {
 // heading) -- lives on the Hero as one more trust signal before someone
 // commits to starting the wizard, not as the reveal screen's payoff.
 export function TestimonialsCarousel() {
-  const scrollerRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  function handleScroll() {
-    const el = scrollerRef.current;
-    if (!el) return;
-    const cardWidth = el.scrollWidth / TESTIMONIALS.length;
-    setActiveIndex(Math.round(el.scrollLeft / cardWidth));
-  }
-
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 pt-4">
       <div className="text-center">
         <p className="font-mono text-[10px] font-medium uppercase tracking-[0.15em] text-neutral-400">
           {COPY.testimonials.eyebrow}
@@ -44,23 +35,12 @@ export function TestimonialsCarousel() {
         <h3 className="mt-1 text-sm font-bold text-neutral-600">{COPY.testimonials.title}</h3>
       </div>
 
-      <div
-        ref={scrollerRef}
-        onScroll={handleScroll}
-        className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      >
-        {TESTIMONIALS.map((t) => (
-          <TestimonialCard key={t.name} t={t} />
-        ))}
-      </div>
-
-      <div className="flex justify-center gap-1.5">
-        {TESTIMONIALS.map((_, i) => (
-          <div
-            key={i}
-            className={cn('h-1.5 rounded-full transition-all', i === activeIndex ? 'w-4 bg-brand-500' : 'w-1.5 bg-neutral-300')}
-          />
-        ))}
+      <div className="-mx-4 overflow-hidden pb-1 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+        <div className="marquee-track flex w-max gap-3">
+          {[...TESTIMONIALS, ...TESTIMONIALS].map((t, i) => (
+            <TestimonialCard key={`${t.name}-${i}`} t={t} isDuplicate={i >= TESTIMONIALS.length} />
+          ))}
+        </div>
       </div>
     </div>
   );

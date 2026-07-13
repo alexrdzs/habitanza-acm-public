@@ -26,6 +26,10 @@ export const ZONA_ESMERALDA_COLONIAS_EXTENDED = [
   'Club de Golf Chiluca',
   'La Estadía',
   'Prado Largo',
+  // Temporary campaign coverage. These zones use the generic preliminary
+  // baseline until their local comparable data is added.
+  'Bosque Real',
+  'Interlomas',
 ] as const;
 
 // Sentinel value for "my colonia isn't in the list" — paired with the
@@ -36,12 +40,14 @@ export const OTHER_COLONIA_VALUE = 'otra';
 export const PUBLIC_PROPERTY_TYPES = ['Casa', 'Departamento', 'Terreno'] as const;
 export type PublicPropertyType = (typeof PUBLIC_PROPERTY_TYPES)[number];
 
-// Matches the canonical 4-option PropertyCondition scale used across the
-// authenticated Habitanza-ACM tool — same strings, same order, same
-// default ('Buen estado'), so a broker building the real ACM later sees a
-// familiar value rather than a free-text guess.
-export const PROPERTY_CONDITIONS = ['Para reformar', 'Buen estado', 'Remodelada', 'Nueva'] as const;
-export type PropertyCondition = (typeof PROPERTY_CONDITIONS)[number];
+export const PROPERTY_AGE_RANGES = [
+  'A estrenar',
+  'Menos de 5 años',
+  'Entre 5 y 10 años',
+  'Entre 10 y 20 años',
+  'Más de 20 años',
+] as const;
+export type PropertyAge = (typeof PROPERTY_AGE_RANGES)[number];
 
 // Optional "Características especiales" chips on the basics step — not used
 // by the preliminary pricing formula, just extra context passed to the
@@ -71,7 +77,7 @@ export interface LeadSubmission {
   colonia: string; // one of ZONA_ESMERALDA_COLONIAS, or OTHER_COLONIA_VALUE
   colonia_otra?: string;
   tipoPropiedad: PublicPropertyType;
-  condicion?: PropertyCondition;
+  antiguedad?: PropertyAge;
   m2Construccion?: number;
   m2Terreno?: number;
   recamaras?: number;
