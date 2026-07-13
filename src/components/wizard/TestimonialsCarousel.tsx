@@ -28,15 +28,15 @@ function TestimonialCard({ t, isDuplicate = false }: { t: Testimonial; isDuplica
 export function TestimonialsCarousel() {
   return (
     <div className="space-y-3 pt-4">
-      <div className="text-center">
+      <div className="mb-3 text-center">
         <p className="font-mono text-[10px] font-medium uppercase tracking-[0.15em] text-neutral-400">
           {COPY.testimonials.eyebrow}
         </p>
         <h3 className="mt-1 text-sm font-bold text-neutral-600">{COPY.testimonials.title}</h3>
       </div>
 
-      <div className="-mx-4 overflow-hidden pb-1 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
-        <div className="marquee-track flex w-max gap-3">
+      <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden pb-1 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+        <div className="marquee-track-testimonials flex w-max gap-3">
           {[...TESTIMONIALS, ...TESTIMONIALS].map((t, i) => (
             <TestimonialCard key={`${t.name}-${i}`} t={t} isDuplicate={i >= TESTIMONIALS.length} />
           ))}

@@ -93,6 +93,16 @@
     animation-play-state: paused;
   }
 
+  /* Testimonial cards are wider and their duplicated track is longer than
+     the expertise strip. A longer loop keeps their perceived speed aligned. */
+  .marquee-track-testimonials {
+    animation: marquee 60s linear infinite;
+  }
+
+  .marquee-track-testimonials:hover {
+    animation-play-state: paused;
+  }
+
   /* Same loop, opposite direction -- used where a second scrolling row
      shares a screen with .marquee-track (e.g. the Hero's team strip vs its
      expertise-card marquee) so the two don't read as one wide conveyor. */
@@ -142,6 +152,7 @@
      visibly cut-off duplicate row) -- stop it at its natural, untranslated
      position instead. */
   .marquee-track,
+  .marquee-track-testimonials,
   .marquee-track-reverse {
     animation: none !important;
     transform: none !important;

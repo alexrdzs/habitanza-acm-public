@@ -58,7 +58,7 @@ export function WizardHero({ onStart }: Props) {
       <TeamSection />
 
       <div
-        className="-mx-4 overflow-hidden pb-2 pt-1 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]"
+        className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden pb-2 pt-1 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]"
       >
         <div className="marquee-track flex w-max gap-3">
           {[...COPY.hero.expertiseCards, ...COPY.hero.expertiseCards].map(({ title, detail }, i) => {
