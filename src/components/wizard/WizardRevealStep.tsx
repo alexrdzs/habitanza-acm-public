@@ -71,8 +71,7 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
       >
         <div className="p-7 text-center md:p-10">
           <p className="text-sm font-medium text-neutral-600">{COPY.reveal.headlinePrefix}</p>
-          <h3 className="mt-2 text-2xl font-bold leading-tight tabular-nums text-neutral-900 md:text-4xl">
-            {COPY.reveal.headlineRangePrefix}{' '}
+          <h3 className="mt-2 text-lg font-bold leading-tight tabular-nums text-neutral-900 sm:text-2xl md:text-4xl">
             <span className="animate-in fade-in slide-in-from-bottom-1 fill-mode-both duration-500 delay-100">
               {formatCurrency(estimate.low)}
             </span>{' '}

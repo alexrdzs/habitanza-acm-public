@@ -162,8 +162,7 @@ export const COPY = {
     greeting: (firstName: string) => `Muchas gracias, ${firstName}.`,
     subtext: 'Con esta información podemos darte un rango aproximado.',
     headlinePrefix: 'Tu propiedad podría estar en un rango de:',
-    headlineRangePrefix: 'Entre',
-    headlineJoiner: 'y',
+    headlineJoiner: 'a',
     caption: (colonia: string) => `Esto es un promedio de ${colonia} basado en datos históricos y nuestra experiencia en la zona.`,
     researchCaption: (colonia: string) =>
       `Este es un rango preliminar de ${colonia}, basado en datos históricos y nuestra experiencia en la zona.`,

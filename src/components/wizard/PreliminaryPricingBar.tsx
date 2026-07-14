@@ -60,7 +60,7 @@ export function PreliminaryPricingBar({ estimate }: Props) {
               <span className="font-mono text-sm font-semibold tabular-nums text-white">
                 {formatCurrency(estimate.mid)}
               </span>
-              <span className="text-[8px] font-bold uppercase tracking-wider text-emerald-glow">Estimado</span>
+              <span className="text-[8px] font-bold uppercase tracking-wider text-emerald-glow">Precio aprox</span>
               <div className="absolute -bottom-1 left-1/2 h-2 w-2 -translate-x-1/2 rotate-45 bg-ink" />
             </div>
             <div className="h-3.5 w-0.5 rounded-full bg-brand-500/50" />
