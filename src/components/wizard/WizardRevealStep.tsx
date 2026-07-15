@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { FileSearch, Info, MessageCircle, Route, Target } from 'lucide-react';
+import { ChevronDown, FileSearch, Info, MessageCircle, Route, Target } from 'lucide-react';
 import { PreliminaryPricingBar } from './PreliminaryPricingBar';
 import { ComparablesMap } from './ComparablesMap';
 import { ComparableListingCards } from './ComparableListingCards';
@@ -53,21 +53,34 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
   const zoneReference = referencePerM2(colonia, tipoPropiedad);
   const rangeWidth = formatCurrency(estimate.high - estimate.low);
 
-  // The sticky bottom CTA only makes sense once the inline one next to the
-  // firma has scrolled out of view -- otherwise there'd be two identical
-  // WhatsApp buttons on screen at once.
+  // The sticky bottom CTA appears once the price panel has scrolled away
+  // (so there's always a way to reach the advisor while reading the
+  // mini-ACM) and yields while section 03's own firma + CTA is on screen,
+  // so two green WhatsApp buttons never stack at the bottom of the
+  // viewport.
   const heroCardRef = useRef<HTMLDivElement>(null);
-  const [isStickyBarVisible, setIsStickyBarVisible] = useState(false);
+  const inlineCtaRef = useRef<HTMLDivElement>(null);
+  const [isPanelOffscreen, setIsPanelOffscreen] = useState(false);
+  const [isInlineCtaVisible, setIsInlineCtaVisible] = useState(false);
 
   useEffect(() => {
-    const el = heroCardRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(([entry]) => setIsStickyBarVisible(!entry.isIntersecting), {
+    const panel = heroCardRef.current;
+    const inlineCta = inlineCtaRef.current;
+    if (!panel || !inlineCta) return;
+    const panelObserver = new IntersectionObserver(([entry]) => setIsPanelOffscreen(!entry.isIntersecting), {
       threshold: 0,
     });
-    observer.observe(el);
-    return () => observer.disconnect();
+    const ctaObserver = new IntersectionObserver(([entry]) => setIsInlineCtaVisible(entry.isIntersecting), {
+      threshold: 0,
+    });
+    panelObserver.observe(panel);
+    ctaObserver.observe(inlineCta);
+    return () => {
+      panelObserver.disconnect();
+      ctaObserver.disconnect();
+    };
   }, []);
+  const isStickyBarVisible = isPanelOffscreen && !isInlineCtaVisible;
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 space-y-3 pb-20 duration-700 md:space-y-5">
@@ -84,10 +97,14 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
           "Precio Sugerido de Salida" card are the same near-black surface),
           so the preliminary range visibly foreshadows the document the
           advisor delivers. The "Rango preliminar" chip is doing expectation
-          work: it names this as the junior version of a number that exists. */}
+          work: it names this as the junior version of a number that exists.
+          Deliberately slim -- just the price moment plus a "continues below"
+          cue -- so the 01 Pulso card peeks above the fold on a phone. The
+          advisor firma and CTA live in section 03, after the value has been
+          delivered; the range must not read as the end of the screen. */}
       <div
         ref={heroCardRef}
-        className="relative overflow-hidden rounded-card-lg bg-ink text-white shadow-[0_1px_2px_rgba(16,32,26,0.08),0_16px_36px_-16px_rgba(16,32,26,0.45)]"
+        className="relative overflow-hidden rounded-card-lg bg-ink text-white shadow-[0_1px_2px_rgba(12,10,9,0.08),0_16px_36px_-16px_rgba(12,10,9,0.45)]"
       >
         {/* Ambient glow, deliberately slow and low-opacity: alive, not
             loading (see index.css glow-pulse). */}
@@ -111,31 +128,12 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
             {hasPendingComps && !hasComps ? COPY.reveal.researchCaption(colonia) : COPY.reveal.caption(colonia)}
           </p>
 
-          {/* Putting a real person before the follow-up message lets the
-              homeowner understand who is continuing the analysis before
-              being asked to take the next step. Same signature structure as
-              the report hero: micro role label, then the name. */}
-          <div className="mt-8 flex flex-col items-center border-t border-white/10 pt-6 text-center">
-            <AdvisorAvatar
-              advisor={advisor}
-              className="h-14 w-14 flex-shrink-0 border-2 border-brand-500/70 bg-neutral-800"
-              iconClassName="h-6 w-6 text-neutral-400"
-            />
-            <p className="mt-3 text-[10px] font-bold uppercase tracking-wider text-brand-400">{advisor.roleLabel}</p>
-            <p className="mt-0.5 text-sm font-bold text-white">{advisor.name}</p>
+          <div className="mt-6 flex flex-col items-center gap-0.5 border-t border-white/10 pt-4">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">
+              {COPY.reveal.panelScrollCue}
+            </p>
+            <ChevronDown className="h-3.5 w-3.5 text-neutral-500" />
           </div>
-          <p className="mx-auto mt-5 max-w-lg text-center text-sm leading-relaxed text-neutral-300 md:text-base">
-            {COPY.reveal.advisorParagraph(advisorFirstName, advisor.gender, colonia)}
-          </p>
-          <a
-            href={whatsappLink(advisor, message)}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-6 flex w-full items-center justify-center gap-2 rounded-pill bg-brand-500 px-4 py-3 text-sm font-semibold text-white shadow-[0_10px_24px_-8px_rgba(37,211,102,0.55)] transition-transform active:scale-95 hover:bg-brand-600"
-          >
-            <MessageCircle className="h-4 w-4" />
-            {COPY.reveal.ctaLabel(advisorFirstName)}
-          </a>
         </div>
       </div>
 
@@ -236,15 +234,34 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
           })}
         </ul>
 
-        <a
-          href={whatsappLink(advisor, message)}
-          target="_blank"
-          rel="noreferrer"
-          className="mt-2 flex w-full items-center justify-center gap-2 rounded-pill bg-brand-500 px-4 py-3 text-sm font-semibold text-white shadow-[0_10px_24px_-8px_rgba(37,211,102,0.55)] transition-transform active:scale-95 hover:bg-brand-600"
-        >
-          <MessageCircle className="h-4 w-4" />
-          {COPY.reveal.acm.ctaLabel(advisorFirstName)}
-        </a>
+        {/* The firma closes the chapter that asks for the conversation:
+            a real person with a real job title, introduced after the value
+            has been delivered rather than in front of the price. Same
+            signature structure as the report hero: micro role label, then
+            the name. */}
+        <div ref={inlineCtaRef} className="border-t border-neutral-200/70 pt-5">
+          <div className="flex flex-col items-center text-center">
+            <AdvisorAvatar
+              advisor={advisor}
+              className="h-14 w-14 flex-shrink-0 border-2 border-brand-500/70 bg-neutral-100"
+              iconClassName="h-6 w-6 text-neutral-500"
+            />
+            <p className="mt-3 text-[10px] font-bold uppercase tracking-wider text-brand-600">{advisor.roleLabel}</p>
+            <p className="mt-0.5 text-sm font-bold text-neutral-900">{advisor.name}</p>
+          </div>
+          <p className="mx-auto mt-4 max-w-lg text-center text-sm leading-relaxed text-neutral-600">
+            {COPY.reveal.advisorParagraph(advisorFirstName, advisor.gender, colonia)}
+          </p>
+          <a
+            href={whatsappLink(advisor, message)}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-5 flex w-full items-center justify-center gap-2 rounded-pill bg-brand-500 px-4 py-3 text-sm font-semibold text-white shadow-[0_10px_24px_-8px_rgba(37,211,102,0.55)] transition-transform active:scale-95 hover:bg-brand-600"
+          >
+            <MessageCircle className="h-4 w-4" />
+            {COPY.reveal.acm.ctaLabel(advisorFirstName)}
+          </a>
+        </div>
       </div>
 
       <MethodologySection />

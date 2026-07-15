@@ -172,7 +172,9 @@ export const COPY = {
       `${advisorFirstName} será tu ${gender === 'f' ? 'asesora experta' : 'asesor experto'} en ${colonia}. Muy pronto se ` +
       'pondrá en contacto para platicar personalmente sobre ' +
       'la estrategia ideal para vender tu propiedad.',
-    ctaLabel: (advisorFirstName: string) => `Enviar mensaje a ${advisorFirstName}`,
+    // Bottom edge of the price panel: tells the visitor the range is the
+    // opening of a longer analysis, not the whole answer.
+    panelScrollCue: 'Tu análisis continúa',
     // Positioning bar labels. "Fuera de mercado" mirrors the full ACM's
     // pricing bar: red never brackets the range itself, it only marks the
     // zone past Máx where a listing stops competing.
