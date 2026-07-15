@@ -128,25 +128,33 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
             {hasPendingComps && !hasComps ? COPY.reveal.researchCaption(colonia) : COPY.reveal.caption(colonia)}
           </p>
 
-          {/* Compact advisor signature, same structure as the report hero's
-              broker block: a real face and a real job title above the fold
-              say "a person runs this analysis" before any bot suspicion
-              forms, and pre-introduce who the sticky bottom bar belongs to.
-              Identity only -- the ask (paragraph + CTA) stays in section 03
-              after the value has been delivered. */}
-          <div className="mt-6 flex items-center justify-center gap-3 border-t border-white/10 pt-5">
+          {/* Compact advisor note: a real face, a real job title, and the
+              claim that matters (this person knows this fraccionamiento)
+              above the fold, so "a person runs this analysis" lands before
+              any bot suspicion forms and the sticky bottom bar's advisor is
+              already familiar. Identity only -- the ask (paragraph + CTA)
+              stays in section 03 after the value has been delivered. */}
+          {/* Avatar beside the text, not stacked above it: the stacked
+              version pushed the 01 Pulso chip below an 844px fold, and the
+              peeking next section is the strongest "there's more" signal
+              this screen has. */}
+          <div className="mx-auto mt-5 flex max-w-sm items-center gap-3 border-t border-white/10 pt-5 text-left">
             <AdvisorAvatar
               advisor={advisor}
-              className="h-10 w-10 flex-shrink-0 border-2 border-brand-500/70 bg-neutral-800"
+              className="h-12 w-12 flex-shrink-0 border-2 border-brand-500/70 bg-neutral-800"
               iconClassName="h-5 w-5 text-neutral-400"
             />
-            <div className="text-left">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-brand-400">{advisor.roleLabel}</p>
-              <p className="text-sm font-bold text-white">{advisor.name}</p>
+            <div>
+              <p className="text-sm leading-snug text-neutral-300">
+                <span className="font-semibold text-white">{advisor.name}</span>
+                {COPY.reveal.panelAdvisorNote.middle(advisor.roleLabel)}
+                <span className="font-semibold text-white">{colonia}</span>.
+              </p>
+              <p className="mt-1 text-xs text-neutral-400">{COPY.reveal.panelAdvisorNote.line2(advisor.gender)}</p>
             </div>
           </div>
 
-          <div className="mt-5 flex flex-col items-center gap-0.5 border-t border-white/10 pt-4">
+          <div className="mt-4 flex flex-col items-center gap-0.5 border-t border-white/10 pt-3">
             <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">
               {COPY.reveal.panelScrollCue}
             </p>

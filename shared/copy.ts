@@ -172,6 +172,15 @@ export const COPY = {
       `${advisorFirstName} será tu ${gender === 'f' ? 'asesora experta' : 'asesor experto'} en ${colonia}. Muy pronto se ` +
       'pondrá en contacto para platicar personalmente sobre ' +
       'la estrategia ideal para vender tu propiedad.',
+    // Advisor note inside the price panel. Split into segments because the
+    // component bolds the name and colonia around them (this file stays
+    // JSX-free). Reads: "{Name} es {roleLabel} en nuestro equipo y conoce
+    // muy bien {colonia}."
+    panelAdvisorNote: {
+      middle: (roleLabel: string) => ` es ${roleLabel} en nuestro equipo y conoce muy bien `,
+      line2: (gender: 'm' | 'f') =>
+        `${gender === 'f' ? 'Ella' : 'Él'} estará trabajando personalmente en tu propiedad.`,
+    },
     // Bottom edge of the price panel: tells the visitor the range is the
     // opening of a longer analysis, not the whole answer.
     panelScrollCue: 'Tu análisis continúa',

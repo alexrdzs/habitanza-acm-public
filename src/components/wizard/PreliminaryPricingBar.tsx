@@ -28,7 +28,7 @@ export function PreliminaryPricingBar({ estimate }: Props) {
     // the Mín/Máx tick labels below are absolutely positioned (so they don't
     // contribute to this container's height); without it, surrounding
     // content renders overlapping them.
-    <div className="pb-20 pt-24">
+    <div className="pb-20 pt-20">
       <div className="relative mx-1">
         {/* Draws in from the left instead of just appearing -- the bar
             reads as being plotted, then the pin lands once it's done. */}
