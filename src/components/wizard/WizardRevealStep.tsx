@@ -147,14 +147,12 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
               className="h-16 w-16 flex-shrink-0 border-2 border-brand-500/70 bg-neutral-800"
               iconClassName="h-6 w-6 text-neutral-400"
             />
-            <div>
-              <p className="text-[13px] leading-relaxed text-neutral-300">
-                <span className="font-semibold text-white">{advisor.name}</span>
-                {COPY.reveal.panelAdvisorNote.middle(advisor.roleLabel)}
-                <span className="font-semibold text-white">{colonia}</span>.
-              </p>
-              <p className="mt-1.5 text-[11px] text-neutral-400">{COPY.reveal.panelAdvisorNote.line2(advisor.gender)}</p>
-            </div>
+            <p className="text-[13px] leading-relaxed text-neutral-300">
+              <span className="font-semibold text-white">{advisorFirstName}</span>
+              {COPY.reveal.panelAdvisorNote.middle(advisor.roleLabel)}
+              <span className="font-semibold text-white">{colonia}</span>
+              {COPY.reveal.panelAdvisorNote.suffix}
+            </p>
           </div>
 
           <div className="mt-4 flex flex-col items-center gap-0.5 border-t border-white/10 pt-3">
