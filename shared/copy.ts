@@ -129,7 +129,7 @@ export const COPY = {
     consent: {
       prefix: 'Acepto el ',
       linkLabel: 'aviso de privacidad',
-      suffix: ' y autorizo que un asesor de Habitanza me contacte por WhatsApp. *',
+      suffix: ' y autorizo que me contacten.',
     },
     nextLabel: 'Ver mi estimación',
   },
@@ -253,6 +253,15 @@ export const COPY = {
       // names, and the term is established by this section's own chip and
       // intro copy right above the button.
       ctaLabel: (advisorFirstName: string) => `Completar mi ACM con ${advisorFirstName}`,
+    },
+    // Closing card at the very bottom: the assigned advisor gets a full
+    // profile + CTA here (the only inline CTA on the screen now that
+    // section 03 is value-only), followed by the rest of the team so the
+    // "a real team is behind this" claim lands right before the visitor
+    // decides whether to reach out.
+    closing: {
+      chip: 'Tu asesor asignado',
+      teamLabel: 'Y el resto del equipo que te respalda',
     },
   },
 

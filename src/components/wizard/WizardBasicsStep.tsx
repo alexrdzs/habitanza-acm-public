@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { PUBLIC_PROPERTY_TYPES, AMENITIES, PROPERTY_AGE_RANGES } from '@shared/validation';
 import type { PropertyAge, Amenity } from '@shared/validation';
 import { COPY } from '@shared/copy';
@@ -72,14 +73,33 @@ interface Props {
 export function WizardBasicsStep(props: Props) {
   const isTerreno = props.tipoPropiedad === 'Terreno';
   const minimumConstruction = minimumConstructionM2(props.recamaras, props.banos);
-  const hasLotBelowMinimum = props.m2Terreno !== '' && Number(props.m2Terreno) < 50;
-  const hasConstructionBelowMinimum =
-    !isTerreno && props.m2Construccion !== '' && Number(props.m2Construccion) < minimumConstruction;
 
-  const canContinue =
-    !!props.tipoPropiedad &&
-    Number(props.m2Terreno) >= 50 &&
-    (isTerreno || Number(props.m2Construccion) >= minimumConstruction);
+  const lotValid = Number(props.m2Terreno) >= 50;
+  const constructionValid = isTerreno || Number(props.m2Construccion) >= minimumConstruction;
+  const canContinue = !!props.tipoPropiedad && lotValid && constructionValid;
+
+  // Errors stay hidden until the visitor tries to continue, so the form
+  // doesn't flash red while someone is mid-typing "50". The button stays
+  // enabled (rather than disabled-until-valid) precisely so they CAN press
+  // it and see what's missing. After the first attempt, validation goes
+  // live as they correct the value.
+  const [attempted, setAttempted] = useState(false);
+  const showLotError = attempted && !lotValid;
+  const showConstructionError = attempted && !isTerreno && !constructionValid;
+  const lotErrorMessage =
+    props.m2Terreno === '' ? 'Ingresa los metros de terreno.' : 'El terreno debe ser de al menos 50 m².';
+  const constructionErrorMessage =
+    props.m2Construccion === ''
+      ? 'Ingresa los metros de construcción.'
+      : `Con estas habitaciones, la construcción debe ser de al menos ${minimumConstruction} m².`;
+
+  function handleContinue() {
+    if (!canContinue) {
+      setAttempted(true);
+      return;
+    }
+    props.onContinue();
+  }
 
   function toggleAmenity(a: Amenity) {
     props.setAmenidades(
@@ -93,8 +113,7 @@ export function WizardBasicsStep(props: Props) {
       description={COPY.basics.description}
       step={{ current: 2, total: 3 }}
       onBack={props.onBack}
-      onNext={props.onContinue}
-      nextDisabled={!canContinue}
+      onNext={handleContinue}
     >
       <div className="space-y-6 pb-2">
         <section className="space-y-4">
@@ -123,9 +142,9 @@ export function WizardBasicsStep(props: Props) {
                   {COPY.basics.fieldLabels.m2Construccion}
                 </label>
                 <ThousandsInput value={props.m2Construccion} onChange={props.setM2Construccion} placeholder="m²" />
-                {hasConstructionBelowMinimum && (
+                {showConstructionError && (
                   <p className="text-xs font-medium text-red-600" role="alert">
-                    Con estas habitaciones, la construcción debe ser de al menos {minimumConstruction} m².
+                    {constructionErrorMessage}
                   </p>
                 )}
               </div>
@@ -136,9 +155,9 @@ export function WizardBasicsStep(props: Props) {
                 {COPY.basics.fieldLabels.m2TerrenoRequired}
               </label>
               <ThousandsInput value={props.m2Terreno} onChange={props.setM2Terreno} placeholder="m²" />
-              {hasLotBelowMinimum && (
+              {showLotError && (
                 <p className="text-xs font-medium text-red-600" role="alert">
-                  El terreno debe ser de al menos 50 m².
+                  {lotErrorMessage}
                 </p>
               )}
             </div>
@@ -179,6 +198,34 @@ export function WizardBasicsStep(props: Props) {
             <Sparkles className="h-5 w-5 text-brand-500" />
             {COPY.basics.sectionLabels.adicionales}
           </h3>
+          {/* Amenities lead the "Adicionales" section: they're the tappable,
+              engaging part, so they come before the antigüedad dropdown.
+              Full-width pills on mobile, two wider columns from sm up, so
+              longer labels ("Calefacción integrada") stay on one line. */}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {AMENITIES.map((a) => {
+              const active = props.amenidades.includes(a);
+              const Icon = AMENITY_ICONS[a];
+              return (
+                <button
+                  key={a}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => toggleAmenity(a)}
+                  className={cn(
+                    'flex items-center gap-3 rounded-xl border px-4 py-3 text-left text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2',
+                    active
+                      ? 'border-brand-500 bg-brand-500/5 text-neutral-900 shadow-sm'
+                      : 'border-neutral-200 bg-white text-neutral-600 hover:border-neutral-300 hover:bg-neutral-50'
+                  )}
+                >
+                  <Icon className={cn('h-5 w-5 shrink-0', active ? 'text-brand-500' : 'text-neutral-400')} />
+                  <span className="truncate">{a}</span>
+                </button>
+              );
+            })}
+          </div>
+
           {!isTerreno && (
             <div className="relative">
               <CalendarDays className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
@@ -198,31 +245,6 @@ export function WizardBasicsStep(props: Props) {
               <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-700" />
             </div>
           )}
-          <div>
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
-              {AMENITIES.map((a) => {
-                const active = props.amenidades.includes(a);
-                const Icon = AMENITY_ICONS[a];
-                return (
-                  <button
-                    key={a}
-                    type="button"
-                    aria-pressed={active}
-                    onClick={() => toggleAmenity(a)}
-                    className={cn(
-                      'flex min-h-16 items-center gap-3 rounded-xl border p-4 text-left text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2',
-                      active
-                        ? 'border-brand-500 bg-brand-500/5 text-neutral-900 shadow-sm'
-                        : 'border-neutral-200 bg-white text-neutral-600 hover:border-neutral-300 hover:bg-neutral-50'
-                    )}
-                  >
-                    <Icon className={cn('h-5 w-5 shrink-0', active ? 'text-brand-500' : 'text-neutral-400')} />
-                    <span>{a}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
         </section>
       </div>
     </WizardShell>

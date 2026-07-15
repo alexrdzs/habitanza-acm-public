@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ChevronDown, FileSearch, Info, MessageCircle, Route, Target } from 'lucide-react';
+import { ChevronDown, FileSearch, Info, Route, Target } from 'lucide-react';
 import { PreliminaryPricingBar } from './PreliminaryPricingBar';
 import { ComparablesMap } from './ComparablesMap';
 import { ComparableListingCards } from './ComparableListingCards';
@@ -7,8 +7,9 @@ import { MethodologySection } from './MethodologySection';
 import { SectionChip } from './SectionChip';
 import { TestimonialsCarousel } from './TestimonialsCarousel';
 import { AdvisorCTA } from './AdvisorCTA';
+import { AdvisorClosingSection } from './AdvisorClosingSection';
 import { AdvisorAvatar } from './AdvisorAvatar';
-import { advisorsForColonia, whatsappLink, buildWhatsAppMessage } from '@shared/advisors';
+import { advisorsForColonia } from '@shared/advisors';
 import { pendingComparableListings, readyComparableListings, totalReadyListingsCount } from '@shared/comparableListings';
 import { COPY } from '@shared/copy';
 import { referencePerM2, type PreliminaryEstimate } from '@shared/pricing';
@@ -49,7 +50,6 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
   const pendingComps = pendingComparableListings(colonia);
   const hasComps = comps.length > 0;
   const hasPendingComps = pendingComps.length > 0;
-  const message = buildWhatsAppMessage(advisor, nombre, tipoPropiedad, colonia);
   const zoneReference = referencePerM2(colonia, tipoPropiedad);
   const rangeWidth = formatCurrency(estimate.high - estimate.low);
 
@@ -129,18 +129,12 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
             </span>
           </h3>
           <PreliminaryPricingBar estimate={estimate} />
-          {/* Genuinely a disclaimer now: smallest, dimmest text in the
-              panel, so it reads as a footnote to the range rather than
-              competing with it. */}
-          <p className="mx-auto max-w-lg text-center text-[10px] leading-snug text-neutral-500 md:text-xs">
-            {hasPendingComps && !hasComps ? COPY.reveal.researchCaption(colonia) : COPY.reveal.caption(colonia)}
-          </p>
 
           {/* Advisor profile card: face on top, note below. A real person
               running the analysis, stated above the fold so bot suspicion
               never forms, and the sticky bottom bar's advisor is already
-              familiar. Identity only -- the ask (paragraph + CTA) stays in
-              section 03, after the value has been delivered. */}
+              familiar. Identity only -- the ask (paragraph + CTA) lives in
+              the closing card at the very bottom. */}
           <div className="mx-auto mt-6 flex max-w-xs flex-col items-center gap-3 border-t border-white/10 pt-6 text-center">
             <AdvisorAvatar
               advisor={advisor}
@@ -155,11 +149,19 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
             </p>
           </div>
 
-          <div className="mt-4 flex flex-col items-center gap-0.5 border-t border-white/10 pt-3">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">
-              {COPY.reveal.panelScrollCue}
+          {/* Bottom of the card: the range disclaimer as fine print (kept
+              out of the price->person flow above), then the "continues
+              below" cue as the final affordance. */}
+          <div className="mt-6 border-t border-white/10 pt-4">
+            <p className="mx-auto max-w-lg text-center text-[10px] leading-snug text-neutral-500 md:text-xs">
+              {hasPendingComps && !hasComps ? COPY.reveal.researchCaption(colonia) : COPY.reveal.caption(colonia)}
             </p>
-            <ChevronDown className="h-3.5 w-3.5 text-neutral-500" />
+            <div className="mt-4 flex flex-col items-center gap-0.5">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">
+                {COPY.reveal.panelScrollCue}
+              </p>
+              <ChevronDown className="h-3.5 w-3.5 text-neutral-500" />
+            </div>
           </div>
         </div>
       </div>
@@ -260,35 +262,6 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
             );
           })}
         </ul>
-
-        {/* The firma closes the chapter that asks for the conversation:
-            a real person with a real job title, introduced after the value
-            has been delivered rather than in front of the price. Same
-            signature structure as the report hero: micro role label, then
-            the name. */}
-        <div ref={inlineCtaRef} className="border-t border-neutral-200/70 pt-5">
-          <div className="flex flex-col items-center text-center">
-            <AdvisorAvatar
-              advisor={advisor}
-              className="h-14 w-14 flex-shrink-0 border-2 border-brand-500/70 bg-neutral-100"
-              iconClassName="h-6 w-6 text-neutral-500"
-            />
-            <p className="mt-3 text-[10px] font-bold uppercase tracking-wider text-brand-600">{advisor.roleLabel}</p>
-            <p className="mt-0.5 text-sm font-bold text-neutral-900">{advisor.name}</p>
-          </div>
-          <p className="mx-auto mt-4 max-w-lg text-center text-sm leading-relaxed text-neutral-600">
-            {COPY.reveal.advisorParagraph(advisorFirstName, advisor.gender, colonia)}
-          </p>
-          <a
-            href={whatsappLink(advisor, message)}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-5 flex w-full items-center justify-center gap-2 rounded-pill bg-brand-500 px-4 py-3 text-sm font-semibold text-white shadow-[0_10px_24px_-8px_rgba(37,211,102,0.55)] transition-transform active:scale-95 hover:bg-brand-600"
-          >
-            <MessageCircle className="h-4 w-4" />
-            {COPY.reveal.acm.ctaLabel(advisorFirstName)}
-          </a>
-        </div>
       </div>
 
       <MethodologySection />
@@ -297,6 +270,18 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
           the way to a price should get one more nudge of social proof right
           before deciding whether to reach out. */}
       <TestimonialsCarousel />
+
+      {/* The very bottom: the assigned advisor's profile + the only inline
+          CTA on the screen, followed by the rest of the team. Its dark
+          surface bookends the price panel the way the full report's dark
+          hero and footer bracket its body. */}
+      <AdvisorClosingSection
+        advisor={advisor}
+        nombre={nombre}
+        tipoPropiedad={tipoPropiedad}
+        colonia={colonia}
+        ctaRef={inlineCtaRef}
+      />
 
       <AdvisorCTA advisor={advisor} nombre={nombre} tipoPropiedad={tipoPropiedad} colonia={colonia} visible={isStickyBarVisible} />
     </div>
