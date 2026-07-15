@@ -1,11 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
 @theme {
   --font-sans: "Figtree", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
   /* Brand — the literal Habitanza logo/CTA green. Unchanged. */
   --color-brand-50: #f0fdf4;
@@ -107,17 +105,6 @@
     animation-play-state: paused;
   }
 
-  /* Same loop, opposite direction -- used where a second scrolling row
-     shares a screen with .marquee-track (e.g. the Hero's team strip vs its
-     expertise-card marquee) so the two don't read as one wide conveyor. */
-  .marquee-track-reverse {
-    animation: marquee 22s linear infinite reverse;
-  }
-
-  .marquee-track-reverse:hover {
-    animation-play-state: paused;
-  }
-
   /* Slow breathing glow — used on the reveal screen's price card to echo
      the analyzing screen's "processing" feel without implying the card is
      still loading; a gentle ambient pulse, not a spinner. */
@@ -156,8 +143,7 @@
      visibly cut-off duplicate row) -- stop it at its natural, untranslated
      position instead. */
   .marquee-track,
-  .marquee-track-testimonials,
-  .marquee-track-reverse {
+  .marquee-track-testimonials {
     animation: none !important;
     transform: none !important;
   }

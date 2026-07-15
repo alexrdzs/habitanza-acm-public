@@ -7,7 +7,7 @@ function TestimonialCard({ t, isDuplicate = false }: { t: Testimonial; isDuplica
   return (
     <div
       aria-hidden={isDuplicate || undefined}
-      className="flex w-[78vw] max-w-[324px] flex-shrink-0 flex-col gap-2.5 rounded-2xl border border-neutral-200/70 bg-parchment-card/80 p-4 text-left backdrop-blur-md"
+      className="mr-3 flex w-[78vw] max-w-[324px] flex-shrink-0 flex-col gap-2.5 rounded-2xl border border-neutral-200/70 bg-parchment-card/80 p-4 text-left backdrop-blur-md"
     >
       <div className="flex items-center justify-between">
         <Quote className="h-4 w-4 text-emerald-deep/40" />
@@ -35,7 +35,10 @@ export function TestimonialsCarousel() {
       </div>
 
       <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden pb-1 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
-        <div className="marquee-track-testimonials flex w-max gap-3">
+        {/* Spacing lives on each card (mr-3), not as a flex gap: the
+            repeating unit must have uniform width or the -50% loop point
+            lands mid-gap and the loop visibly jumps. */}
+        <div className="marquee-track-testimonials flex w-max">
           {[...TESTIMONIALS, ...TESTIMONIALS].map((t, i) => (
             <TestimonialCard key={`${t.name}-${i}`} t={t} isDuplicate={i >= TESTIMONIALS.length} />
           ))}

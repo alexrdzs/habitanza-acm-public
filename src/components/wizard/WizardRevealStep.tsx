@@ -128,7 +128,25 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
             {hasPendingComps && !hasComps ? COPY.reveal.researchCaption(colonia) : COPY.reveal.caption(colonia)}
           </p>
 
-          <div className="mt-6 flex flex-col items-center gap-0.5 border-t border-white/10 pt-4">
+          {/* Compact advisor signature, same structure as the report hero's
+              broker block: a real face and a real job title above the fold
+              say "a person runs this analysis" before any bot suspicion
+              forms, and pre-introduce who the sticky bottom bar belongs to.
+              Identity only -- the ask (paragraph + CTA) stays in section 03
+              after the value has been delivered. */}
+          <div className="mt-6 flex items-center justify-center gap-3 border-t border-white/10 pt-5">
+            <AdvisorAvatar
+              advisor={advisor}
+              className="h-10 w-10 flex-shrink-0 border-2 border-brand-500/70 bg-neutral-800"
+              iconClassName="h-5 w-5 text-neutral-400"
+            />
+            <div className="text-left">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-brand-400">{advisor.roleLabel}</p>
+              <p className="text-sm font-bold text-white">{advisor.name}</p>
+            </div>
+          </div>
+
+          <div className="mt-5 flex flex-col items-center gap-0.5 border-t border-white/10 pt-4">
             <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">
               {COPY.reveal.panelScrollCue}
             </p>
