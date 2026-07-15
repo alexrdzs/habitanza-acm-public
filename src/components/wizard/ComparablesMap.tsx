@@ -33,7 +33,7 @@ function MapFallback({ colonia, researchCount }: Pick<Props, 'colonia' | 'resear
     <div className="relative flex h-40 items-center justify-center overflow-hidden rounded-xl bg-neutral-50 text-center">
       <div className="absolute inset-0 opacity-70 [background-image:linear-gradient(to_right,rgba(214,211,209,0.35)_1px,transparent_1px),linear-gradient(to_bottom,rgba(214,211,209,0.35)_1px,transparent_1px)] [background-size:28px_28px]" />
       {FALLBACK_DOT_POSITIONS.slice(0, researchCount).map((position) => (
-        <span key={position} className={`absolute h-2.5 w-2.5 rounded-full bg-brass ring-2 ring-white ${position}`} />
+        <span key={position} className={`absolute h-2.5 w-2.5 rounded-full bg-amber-400 ring-2 ring-white ${position}`} />
       ))}
       <div className="relative z-10 rounded-lg bg-white/85 px-3 py-2 shadow-sm">
         <p className="text-xs font-medium text-neutral-700">{researchCount} referencias en investigación</p>

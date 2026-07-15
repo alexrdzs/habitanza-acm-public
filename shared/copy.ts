@@ -161,6 +161,7 @@ export const COPY = {
   reveal: {
     greeting: (firstName: string) => `Muchas gracias, ${firstName}.`,
     subtext: 'Con esta información podemos darte un rango aproximado.',
+    panelChip: 'Rango preliminar',
     headlinePrefix: 'Tu propiedad podría estar en un rango de:',
     headlineRangePrefix: 'Entre',
     headlineJoiner: 'y',
@@ -172,9 +173,39 @@ export const COPY = {
       'pondrá en contacto para platicar personalmente sobre ' +
       'la estrategia ideal para vender tu propiedad.',
     ctaLabel: (advisorFirstName: string) => `Enviar mensaje a ${advisorFirstName}`,
-    mercadoEyebrow: 'Mercado de la zona',
+    // Positioning bar labels. "Fuera de mercado" mirrors the full ACM's
+    // pricing bar: red never brackets the range itself, it only marks the
+    // zone past Máx where a listing stops competing.
+    bar: {
+      estimateLabel: 'Estimado',
+      minLabel: 'Mín',
+      maxLabel: 'Máx',
+      outOfMarketLabel: 'Fuera de mercado',
+    },
+    // Section numbering mirrors the chaptered structure of the full ACM
+    // ("01 Pulso del Mercado"...) so this screen reads as a preview of the
+    // real document, not a standalone widget.
+    pulse: {
+      chip: '01 Pulso de la Zona',
+      title: 'Lo que el mercado ya nos dice',
+      m2Label: 'Referencia por m²',
+      m2SublineColonia: (colonia: string) => `Con base en listados reales de ${colonia}.`,
+      m2SublineZona: 'Promedio de Zona Esmeralda mientras afinamos tu fraccionamiento.',
+      listingsLabel: 'Referencias activas',
+      listingsValue: (count: number) => `${count}`,
+      listingsSubline: 'Propiedades publicadas hoy en nuestro portafolio de la zona.',
+      rangeWidthLabel: 'Amplitud de tu rango',
+      rangeWidthSubline: 'Tu ACM lo reduce a un precio exacto de salida.',
+    },
+    mercadoChip: '02 Referencias del Mercado',
     mercadoTitleWithComps: (colonia: string) => `Referencias reales en ${colonia}`,
     mercadoTitleNoComps: (colonia: string) => `Armando referencias para ${colonia}`,
+    // Shown when real comparables render below: the same "oferta pública"
+    // caveat the full ACM opens its comparables chapter with.
+    notaOfertaTag: 'Nota sobre estas referencias',
+    notaOfertaBody:
+      'Son precios de oferta pública, no de cierre. El precio final suele negociarse entre 5 y 10% por debajo de ' +
+      'estos valores, y tu estrategia debe contemplarlo.',
     notaPlaceholderTag: 'Nota sobre la zona',
     notaPlaceholderBody: (colonia: string) =>
       `Estamos reuniendo referencias específicas de ${colonia}. Tu Master Broker las revisará contigo para completar el análisis comparativo.`,
@@ -182,6 +213,35 @@ export const COPY = {
     noCompsBody: (colonia: string) =>
       `Todavía no tenemos comparables específicos de ${colonia} en nuestro sistema, pero tu asesor los incluirá al ` +
       'preparar tu Análisis Comparativo de Mercado completo.',
+    acm: {
+      chip: '03 Tu ACM Completo',
+      title: 'De un rango a un precio de salida',
+      gapIntro: (rangeWidth: string) =>
+        `Entre el mínimo y el máximo de tu rango hay ${rangeWidth} de diferencia. Tu Análisis Comparativo de ` +
+        'Mercado lo convierte en un precio de salida exacto, con comparables homologados a tu propiedad.',
+      marketTruth:
+        'Un precio fuera de mercado no vende más caro, solo tarda más. El número correcto se defiende con datos, ' +
+        'no con corazonadas.',
+      checklist: [
+        {
+          title: 'Comparables homologados',
+          detail: 'Tu asesor selecciona caso por caso las propiedades que sí compiten con la tuya, ajustadas por tamaño, condición y ubicación.',
+        },
+        {
+          title: 'Precio sugerido de salida',
+          detail: 'Un número exacto con estrategia de posicionamiento, no un rango.',
+        },
+        {
+          title: 'Plan de acción',
+          detail: 'Los pasos concretos para llegar al comprador correcto y cerrar en tiempo.',
+        },
+      ],
+      // "ACM" and not "análisis" on purpose: the full phrase wraps this
+      // full-width pill to two lines at 390px with the longest advisor first
+      // names, and the term is established by this section's own chip and
+      // intro copy right above the button.
+      ctaLabel: (advisorFirstName: string) => `Completar mi ACM con ${advisorFirstName}`,
+    },
   },
 
   // Static, deliberately shorter than reveal.ctaLabel -- this is the

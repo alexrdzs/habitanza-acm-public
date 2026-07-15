@@ -1,5 +1,6 @@
 import { Search, ListChecks, UserCheck } from 'lucide-react';
 import { COPY } from '@shared/copy';
+import { SectionChip } from './SectionChip';
 
 // Order-matched with COPY.methodology.steps.
 const STEP_ICONS = [Search, ListChecks, UserCheck];
@@ -11,9 +12,9 @@ export function MethodologySection() {
 
   return (
     <div className="space-y-5 rounded-card-lg border border-neutral-200/70 bg-parchment-card/80 p-6 text-left backdrop-blur-md md:p-8">
-      <div>
-        <p className="text-[11px] font-bold uppercase tracking-wider text-brass">{COPY.methodology.eyebrow}</p>
-        <h3 className="mt-1 text-base font-bold text-neutral-900">{COPY.methodology.title}</h3>
+      <div className="space-y-3">
+        <SectionChip label={COPY.methodology.eyebrow} variant="neutral" />
+        <h3 className="text-base font-bold text-neutral-900">{COPY.methodology.title}</h3>
       </div>
       <ol className="space-y-4">
         {steps.map(({ title, detail }, i) => {

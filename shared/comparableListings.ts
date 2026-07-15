@@ -157,6 +157,16 @@ export function pendingComparableListings(colonia: string): ComparableListing[] 
   return (COMPARABLE_LISTINGS[colonia] ?? []).filter((listing) => listing.isPlaceholder);
 }
 
+// Zone-wide count of real (non-placeholder) listings, for the reveal
+// screen's "Referencias activas" tile. Derived so it never goes stale as
+// listings are added or researched.
+export function totalReadyListingsCount(): number {
+  return Object.values(COMPARABLE_LISTINGS).reduce(
+    (count, listings) => count + listings.filter((listing) => !listing.isPlaceholder).length,
+    0
+  );
+}
+
 export function coloniaPhoto(colonia: string): string | undefined {
   return readyComparableListings(colonia).find((listing) => listing.photo)?.photo;
 }

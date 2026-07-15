@@ -45,6 +45,24 @@ export interface PreliminaryEstimate {
   high: number;
 }
 
+// The zone reference behind the estimate, surfaced on the reveal screen's
+// "Pulso de la Zona" tile. Returns the same $/m² the formula used, plus
+// whether it came from the visitor's own colonia or the zone-wide fallback,
+// so the tile's caption can stay honest about which one it is.
+export interface ZoneReference {
+  perM2: number;
+  isColoniaSpecific: boolean;
+}
+
+export function referencePerM2(colonia: string, tipoPropiedad: PublicPropertyType | string): ZoneReference {
+  if (tipoPropiedad === 'Terreno') {
+    const perM2 = PRICE_PER_M2_TERRENO[colonia];
+    return { perM2: perM2 ?? DEFAULT_PRICE_PER_M2_TERRENO, isColoniaSpecific: perM2 != null };
+  }
+  const perM2 = PRICE_PER_M2_CONSTRUCCION[colonia];
+  return { perM2: perM2 ?? DEFAULT_PRICE_PER_M2_CONSTRUCCION, isColoniaSpecific: perM2 != null };
+}
+
 // A preliminary estimate should be directionally useful, not falsely
 // precise. Display it in $10,000 increments (e.g. $8,448,000 → $8,450,000).
 function roundPreliminaryEstimate(value: number): number {

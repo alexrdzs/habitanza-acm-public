@@ -22,7 +22,9 @@ export function LandingPage() {
   // false in production builds, so this can never bypass lead submission.
   const previewParams = new URLSearchParams(window.location.search);
   const isRevealPreview = import.meta.env.DEV && previewParams.get('preview') === 'reveal';
-  const revealPreviewColonia = previewParams.get('colonia') === 'interlomas' ? 'Interlomas' : 'Bosque Real';
+  const revealPreviewColonia =
+    { interlomas: 'Interlomas', lomas: 'Lomas de Valle Escondido' }[previewParams.get('colonia') ?? ''] ??
+    'Bosque Real';
   const [step, setStep] = useState<Step>(() => (isRevealPreview ? 'reveal' : 'hero'));
 
   // Location
