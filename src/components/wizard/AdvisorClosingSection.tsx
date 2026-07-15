@@ -62,15 +62,18 @@ export function AdvisorClosingSection({ advisor, nombre, tipoPropiedad, colonia,
             <p className="text-center text-[11px] font-bold uppercase tracking-wider text-neutral-400">
               {COPY.reveal.closing.teamLabel}
             </p>
-            <div className="mt-5 flex flex-wrap justify-center gap-x-6 gap-y-4">
+            {/* One tight row, not a centered wrap -- five faces read as a
+                single cluster ("the team") instead of a 3-over-2 bowling
+                pyramid. Sized to stay on one line down to 360px. */}
+            <div className="mt-5 flex justify-center gap-2">
               {otherMembers.map((member) => (
-                <div key={member.name} className="flex w-16 flex-col items-center gap-2 text-center">
+                <div key={member.name} className="flex w-12 flex-col items-center gap-1.5 text-center">
                   <AdvisorAvatar
                     advisor={member}
-                    className="h-14 w-14 border-2 border-white/15 bg-neutral-800"
-                    iconClassName="h-5 w-5 text-neutral-400"
+                    className="h-12 w-12 border-2 border-white/15 bg-neutral-800"
+                    iconClassName="h-4 w-4 text-neutral-400"
                   />
-                  <p className="text-[11px] font-semibold leading-tight text-neutral-300">{member.firstName}</p>
+                  <p className="text-[10px] font-semibold leading-tight text-neutral-300">{member.firstName}</p>
                 </div>
               ))}
             </div>

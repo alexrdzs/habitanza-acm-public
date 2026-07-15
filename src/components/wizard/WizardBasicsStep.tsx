@@ -199,10 +199,11 @@ export function WizardBasicsStep(props: Props) {
             {COPY.basics.sectionLabels.adicionales}
           </h3>
           {/* Amenities lead the "Adicionales" section: they're the tappable,
-              engaging part, so they come before the antigüedad dropdown.
-              Full-width pills on mobile, two wider columns from sm up, so
-              longer labels ("Calefacción integrada") stay on one line. */}
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              engaging part, so they come before the antigüedad dropdown. Two
+              columns at every breakpoint -- never four (too busy for a
+              six-item list) and never one (too tall). Labels wrap to a second
+              line on the narrow mobile column rather than truncate. */}
+          <div className="grid grid-cols-2 gap-2.5">
             {AMENITIES.map((a) => {
               const active = props.amenidades.includes(a);
               const Icon = AMENITY_ICONS[a];
@@ -213,14 +214,14 @@ export function WizardBasicsStep(props: Props) {
                   aria-pressed={active}
                   onClick={() => toggleAmenity(a)}
                   className={cn(
-                    'flex items-center gap-3 rounded-xl border px-4 py-3 text-left text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2',
+                    'flex items-center gap-2.5 rounded-xl border px-3.5 py-3 text-left text-sm font-medium leading-tight transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2',
                     active
                       ? 'border-brand-500 bg-brand-500/5 text-neutral-900 shadow-sm'
                       : 'border-neutral-200 bg-white text-neutral-600 hover:border-neutral-300 hover:bg-neutral-50'
                   )}
                 >
                   <Icon className={cn('h-5 w-5 shrink-0', active ? 'text-brand-500' : 'text-neutral-400')} />
-                  <span className="truncate">{a}</span>
+                  <span>{a}</span>
                 </button>
               );
             })}
