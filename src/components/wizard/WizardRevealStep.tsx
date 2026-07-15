@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ChevronDown, FileSearch, Info, Route, Target } from 'lucide-react';
+import { ChevronDown, FileSearch, Info, MessageCircle, Route, Target } from 'lucide-react';
 import { PreliminaryPricingBar } from './PreliminaryPricingBar';
 import { ComparablesMap } from './ComparablesMap';
 import { ComparableListingCards } from './ComparableListingCards';
@@ -9,7 +9,7 @@ import { TestimonialsCarousel } from './TestimonialsCarousel';
 import { AdvisorCTA } from './AdvisorCTA';
 import { AdvisorClosingSection } from './AdvisorClosingSection';
 import { AdvisorAvatar } from './AdvisorAvatar';
-import { advisorsForColonia } from '@shared/advisors';
+import { advisorsForColonia, whatsappLink, buildWhatsAppMessage } from '@shared/advisors';
 import { pendingComparableListings, readyComparableListings, totalReadyListingsCount } from '@shared/comparableListings';
 import { COPY } from '@shared/copy';
 import { referencePerM2, type PreliminaryEstimate } from '@shared/pricing';
@@ -50,6 +50,7 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
   const pendingComps = pendingComparableListings(colonia);
   const hasComps = comps.length > 0;
   const hasPendingComps = pendingComps.length > 0;
+  const message = buildWhatsAppMessage(advisor, nombre, tipoPropiedad, colonia);
   const zoneReference = referencePerM2(colonia, tipoPropiedad);
   const rangeWidth = formatCurrency(estimate.high - estimate.low);
 
@@ -147,6 +148,15 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
               <span className="font-semibold text-white">{colonia}</span>
               {COPY.reveal.panelAdvisorNote.suffix}
             </p>
+            <a
+              href={whatsappLink(advisor, message)}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-5 flex w-full items-center justify-center gap-2 rounded-pill bg-brand-500 px-4 py-3 text-sm font-semibold text-white shadow-[0_10px_24px_-8px_rgba(37,211,102,0.55)] transition-transform active:scale-95 hover:bg-brand-600"
+            >
+              <MessageCircle className="h-4 w-4" />
+              {COPY.reveal.panelCtaLabel}
+            </a>
           </div>
 
           {/* Bottom of the card: the range disclaimer as fine print (kept

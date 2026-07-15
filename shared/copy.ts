@@ -182,6 +182,10 @@ export const COPY = {
       middle: (roleLabel: string) => ` es ${roleLabel} en nuestro equipo y conoce muy bien `,
       suffix: ', por eso estará trabajando directamente contigo.',
     },
+    // WhatsApp CTA inside the price panel, under the advisor note. Kept
+    // short ("Chatear ahora") like the sticky bar; the longer "Completar mi
+    // ACM con {nombre}" is reserved for the closing card at the bottom.
+    panelCtaLabel: 'Chatear ahora',
     // Bottom edge of the price panel: tells the visitor the range is the
     // opening of a longer analysis, not the whole answer.
     panelScrollCue: 'Tu análisis continúa',

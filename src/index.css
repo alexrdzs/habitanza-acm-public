@@ -105,6 +105,17 @@
     animation-play-state: paused;
   }
 
+  /* Same loop, opposite direction — the Hero's advisor strip scrolls
+     against its expertise-card marquee so the two don't read as one wide
+     conveyor. */
+  .marquee-track-reverse {
+    animation: marquee 22s linear infinite reverse;
+  }
+
+  .marquee-track-reverse:hover {
+    animation-play-state: paused;
+  }
+
   /* Slow breathing glow — used on the reveal screen's price card to echo
      the analyzing screen's "processing" feel without implying the card is
      still loading; a gentle ambient pulse, not a spinner. */
@@ -143,7 +154,8 @@
      visibly cut-off duplicate row) -- stop it at its natural, untranslated
      position instead. */
   .marquee-track,
-  .marquee-track-testimonials {
+  .marquee-track-testimonials,
+  .marquee-track-reverse {
     animation: none !important;
     transform: none !important;
   }
