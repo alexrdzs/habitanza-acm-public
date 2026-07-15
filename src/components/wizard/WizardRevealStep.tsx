@@ -112,8 +112,13 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
 
         <div className="relative p-7 text-center md:p-10">
           <p className="text-[11px] font-bold uppercase tracking-wider text-brand-400">{COPY.reveal.panelChip}</p>
-          <p className="mt-3 text-sm font-medium text-neutral-300">{COPY.reveal.headlinePrefix}</p>
-          <h3 className="mt-2 text-2xl font-bold leading-tight tabular-nums text-white md:text-4xl">
+          <p className="mt-3 text-[13px] font-medium text-neutral-300">{COPY.reveal.headlinePrefix}</p>
+          {/* 16px keeps "Entre {low} y {high}" on one line at 390px for the
+              7-8 figure range typical of this zone (the ~302px content width
+              only fits ~291px of tabular text at this weight); leading-tight
+              lets an unusually large value wrap gracefully rather than
+              overflow. Scales up to the full display size on desktop. */}
+          <h3 className="mt-1.5 text-base font-bold leading-tight tracking-tight tabular-nums text-white md:text-4xl">
             {COPY.reveal.headlineRangePrefix}{' '}
             <span className="animate-in fade-in slide-in-from-bottom-1 fill-mode-both duration-500 delay-100">
               {formatCurrency(estimate.low)}
@@ -124,33 +129,31 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
             </span>
           </h3>
           <PreliminaryPricingBar estimate={estimate} />
-          <p className="mx-auto max-w-lg text-center text-xs text-neutral-400 md:text-sm">
+          {/* Genuinely a disclaimer now: smallest, dimmest text in the
+              panel, so it reads as a footnote to the range rather than
+              competing with it. */}
+          <p className="mx-auto max-w-lg text-center text-[10px] leading-snug text-neutral-500 md:text-xs">
             {hasPendingComps && !hasComps ? COPY.reveal.researchCaption(colonia) : COPY.reveal.caption(colonia)}
           </p>
 
-          {/* Compact advisor note: a real face, a real job title, and the
-              claim that matters (this person knows this fraccionamiento)
-              above the fold, so "a person runs this analysis" lands before
-              any bot suspicion forms and the sticky bottom bar's advisor is
-              already familiar. Identity only -- the ask (paragraph + CTA)
-              stays in section 03 after the value has been delivered. */}
-          {/* Avatar beside the text, not stacked above it: the stacked
-              version pushed the 01 Pulso chip below an 844px fold, and the
-              peeking next section is the strongest "there's more" signal
-              this screen has. */}
-          <div className="mx-auto mt-5 flex max-w-sm items-center gap-3 border-t border-white/10 pt-5 text-left">
+          {/* Advisor profile card: face on top, note below. A real person
+              running the analysis, stated above the fold so bot suspicion
+              never forms, and the sticky bottom bar's advisor is already
+              familiar. Identity only -- the ask (paragraph + CTA) stays in
+              section 03, after the value has been delivered. */}
+          <div className="mx-auto mt-6 flex max-w-xs flex-col items-center gap-3 border-t border-white/10 pt-6 text-center">
             <AdvisorAvatar
               advisor={advisor}
-              className="h-12 w-12 flex-shrink-0 border-2 border-brand-500/70 bg-neutral-800"
-              iconClassName="h-5 w-5 text-neutral-400"
+              className="h-16 w-16 flex-shrink-0 border-2 border-brand-500/70 bg-neutral-800"
+              iconClassName="h-6 w-6 text-neutral-400"
             />
             <div>
-              <p className="text-sm leading-snug text-neutral-300">
+              <p className="text-[13px] leading-relaxed text-neutral-300">
                 <span className="font-semibold text-white">{advisor.name}</span>
                 {COPY.reveal.panelAdvisorNote.middle(advisor.roleLabel)}
                 <span className="font-semibold text-white">{colonia}</span>.
               </p>
-              <p className="mt-1 text-xs text-neutral-400">{COPY.reveal.panelAdvisorNote.line2(advisor.gender)}</p>
+              <p className="mt-1.5 text-[11px] text-neutral-400">{COPY.reveal.panelAdvisorNote.line2(advisor.gender)}</p>
             </div>
           </div>
 

@@ -27,8 +27,9 @@ export function PreliminaryPricingBar({ estimate }: Props) {
     // The generous top/bottom padding isn't decorative -- the pin above and
     // the Mín/Máx tick labels below are absolutely positioned (so they don't
     // contribute to this container's height); without it, surrounding
-    // content renders overlapping them.
-    <div className="pb-20 pt-20">
+    // content renders overlapping them. Mobile drops the "Fuera de mercado"
+    // row (see below) so it needs less bottom room than desktop.
+    <div className="pb-14 pt-20 md:pb-20">
       <div className="relative mx-1">
         {/* Draws in from the left instead of just appearing -- the bar
             reads as being plotted, then the pin lands once it's done. */}
@@ -94,9 +95,11 @@ export function PreliminaryPricingBar({ estimate }: Props) {
         {/* "Fuera de mercado" on its own row below the Mín/Máx labels,
             right-aligned under the red tail. A row of its own keeps it
             clear of both the pin above the bar and the Máx price label,
-            which it collided with at 390px in every same-row placement. */}
+            which it collided with at 390px in every same-row placement.
+            Hidden on mobile to reclaim vertical space -- the red tail past
+            Máx carries the meaning on its own there. */}
         <div
-          className="animate-in fade-in fill-mode-both absolute duration-400 delay-700"
+          className="animate-in fade-in fill-mode-both absolute hidden duration-400 delay-700 md:block"
           style={{ right: '0%', top: '58px' }}
         >
           <span className="flex items-center gap-1 whitespace-nowrap text-[9px] font-bold uppercase tracking-wider text-red-400">
