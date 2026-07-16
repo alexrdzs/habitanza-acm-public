@@ -14,8 +14,8 @@
 export const COPY = {
   hero: {
     headline: '¿Cuánto vale mi propiedad?',
-    tagline: 'Te ayudamos a saber si te conviene vender hoy y en cuánto',
-    body: 'En menos de 2 minutos, sin costo ni compromiso.',
+    tagline: 'Descubre si te conviene vender hoy',
+    body: 'Recibe un análisis preliminar en menos de 2 minutos.',
     ctaLabel: 'Quiero conocer el valor de mi propiedad',
     // Order-matched with the icon array in WizardHero.tsx.
     trustMarks: ['Sin ningún costo para ti', 'Profesionales expertos en la zona', 'Con data actualizada a 2026'],
