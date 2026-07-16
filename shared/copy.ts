@@ -87,7 +87,7 @@ export const COPY = {
       },
       {
         title: 'Un asesor humano lo revisa',
-        detail: 'Antes de compartirte el número final, alguien que conoce tu fraccionamiento lo valida.',
+        detail: 'Alguien que conoce tu fraccionamiento valida el análisis antes de darte una recomendación.',
       },
     ],
   },
@@ -126,7 +126,7 @@ export const COPY = {
 
   contact: {
     title: 'Cuéntanos de ti',
-    description: 'Así podremos ponernos en contacto y compartir el estimado de valor detallado.',
+    description: 'Así un asesor puede contactarte para platicar la mejor estrategia para tu propiedad.',
     fieldLabels: {
       nombre: 'Nombre completo *',
       telefono: 'Teléfono / WhatsApp *',
@@ -286,6 +286,6 @@ export const COPY = {
 
   submittedFallback: {
     title: (firstName: string) => `Gracias, ${firstName}`,
-    body: 'Un asesor te contacta por WhatsApp con el valor estimado de tu propiedad.',
+    body: 'Un asesor te contacta por WhatsApp para ayudarte a tomar la mejor decisión sobre tu propiedad.',
   },
 } as const;
