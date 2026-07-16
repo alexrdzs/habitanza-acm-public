@@ -1,9 +1,9 @@
-import { Search, ListChecks, UserCheck } from 'lucide-react';
+import { Search, ListChecks, Sparkles, UserCheck } from 'lucide-react';
 import { COPY } from '@shared/copy';
 import { SectionChip } from './SectionChip';
 
 // Order-matched with COPY.methodology.steps.
-const STEP_ICONS = [Search, ListChecks, UserCheck];
+const STEP_ICONS = [Search, ListChecks, Sparkles, UserCheck];
 
 // Shared between the Hero (as one more reason to trust the process before
 // starting) and the reveal screen (explaining how the number was reached).
