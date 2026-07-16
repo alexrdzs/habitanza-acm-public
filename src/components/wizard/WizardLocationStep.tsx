@@ -30,19 +30,21 @@ const AUTO_ADVANCE_DELAY_MS = 400;
 // in shared/comparableListings.ts, not tied to specific colonia names.
 const TEASER_PHOTOS = sampleListingPhotos(3);
 
-interface ColoniaCardProps {
+interface ColoniaRowProps {
   colonia: string;
   active: boolean;
   disabled: boolean;
   onSelect: () => void;
 }
 
-function ColoniaCard({ colonia, active, disabled, onSelect }: ColoniaCardProps) {
-  // A single shared aerial (if configured) gives every card the same neutral
-  // backdrop; otherwise we dim the fraccionamiento's own real property photo
-  // as ambient texture. Either way the *name* is the hero, so a missing or
-  // unrepresentative photo degrades gracefully to a branded gradient instead
-  // of pretending a house shot stands in for the whole zone.
+// A compact row instead of a large card: a mini photo on the left with the
+// name beside it, so almost all fraccionamientos fit on screen at a glance.
+// The name is the hero (dark, prominent); the thumbnail is a small accent,
+// which is the point -- a single property shot rarely represents a whole
+// zone, so it degrades gracefully to a branded gradient when there's no
+// photo (or a shared aerial via NEIGHBORHOOD_AERIAL_BG) rather than leading
+// with an image we can't stand behind.
+function ColoniaRow({ colonia, active, disabled, onSelect }: ColoniaRowProps) {
   const backdrop = NEIGHBORHOOD_AERIAL_BG ?? coloniaPhoto(colonia);
   const [imgFailed, setImgFailed] = useState(false);
   const showImage = !!backdrop && !imgFailed;
@@ -52,24 +54,19 @@ function ColoniaCard({ colonia, active, disabled, onSelect }: ColoniaCardProps) 
       type="button"
       onClick={onSelect}
       disabled={disabled}
-      className="group w-full text-left transition-opacity disabled:opacity-40"
+      className={cn(
+        'flex w-full items-center gap-3 rounded-2xl border p-2 pr-4 text-left transition-all disabled:opacity-40',
+        active
+          ? 'border-brand-500 bg-brand-500/5'
+          : 'border-neutral-200 bg-parchment-card hover:border-neutral-300'
+      )}
     >
-      <div
-        className={cn(
-          'relative aspect-[4/5] w-full overflow-hidden rounded-2xl border-2 transition-all duration-200',
-          // Branded gradient is the base layer, so it also serves as the
-          // fallback when there's no photo (or one fails to load).
-          'bg-gradient-to-br from-emerald-deep to-neutral-900',
-          active
-            ? 'scale-[0.97] border-brand-500 shadow-[0_0_0_3px_rgba(37,211,102,0.25)]'
-            : 'border-white/10 group-hover:border-white/25'
-        )}
-      >
+      <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-xl bg-gradient-to-br from-emerald-deep to-neutral-900">
         {showImage && (
           <img
-            src={optimizedPhotoUrl(backdrop, 320)}
-            srcSet={`${optimizedPhotoUrl(backdrop, 320)} 320w, ${optimizedPhotoUrl(backdrop, 640)} 640w`}
-            sizes="(min-width: 640px) 240px, 45vw"
+            src={optimizedPhotoUrl(backdrop, 96)}
+            srcSet={`${optimizedPhotoUrl(backdrop, 96)} 96w, ${optimizedPhotoUrl(backdrop, 192)} 192w`}
+            sizes="48px"
             alt=""
             aria-hidden="true"
             loading="lazy"
@@ -79,22 +76,20 @@ function ColoniaCard({ colonia, active, disabled, onSelect }: ColoniaCardProps) 
             onError={() => setImgFailed(true)}
           />
         )}
-
-        {/* Dim the backdrop so the name always reads as the hero: a soft
-            overall darken plus a stronger bottom-up gradient behind the text. */}
-        <div className="absolute inset-0 bg-neutral-950/25" />
-        <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/85 via-neutral-950/25 to-transparent" />
-
-        {active && (
-          <div className="absolute right-2.5 top-2.5 flex h-7 w-7 animate-in items-center justify-center rounded-full bg-brand-500 shadow-md zoom-in-50 duration-200">
-            <Check className="h-4 w-4 text-white" strokeWidth={3} />
-          </div>
-        )}
-
-        <p className="absolute inset-x-0 bottom-0 line-clamp-3 p-3 text-[15px] font-bold leading-tight text-white [text-shadow:0_1px_8px_rgba(0,0,0,0.55)]">
-          {colonia}
-        </p>
+        {/* A faint sheen keeps the mini photo consistent with the design's
+            dimmed-backdrop language without darkening it into a muddy square. */}
+        <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/25 to-transparent" />
       </div>
+
+      <span className="min-w-0 flex-1 text-sm font-semibold leading-tight text-neutral-800">
+        {colonia}
+      </span>
+
+      {active && (
+        <div className="flex h-6 w-6 flex-shrink-0 animate-in items-center justify-center rounded-full bg-brand-500 shadow-sm zoom-in-50 duration-200">
+          <Check className="h-3.5 w-3.5 text-white" strokeWidth={3} />
+        </div>
+      )}
     </button>
   );
 }
@@ -165,9 +160,9 @@ export function WizardLocationStep(props: Props) {
     >
       <div className="flex flex-col gap-4">
         <div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="flex flex-col gap-2">
             {ZONA_ESMERALDA_COLONIAS.map((c) => (
-              <ColoniaCard
+              <ColoniaRow
                 key={c}
                 colonia={c}
                 active={props.colonia === c}
