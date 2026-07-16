@@ -1,7 +1,10 @@
-import { useRef, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { createPortal } from 'react-dom';
+import { X } from 'lucide-react';
 import { REFERRAL_SOURCES } from '@shared/validation';
 import { COPY } from '@shared/copy';
 import { WizardShell } from './WizardShell';
+import { PrivacyNoticeContent } from '../PrivacyNoticeContent';
 import { inputClass, labelClass } from './formStyles';
 import { cn } from '../../lib/utils';
 
@@ -26,6 +29,17 @@ interface Props {
 
 export function WizardContactStep(props: Props) {
   const formRef = useRef<HTMLFormElement>(null);
+  // The aviso de privacidad opens in a modal, not a new tab: sending someone
+  // to another page at the last step of the funnel is a reliable way to lose
+  // them.
+  const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isPrivacyOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setIsPrivacyOpen(false);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isPrivacyOpen]);
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -106,7 +120,10 @@ export function WizardContactStep(props: Props) {
           )}
         </div>
 
-        <label className="flex items-start gap-2 text-sm text-neutral-600">
+        {/* Hairline + spacing sets the consent apart from the fields it
+            governs, so it reads as a distinct agreement rather than another
+            input. */}
+        <label className="mt-2 flex items-start gap-2 border-t border-neutral-200 pt-5 text-sm text-neutral-600">
           <input
             type="checkbox"
             className="mt-1"
@@ -116,15 +133,52 @@ export function WizardContactStep(props: Props) {
           />
           <span>
             {COPY.contact.consent.prefix}
-            <a href="/aviso-de-privacidad" target="_blank" rel="noreferrer" className="text-brand-600 underline">
+            <button
+              type="button"
+              onClick={() => setIsPrivacyOpen(true)}
+              className="text-brand-600 underline underline-offset-2 hover:text-brand-700"
+            >
               {COPY.contact.consent.linkLabel}
-            </a>
+            </button>
             {COPY.contact.consent.suffix}
           </span>
         </label>
 
         {props.errorMessage && <p className="text-sm text-red-600">{props.errorMessage}</p>}
       </form>
+
+      {/* Portaled to <body>: WizardShell's card uses backdrop-blur, which
+          establishes a containing block for fixed descendants -- rendered
+          in place, this "overlay" would be trapped inside the card instead
+          of covering the viewport. */}
+      {isPrivacyOpen &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Aviso de Privacidad"
+          >
+            <div className="absolute inset-0 bg-neutral-900/60 backdrop-blur-sm" onClick={() => setIsPrivacyOpen(false)} />
+            <div className="animate-in zoom-in-95 relative flex max-h-[85vh] w-full max-w-lg flex-col overflow-hidden rounded-card-lg bg-parchment-card shadow-2xl duration-200">
+              <div className="flex items-center justify-between border-b border-neutral-200 p-5">
+                <h2 className="text-lg font-bold text-emerald-deep">Aviso de Privacidad</h2>
+                <button
+                  type="button"
+                  onClick={() => setIsPrivacyOpen(false)}
+                  aria-label="Cerrar"
+                  className="rounded-lg p-1.5 text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-700"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+              <div className="overflow-y-auto p-5">
+                <PrivacyNoticeContent />
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
     </WizardShell>
   );
 }

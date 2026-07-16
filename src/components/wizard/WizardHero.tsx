@@ -14,6 +14,13 @@ const TRUST_MARK_ICONS = [ShieldCheck, Award, Database];
 // Order-matched with COPY.hero.expertiseCards.
 const EXPERTISE_CARD_ICONS = [MapPin, LineChart, MessageCircle, Building2];
 
+// One set of 4 cards is only ~740px wide. The marquee translates by half
+// the track, so the track must be at least one viewport plus one set wide
+// or wide screens see the content run out and a blank stretch scroll by.
+// Four copies (~2.9k px) covers desktop with margin, and an even count
+// keeps the -50% loop point exactly at a set boundary.
+const EXPERTISE_MARQUEE_COPIES = 4;
+
 function CtaButton({ onStart }: { onStart: () => void }) {
   return (
     <button
@@ -45,7 +52,7 @@ export function WizardHero({ onStart }: Props) {
           const Icon = TRUST_MARK_ICONS[i];
           return (
             <div key={label} className={`flex items-center gap-2 px-5 ${i === 0 ? 'sm:pl-0' : ''}`}>
-              <Icon className="h-4 w-4 flex-shrink-0 text-brass" />
+              <Icon className="h-4 w-4 flex-shrink-0 text-brand-600" />
               <p className="text-left text-[13px] font-medium leading-snug text-neutral-600">{label}</p>
             </div>
           );
@@ -57,13 +64,17 @@ export function WizardHero({ onStart }: Props) {
       <div
         className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden pb-2 pt-1 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]"
       >
-        <div className="marquee-track flex w-max gap-3">
-          {[...COPY.hero.expertiseCards, ...COPY.hero.expertiseCards].map(({ title, detail }, i) => {
+        {/* Spacing lives on each card (mr-4), not as a flex gap on the
+            track: the repeating unit must have uniform width or the -50%
+            loop point lands mid-gap and the loop visibly jumps. */}
+        <div className="marquee-track flex w-max">
+          {Array.from({ length: EXPERTISE_MARQUEE_COPIES }, () => COPY.hero.expertiseCards).flat().map(({ title, detail }, i) => {
             const Icon = EXPERTISE_CARD_ICONS[i % EXPERTISE_CARD_ICONS.length];
             return (
               <div
                 key={`${title}-${i}`}
-                className="flex w-[168px] flex-shrink-0 flex-col gap-2.5 rounded-2xl border border-neutral-200/70 bg-parchment-card/80 p-4 text-left shadow-[0_8px_20px_-10px_rgba(16,32,26,0.25)] backdrop-blur-md"
+                aria-hidden={i >= COPY.hero.expertiseCards.length || undefined}
+                className="mr-4 flex w-[168px] flex-shrink-0 flex-col gap-2.5 rounded-2xl border border-neutral-200/70 bg-parchment-card/80 p-4 text-left shadow-[0_8px_20px_-10px_rgba(16,32,26,0.25)] backdrop-blur-md"
               >
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-deep/10">
                   <Icon className="h-4 w-4 text-emerald-deep" />

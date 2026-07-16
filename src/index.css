@@ -1,11 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
 @theme {
   --font-sans: "Figtree", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
   /* Brand — the literal Habitanza logo/CTA green. Unchanged. */
   --color-brand-50: #f0fdf4;
@@ -26,10 +24,14 @@
   --color-emerald-deep: #146C48;
   --color-emerald-glow: #4ADE80;
 
-  /* Ink — the dark ground for the appraisal/reveal panels. A near-black
-     with a deep emerald undertone rather than a neutral true black. */
-  --color-ink: #10201A;
-  --color-ink-soft: #17281F;
+  /* Ink — the dark ground for the appraisal/reveal panels. Matches the
+     full ACM report's dark surface (its neutral-950) so the reveal panel
+     and the document it previews share one black. An earlier emerald-tinted
+     value read as "dark green" next to the real report and was rejected;
+     the green in this panel should come from the glow accent, not the
+     surface. */
+  --color-ink: #0c0a09;
+  --color-ink-soft: #1c1917;
 
   /* Parchment — the page ground. Kept the name for minimal diff, but the
      value is now a cool, very light neutral gray rather than the earlier
@@ -103,9 +105,9 @@
     animation-play-state: paused;
   }
 
-  /* Same loop, opposite direction -- used where a second scrolling row
-     shares a screen with .marquee-track (e.g. the Hero's team strip vs its
-     expertise-card marquee) so the two don't read as one wide conveyor. */
+  /* Same loop, opposite direction — the Hero's advisor strip scrolls
+     against its expertise-card marquee so the two don't read as one wide
+     conveyor. */
   .marquee-track-reverse {
     animation: marquee 22s linear infinite reverse;
   }

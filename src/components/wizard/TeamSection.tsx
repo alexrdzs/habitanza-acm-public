@@ -2,27 +2,34 @@ import { CheckCircle2 } from 'lucide-react';
 import { TEAM_MEMBERS } from '@shared/team';
 import { COPY } from '@shared/copy';
 import { AdvisorAvatar } from './AdvisorAvatar';
+import { SectionChip } from './SectionChip';
 
 // The full active roster (see shared/team.ts) as a plain photo+first-name
 // marquee -- no cards, no titles, just faces -- so this reads as "here are
 // the real professionals behind Habitanza" rather than another form-y
-// module. Scrolls opposite the expertise-card marquee further down this
-// same screen so the two don't read as one continuous conveyor.
+// module. Scrolls opposite the expertise-card marquee further down the same
+// screen so the two don't read as one continuous conveyor.
 export function TeamSection() {
   return (
     <div className="space-y-5 rounded-card-lg border border-neutral-200/70 bg-parchment-card/80 p-6 text-left backdrop-blur-md md:p-8">
-      <div className="text-center">
-        <p className="font-mono text-[10px] font-medium uppercase tracking-[0.15em] text-brass">
-          {COPY.team.eyebrow}
-        </p>
-        <h3 className="mt-1 text-base font-bold text-neutral-900">{COPY.team.title}</h3>
+      <div className="space-y-2 text-center">
+        <SectionChip label={COPY.team.eyebrow} variant="neutral" center />
+        <h3 className="text-base font-bold text-neutral-900">{COPY.team.title}</h3>
         <p className="mt-1 text-sm text-neutral-500">{COPY.team.subline}</p>
       </div>
 
       <div className="-mx-6 overflow-hidden py-1 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)] md:-mx-8">
-        <div className="marquee-track-reverse flex w-max gap-7">
+        {/* Spacing lives on each item (mr-7), not as a flex gap on the track:
+            gap adds space between every pair including the two duplicated
+            sets, so a -50% translation lands mid-gap and the loop seam
+            jumps. Per-item margin keeps the repeating unit uniform. */}
+        <div className="marquee-track-reverse flex w-max">
           {[...TEAM_MEMBERS, ...TEAM_MEMBERS].map((member, i) => (
-            <div key={`${member.name}-${i}`} className="flex w-20 flex-shrink-0 flex-col items-center gap-2 text-center">
+            <div
+              key={`${member.name}-${i}`}
+              aria-hidden={i >= TEAM_MEMBERS.length || undefined}
+              className="mr-7 flex w-20 flex-shrink-0 flex-col items-center gap-2 text-center"
+            >
               <AdvisorAvatar
                 advisor={member}
                 className="h-16 w-16 border-2 border-white shadow-sm"
