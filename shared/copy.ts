@@ -48,6 +48,11 @@ export const COPY = {
     // avatar, or "signed by" framing.
     experienceStatement:
       'Más de 15 años de experiencia en Zona Esmeralda. Conocemos muy bien el mercado y qué lo hace único.',
+    // Backing/accelerator credibility line -- not a quote or endorsement,
+    // just an institutional fact, so it sits with experienceStatement
+    // rather than inside the checklist below.
+    backingStatement: 'Somos parte de la aceleradora inmobiliaria más importante de LATAM.',
+    backingLogoUrl: 'https://pulppo.com/images/logo_claro.svg',
     checklist: [
       {
         title: 'Estaremos contigo en todo el proceso',
@@ -75,6 +80,10 @@ export const COPY = {
       {
         title: 'Cruzamos contra portafolio activo',
         detail: 'Comparamos contra propiedades que existen hoy en Zona Esmeralda, no listados viejos o de otras zonas.',
+      },
+      {
+        title: 'Analizamos el volumen de datos con IA',
+        detail: 'Procesamos miles de referencias de mercado para detectar patrones que un análisis manual pasaría por alto.',
       },
       {
         title: 'Un asesor humano lo revisa',
@@ -277,6 +286,6 @@ export const COPY = {
 
   submittedFallback: {
     title: (firstName: string) => `Gracias, ${firstName}`,
-    body: 'Un asesor te contacta por WhatsApp en menos de 48 horas con el valor estimado de tu propiedad.',
+    body: 'Un asesor te contacta por WhatsApp con el valor estimado de tu propiedad.',
   },
 } as const;

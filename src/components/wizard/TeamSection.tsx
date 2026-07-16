@@ -54,6 +54,20 @@ export function TeamSection() {
           </li>
         ))}
       </ul>
+
+      {/* Institutional backing line closes the card -- a credibility fact
+          about the company, not a value prop about the service. Statement
+          first, logo second: reads as a claim you then substantiate with the
+          brand mark, not a logo caption. */}
+      <div className="flex flex-col items-center gap-3 border-t border-neutral-200 pt-5">
+        <p className="text-center text-[11px] leading-snug text-neutral-500">{COPY.team.backingStatement}</p>
+        <img
+          src={COPY.team.backingLogoUrl}
+          alt="Pulppo"
+          loading="lazy"
+          className="h-12 w-auto max-w-[60%] flex-shrink-0 opacity-80"
+        />
+      </div>
     </div>
   );
 }
