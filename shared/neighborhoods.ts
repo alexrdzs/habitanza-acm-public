@@ -26,3 +26,15 @@ export const NEIGHBORHOOD_COORDINATES: Record<string, { lat: number; lng: number
 // Fallback center — roughly the middle of the six colonias above — used
 // when a colonia isn't in the map yet (free-text "otra colonia").
 export const ZONA_ESMERALDA_CENTER = { lat: 19.5645, lng: -99.3 };
+
+// Optional single shared backdrop for the location step's fraccionamiento
+// cards. The picker doesn't have a unique, representative photo for every
+// neighborhood (a property shot rarely reads as "the zone"), so the card
+// design leads with the *name* over a dimmed backdrop rather than making a
+// photo the hero. Drop one generic aerial-of-the-zone image in `/public`
+// and point this at it (e.g. '/zona-aerial.jpg') to give every card the
+// same neutral backdrop. Left undefined, each card dims its own real
+// property photo as ambient texture instead, falling back to a branded
+// gradient when a fraccionamiento has no listing photo yet — so the design
+// works today and switches to the aerial the moment the asset lands.
+export const NEIGHBORHOOD_AERIAL_BG: string | undefined = undefined;
