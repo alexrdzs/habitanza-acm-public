@@ -29,9 +29,6 @@ export function WizardHero({ onStart }: Props) {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 space-y-10 py-6 text-center duration-700">
       <div className="space-y-5">
-        <p className="font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-emerald-deep">
-          {COPY.hero.eyebrow}
-        </p>
         <div className="space-y-1.5">
           <h1 className="text-[2.15rem] font-extrabold leading-[1.08] tracking-tight text-neutral-900 md:text-5xl">
             {COPY.hero.headline}

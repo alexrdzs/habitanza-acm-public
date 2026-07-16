@@ -13,10 +13,9 @@
 
 export const COPY = {
   hero: {
-    eyebrow: 'Zona Esmeralda · Atizapán de Zaragoza',
     headline: '¿Cuánto vale mi propiedad?',
-    tagline: 'Análisis de mercado y competencia',
-    body: 'Calcula el valor aproximado de tu propiedad y analiza si vender sería una buena opción para ti.',
+    tagline: 'Te ayudamos a saber si te conviene vender hoy y en cuánto',
+    body: 'En menos de 2 minutos, sin costo ni compromiso.',
     ctaLabel: 'Quiero conocer el valor de mi propiedad',
     // Order-matched with the icon array in WizardHero.tsx.
     trustMarks: ['Sin ningún costo para ti', 'Profesionales expertos en la zona', 'Con data actualizada a 2026'],
