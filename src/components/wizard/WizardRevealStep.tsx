@@ -114,13 +114,12 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
         <div className="relative p-7 text-center md:p-10">
           <p className="text-[11px] font-bold uppercase tracking-wider text-brand-400">{COPY.reveal.panelChip}</p>
           <p className="mt-3 text-[13px] font-medium text-neutral-300">{COPY.reveal.headlinePrefix}</p>
-          {/* 16px keeps "Entre {low} y {high}" on one line at 390px for the
-              7-8 figure range typical of this zone (the ~302px content width
-              only fits ~291px of tabular text at this weight); leading-tight
-              lets an unusually large value wrap gracefully rather than
-              overflow. Scales up to the full display size on desktop. */}
-          <h3 className="mt-1.5 text-base font-bold leading-tight tracking-tight tabular-nums text-white md:text-4xl">
-            {COPY.reveal.headlineRangePrefix}{' '}
+          {/* Without the "Entre" prefix the "{low} a {high}" range is short
+              enough to sit a notch larger and still stay on one line at 390px
+              for the 7-8 figure values typical of this zone; leading-tight
+              lets an unusually large value wrap gracefully. Scales to the full
+              display size on desktop. */}
+          <h3 className="mt-1.5 text-xl font-bold leading-tight tracking-tight tabular-nums text-white md:text-4xl">
             <span className="animate-in fade-in slide-in-from-bottom-1 fill-mode-both duration-500 delay-100">
               {formatCurrency(estimate.low)}
             </span>{' '}

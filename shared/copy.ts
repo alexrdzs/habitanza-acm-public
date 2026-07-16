@@ -162,8 +162,7 @@ export const COPY = {
     subtext: 'Con esta información podemos darte un rango aproximado.',
     panelChip: 'Rango preliminar',
     headlinePrefix: 'Tu propiedad podría estar en un rango de:',
-    headlineRangePrefix: 'Entre',
-    headlineJoiner: 'y',
+    headlineJoiner: 'a',
     caption: (colonia: string) => `Esto es un promedio de ${colonia} basado en datos históricos y nuestra experiencia en la zona.`,
     researchCaption: (colonia: string) =>
       `Este es un rango preliminar de ${colonia}, basado en datos históricos y nuestra experiencia en la zona.`,
@@ -188,14 +187,15 @@ export const COPY = {
     // Bottom edge of the price panel: tells the visitor the range is the
     // opening of a longer analysis, not the whole answer.
     panelScrollCue: 'Tu análisis continúa',
-    // Positioning bar labels. "Fuera de mercado" mirrors the full ACM's
-    // pricing bar: red never brackets the range itself, it only marks the
-    // zone past Máx where a listing stops competing.
+    // Positioning bar labels. The bar reads red-yellow-green-yellow-red:
+    // the glass pill floats over the recommended range in the middle and the
+    // red margins at both ends fall outside it, summarized by the note below
+    // the bar.
     bar: {
-      estimateLabel: 'Estimado',
+      estimateLabel: 'Precio aprox',
       minLabel: 'Mín',
       maxLabel: 'Máx',
-      outOfMarketLabel: 'Fuera de mercado',
+      outOfMarketNote: 'Los extremos en rojo quedan fuera de mercado.',
     },
     // Section numbering mirrors the chaptered structure of the full ACM
     // ("01 Pulso del Mercado"...) so this screen reads as a preview of the
