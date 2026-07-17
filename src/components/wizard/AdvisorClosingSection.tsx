@@ -31,19 +31,19 @@ export function AdvisorClosingSection({ advisor, nombre, tipoPropiedad, colonia,
   const otherMembers = TEAM_MEMBERS.filter((m) => m.firstName !== advisorFirstName);
 
   return (
-    <div className="overflow-hidden rounded-card-lg bg-ink text-white shadow-[0_1px_2px_rgba(12,10,9,0.08),0_16px_36px_-16px_rgba(12,10,9,0.45)]">
+    <div className="overflow-hidden rounded-card-lg bg-ink text-white shadow-[0_1px_2px_rgba(12,10,9,0.08),0_16px_36px_-16px_rgba(12,10,9,0.45)] dark:ring-1 dark:ring-white/10">
       <div className="p-6 md:p-8">
         <SectionChip label={COPY.reveal.closing.chip} variant="brand" center />
 
         <div ref={ctaRef} className="mx-auto mt-6 flex max-w-sm flex-col items-center text-center">
           <AdvisorAvatar
             advisor={advisor}
-            className="h-20 w-20 flex-shrink-0 border-2 border-brand-500/70 bg-neutral-800"
-            iconClassName="h-8 w-8 text-neutral-400"
+            className="h-20 w-20 flex-shrink-0 border-2 border-brand-500/70 bg-white/10"
+            iconClassName="h-8 w-8 text-white/50"
           />
           <p className="mt-4 text-[10px] font-bold uppercase tracking-wider text-brand-400">{advisor.roleLabel}</p>
           <p className="mt-0.5 text-base font-bold text-white">{advisor.name}</p>
-          <p className="mt-3 text-sm leading-relaxed text-neutral-300">
+          <p className="mt-3 text-sm leading-relaxed text-white/70">
             {COPY.reveal.advisorParagraph(advisorFirstName, advisor.gender, colonia)}
           </p>
           <a
@@ -70,10 +70,10 @@ export function AdvisorClosingSection({ advisor, nombre, tipoPropiedad, colonia,
                 <div key={member.name} className="flex w-12 flex-col items-center gap-1.5 text-center">
                   <AdvisorAvatar
                     advisor={member}
-                    className="h-12 w-12 border-2 border-white/15 bg-neutral-800"
-                    iconClassName="h-4 w-4 text-neutral-400"
+                    className="h-12 w-12 border-2 border-white/15 bg-white/10"
+                    iconClassName="h-4 w-4 text-white/50"
                   />
-                  <p className="text-[10px] font-semibold leading-tight text-neutral-300">{member.firstName}</p>
+                  <p className="text-[10px] font-semibold leading-tight text-white/70">{member.firstName}</p>
                 </div>
               ))}
             </div>

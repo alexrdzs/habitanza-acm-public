@@ -85,7 +85,7 @@ export function WizardAnalyzingStep({ colonia, onDone }: { colonia: string; onDo
                 key={stage.label}
                 className={`flex items-start gap-3 rounded-xl border p-3 transition-all duration-500 ${
                   isActive
-                    ? 'border-brand-200 bg-brand-50'
+                    ? 'border-brand-200 bg-brand-50 dark:border-brand-500/40 dark:bg-brand-500/10'
                     : isDone
                       ? 'border-neutral-200 bg-parchment-card opacity-60'
                       : 'border-transparent opacity-0'

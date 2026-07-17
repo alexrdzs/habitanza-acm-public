@@ -136,7 +136,7 @@ export function WizardContactStep(props: Props) {
             <button
               type="button"
               onClick={() => setIsPrivacyOpen(true)}
-              className="text-brand-600 underline underline-offset-2 hover:text-brand-700"
+              className="text-brand-600 underline underline-offset-2 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300"
             >
               {COPY.contact.consent.linkLabel}
             </button>
@@ -144,7 +144,7 @@ export function WizardContactStep(props: Props) {
           </span>
         </label>
 
-        {props.errorMessage && <p className="text-sm text-red-600">{props.errorMessage}</p>}
+        {props.errorMessage && <p className="text-sm text-red-600 dark:text-red-400">{props.errorMessage}</p>}
       </form>
 
       {/* Portaled to <body>: WizardShell's card uses backdrop-blur, which
@@ -159,7 +159,7 @@ export function WizardContactStep(props: Props) {
             aria-modal="true"
             aria-label="Aviso de Privacidad"
           >
-            <div className="absolute inset-0 bg-neutral-900/60 backdrop-blur-sm" onClick={() => setIsPrivacyOpen(false)} />
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsPrivacyOpen(false)} />
             <div className="animate-in zoom-in-95 relative flex max-h-[85vh] w-full max-w-lg flex-col overflow-hidden rounded-card-lg bg-parchment-card shadow-2xl duration-200">
               <div className="flex items-center justify-between border-b border-neutral-200 p-5">
                 <h2 className="text-lg font-bold text-emerald-deep">Aviso de Privacidad</h2>

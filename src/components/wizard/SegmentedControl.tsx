@@ -20,7 +20,7 @@ export function SegmentedControl({ options, value, onChange, className }: Props)
           className={cn(
             'flex-1 rounded-lg px-4 py-2 text-sm font-semibold transition-all',
             value === opt
-              ? 'bg-white text-brand-600 shadow-sm ring-1 ring-neutral-200'
+              ? 'bg-white text-brand-600 shadow-sm ring-1 ring-neutral-200 dark:bg-white/10 dark:text-brand-400'
               : 'text-neutral-500 hover:text-neutral-700'
           )}
         >

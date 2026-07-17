@@ -12,7 +12,9 @@ interface Props {
 
 export function SectionChip({ label, variant = 'brand', center = false }: Props) {
   const chipClass =
-    variant === 'brand' ? 'bg-brand-50 text-brand-600' : 'bg-neutral-100 text-neutral-500';
+    variant === 'brand'
+      ? 'bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400'
+      : 'bg-neutral-100 text-neutral-500';
 
   return (
     <div className={`flex items-center gap-3 ${center ? 'justify-center' : ''}`}>
