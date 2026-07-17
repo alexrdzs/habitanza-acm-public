@@ -12,7 +12,8 @@
 // sales close; a colonia with no sample falls back to the blended default.
 // The `null` entries for the two temporary campaign zones are deliberate
 // research markers. Replace each only with a verified local price per m².
-import type { PublicPropertyType } from './validation';
+import { AMENITIES } from './validation';
+import type { Amenity, PropertyAge, PublicPropertyType } from './validation';
 
 export const PRICE_PER_M2_CONSTRUCCION: Record<string, number | null> = {
   'Bosque Esmeralda': 40000, // depto DAJ-081: $8.2M / 204m²
@@ -38,6 +39,39 @@ const PROPERTY_TYPE_FACTOR: Partial<Record<PublicPropertyType, number>> = {
   Casa: 1,
   Departamento: 0.9,
 };
+
+// ── Where the aprox point sits WITHIN the range ────────────────────────────
+// The range (low..high) is the zone/comparable band and never moves. These
+// signals only decide where inside it the single best-guess "aprox" lands, so
+// a newer, well-equipped home sits above the midpoint and a bare, older one
+// below -- without ever implying more precision than the band already
+// discloses (the pin stays clamped well inside the band, never on an edge).
+// 0.5 == dead center, which is exactly what neutral/unknown inputs return, so
+// behavior is unchanged for anyone who skips these optional fields.
+//
+// Deliberately a light heuristic, not homologation: absence of amenities is
+// treated as neutral (most homes lack most of these premium extras, that's
+// not a defect), while antigüedad moves the point both ways.
+const AGE_POSITION_SCORE: Record<PropertyAge, number> = {
+  'A estrenar': 1,
+  'Menos de 5 años': 0.5,
+  'Entre 5 y 10 años': 0,
+  'Entre 10 y 20 años': -0.5,
+  'Más de 20 años': -1,
+};
+const AMENITY_POSITION_WEIGHT = 0.12; // all listed amenities => +12% of the range
+const AGE_POSITION_WEIGHT = 0.1; // a-estrenar => +10%, más-de-20 => -10%
+const POSITION_MIN = 0.3; // keep the pin off the low/high edge in both directions
+const POSITION_MAX = 0.7;
+
+export function estimateRangePosition(params: {
+  amenidades?: Amenity[];
+  antiguedad?: PropertyAge | '';
+}): number {
+  const amenityLift = ((params.amenidades?.length ?? 0) / AMENITIES.length) * AMENITY_POSITION_WEIGHT;
+  const ageLift = params.antiguedad ? (AGE_POSITION_SCORE[params.antiguedad] ?? 0) * AGE_POSITION_WEIGHT : 0;
+  return Math.min(POSITION_MAX, Math.max(POSITION_MIN, 0.5 + amenityLift + ageLift));
+}
 
 export interface PreliminaryEstimate {
   low: number;
@@ -79,27 +113,39 @@ export function estimatePreliminaryRange(params: {
   colonia: string;
   m2Construccion?: number;
   m2Terreno?: number;
+  // Optional quality signals. They never widen or shift the range itself --
+  // only where the aprox point sits inside it (see estimateRangePosition).
+  amenidades?: Amenity[];
+  antiguedad?: PropertyAge | '';
 }): PreliminaryEstimate | null {
-  const { tipoPropiedad, colonia, m2Construccion, m2Terreno } = params;
+  const { tipoPropiedad, colonia, m2Construccion, m2Terreno, amenidades, antiguedad } = params;
 
   if (tipoPropiedad === 'Terreno') {
     if (!m2Terreno || m2Terreno <= 0) return null;
+    // Raw land: no built structure to grade, so the aprox stays centered --
+    // amenities/antigüedad don't apply to a lote.
     const perM2 = PRICE_PER_M2_TERRENO[colonia] ?? DEFAULT_PRICE_PER_M2_TERRENO;
-    const mid = m2Terreno * perM2;
+    const base = m2Terreno * perM2;
     return {
-      low: roundPreliminaryEstimate(mid * 0.8),
-      mid: roundPreliminaryEstimate(mid),
-      high: roundPreliminaryEstimate(mid * 1.2),
+      low: roundPreliminaryEstimate(base * 0.8),
+      mid: roundPreliminaryEstimate(base),
+      high: roundPreliminaryEstimate(base * 1.2),
     };
   }
 
   if (!m2Construccion || m2Construccion <= 0) return null;
   const perM2 = PRICE_PER_M2_CONSTRUCCION[colonia] ?? DEFAULT_PRICE_PER_M2_CONSTRUCCION;
   const typeFactor = PROPERTY_TYPE_FACTOR[tipoPropiedad as PublicPropertyType] ?? 1;
-  const mid = m2Construccion * perM2 * typeFactor;
+  // `base` is the zone-anchored center of the band; low/high are the fixed
+  // ±12% comparable range. The aprox then floats within [low, high] by the
+  // property's own signals instead of always landing at the midpoint.
+  const base = m2Construccion * perM2 * typeFactor;
+  const low = base * 0.88;
+  const high = base * 1.12;
+  const mid = low + estimateRangePosition({ amenidades, antiguedad }) * (high - low);
   return {
-    low: roundPreliminaryEstimate(mid * 0.88),
+    low: roundPreliminaryEstimate(low),
     mid: roundPreliminaryEstimate(mid),
-    high: roundPreliminaryEstimate(mid * 1.12),
+    high: roundPreliminaryEstimate(high),
   };
 }

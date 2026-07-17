@@ -6,9 +6,11 @@ import { formatCurrency } from '../../lib/utils';
 // floating over the recommended range in the middle. Red margins on both
 // ends mark prices that fall outside the range (too low or too high), and
 // the pill deliberately doesn't reach either edge so it reads as floating
-// between them. The formula is symmetric in ratio (low = mid*0.88 /
-// high = mid*1.12 for construcción; *0.8/*1.2 for terreno), so mid always
-// sits at the center (50%) and Mín/Máx land at the pill's two edges.
+// between them. Mín/Máx (the fixed comparable band) land at the pill's two
+// edges; the Estimado pin floats between them at wherever the aprox actually
+// falls within [low, high] -- signals like amenities/antigüedad shift it off
+// center (see estimateRangePosition in shared/pricing.ts), so it's no longer
+// pinned to the exact middle.
 const MIN_POS = 15; // % where the pill / Mín tick sits; red margin to its left
 const MAX_POS = 85; // % where the pill / Máx tick sits; red margin to its right
 
@@ -17,6 +19,11 @@ interface Props {
 }
 
 export function PreliminaryPricingBar({ estimate }: Props) {
+  // Map the aprox's real position in [low, high] onto the pill's [MIN_POS,
+  // MAX_POS] track. Falls back to dead-center for a zero-width range.
+  const span = estimate.high - estimate.low;
+  const midFraction = span > 0 ? (estimate.mid - estimate.low) / span : 0.5;
+  const estimatePos = MIN_POS + midFraction * (MAX_POS - MIN_POS);
   return (
     // Generous top/bottom padding: the pin above and the Mín/Máx labels plus
     // the "fuera de mercado" note below are absolutely positioned (they don't
@@ -45,11 +52,11 @@ export function PreliminaryPricingBar({ estimate }: Props) {
           style={{ left: `${MIN_POS}%`, width: `${MAX_POS - MIN_POS}%`, top: '-9px', height: '28px' }}
         />
 
-        {/* Estimado pin at 50%. Lands last, once the line has drawn, as the
-            payoff. */}
+        {/* Estimado pin. Lands last, once the line has drawn, as the payoff.
+            Positioned at the aprox's real place in the range, not always 50%. */}
         <div
           className="animate-in fade-in zoom-in-90 fill-mode-both absolute z-10 duration-500 delay-700"
-          style={{ left: '50%', bottom: '8px', transform: 'translateX(-50%)' }}
+          style={{ left: `${estimatePos}%`, bottom: '8px', transform: 'translateX(-50%)' }}
         >
           <div className="flex flex-col items-center">
             <div className="relative mb-1.5 flex flex-col items-center whitespace-nowrap rounded-lg bg-white px-3 py-1.5 shadow-lg ring-1 ring-brand-500/40">

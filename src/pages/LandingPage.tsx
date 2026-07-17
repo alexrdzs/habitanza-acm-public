@@ -57,6 +57,9 @@ export function LandingPage() {
           colonia: revealPreviewColonia,
           m2Construccion: 240,
           m2Terreno: 320,
+          // Sample signals so the preview shows the aprox sitting above center.
+          amenidades: ['Alberca o Jacuzzi', 'Vistas panorámicas', 'Casa inteligente'],
+          antiguedad: 'A estrenar',
         })
       : null
   );
@@ -117,6 +120,9 @@ export function LandingPage() {
           colonia: resolvedColonia,
           m2Construccion: m2Construccion ? Number(m2Construccion) : undefined,
           m2Terreno: m2Terreno ? Number(m2Terreno) : undefined,
+          // Nudge the aprox within the range by the property's own signals.
+          amenidades,
+          antiguedad: antiguedad || undefined,
         })
       );
       // The analyzing animation now plays after contact info is submitted
