@@ -61,12 +61,18 @@ export function TeamSection() {
           brand mark, not a logo caption. */}
       <div className="flex flex-col items-center gap-3 border-t border-neutral-200 pt-5">
         <p className="text-center text-[11px] leading-snug text-neutral-500">{COPY.team.backingStatement}</p>
-        <img
-          src={COPY.team.backingLogoUrl}
-          alt="Pulppo"
-          loading="lazy"
-          className="h-12 w-auto max-w-[60%] flex-shrink-0 opacity-80"
-        />
+        {/* <picture> swaps to the dark-background (white) logo purely via
+            prefers-color-scheme -- no JS. See COPY.team.backingLogoUrlDark
+            (currently a placeholder until the real white mark lands). */}
+        <picture className="flex max-w-[60%] flex-shrink-0 justify-center">
+          <source media="(prefers-color-scheme: dark)" srcSet={COPY.team.backingLogoUrlDark} />
+          <img
+            src={COPY.team.backingLogoUrl}
+            alt="Pulppo"
+            loading="lazy"
+            className="h-12 w-auto opacity-80 dark:opacity-100"
+          />
+        </picture>
       </div>
     </div>
   );

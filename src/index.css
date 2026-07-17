@@ -76,6 +76,13 @@
 }
 
 @layer base {
+  :root {
+    /* Native controls (checkbox, select popup, scrollbars, autofill) follow
+       the design's theme instead of guessing from the system. Flipped to
+       `dark` in the dark-mode block below. */
+    color-scheme: light;
+  }
+
   body {
     @apply text-neutral-800 antialiased;
     /* Very subtle -- a faint top-to-bottom shift within the same gray, not
@@ -88,6 +95,64 @@
   h1, h2, h3, h4 {
     @apply tracking-tight font-bold;
     text-wrap: balance;
+  }
+}
+
+/* ---- Dark mode -----------------------------------------------------------
+   The palette was designed light-first (see @theme above + CLAUDE.md). Rather
+   than sprinkle `dark:` on every element, we remap the *semantic design
+   tokens* under prefers-color-scheme: dark so the whole system flips at once:
+   the page ground and card surfaces go dark, and the green-grey neutral ramp
+   inverts its lightness. The ramp is used semantically everywhere (low numbers
+   = light surfaces/borders, high numbers = dark text), so flipping the values
+   makes `text-neutral-900` read light, `bg-neutral-50`/`border-neutral-200`
+   read dark, etc. -- no per-element edits needed.
+
+   Two things are deliberately kept OUT of this remap:
+   - The always-dark ink price panels (bg-ink) stay the darkest surface and
+     drive their internal contrast from white-alpha, not the neutral ramp, so
+     they read the same in both themes (the premium price card is still the
+     deepest black, now against a lifted dark-green page).
+   - A short list of direction-dependent accents (a light-surface `bg-white`,
+     deep-green text/icons that would vanish on a dark card, the modal scrim)
+     keep targeted `dark:` overrides in the JSX where remapping one token
+     couldn't serve both of its light-mode roles at once.
+
+   This is unlayered on purpose so it outranks the @layer base body rule. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    /* Page ground + card surfaces. Ink panels are untouched (var(--color-ink)
+       stays #0c0a09), so the hierarchy becomes ink panel (deepest) < cards <
+       page. */
+    --color-parchment: #0f1c16;
+    --color-parchment-card: #1a2721;
+
+    /* The jewel-green emerald accent brightens so icons/text that were a deep
+       green on light cards stay legible on dark ones (and the analyzing
+       completion circle reads as a vivid confirmation, not a muddy patch). */
+    --color-emerald-deep: #34D399;
+
+    /* Green-grey neutral ramp, lightness-inverted. Surface/border shades
+       (50-300) go dark; text shades (400-950) go light. */
+    --color-neutral-50: #1c251f;
+    --color-neutral-100: #222c26;
+    --color-neutral-200: #2a342e;
+    --color-neutral-300: #3b463f;
+    --color-neutral-400: #849289;
+    --color-neutral-500: #9aa69d;
+    --color-neutral-600: #b8c1b8;
+    --color-neutral-700: #d0d7cf;
+    --color-neutral-800: #e4e9e3;
+    --color-neutral-900: #f2f5f1;
+    --color-neutral-950: #f8faf7;
+  }
+
+  body {
+    /* Same "very subtle vertical shift" idea as light mode, in the dark
+       green-grey range, so glass cards still have depth to pick up. */
+    background: linear-gradient(180deg, #12211a 0%, var(--color-parchment) 45%, #0c1712 100%);
   }
 }
 

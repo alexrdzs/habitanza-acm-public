@@ -143,7 +143,7 @@ export function WizardBasicsStep(props: Props) {
                 </label>
                 <ThousandsInput value={props.m2Construccion} onChange={props.setM2Construccion} placeholder="m²" />
                 {showConstructionError && (
-                  <p className="text-xs font-medium text-red-600" role="alert">
+                  <p className="text-xs font-medium text-red-600 dark:text-red-400" role="alert">
                     {constructionErrorMessage}
                   </p>
                 )}
@@ -156,7 +156,7 @@ export function WizardBasicsStep(props: Props) {
               </label>
               <ThousandsInput value={props.m2Terreno} onChange={props.setM2Terreno} placeholder="m²" />
               {showLotError && (
-                <p className="text-xs font-medium text-red-600" role="alert">
+                <p className="text-xs font-medium text-red-600 dark:text-red-400" role="alert">
                   {lotErrorMessage}
                 </p>
               )}
@@ -217,7 +217,7 @@ export function WizardBasicsStep(props: Props) {
                     'flex items-center gap-2.5 rounded-xl border px-3.5 py-3 text-left text-sm font-medium leading-tight transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2',
                     active
                       ? 'border-brand-500 bg-brand-500/5 text-neutral-900 shadow-sm'
-                      : 'border-neutral-200 bg-white text-neutral-600 hover:border-neutral-300 hover:bg-neutral-50'
+                      : 'border-neutral-200 bg-white text-neutral-600 hover:border-neutral-300 hover:bg-neutral-50 dark:bg-neutral-100 dark:hover:bg-neutral-200'
                   )}
                 >
                   <Icon className={cn('h-5 w-5 shrink-0', active ? 'text-brand-500' : 'text-neutral-400')} />

@@ -52,7 +52,7 @@ export function WizardHero({ onStart }: Props) {
           const Icon = TRUST_MARK_ICONS[i];
           return (
             <div key={label} className={`flex items-center gap-2 px-5 ${i === 0 ? 'sm:pl-0' : ''}`}>
-              <Icon className="h-4 w-4 flex-shrink-0 text-brand-600" />
+              <Icon className="h-4 w-4 flex-shrink-0 text-brand-600 dark:text-brand-400" />
               <p className="text-left text-[13px] font-medium leading-snug text-neutral-600">{label}</p>
             </div>
           );

@@ -8,7 +8,7 @@ function MiniCard({ listing, index }: { listing: ComparableListing; index: numbe
 
   if (listing.isPlaceholder) {
     return (
-      <div className="w-[124px] flex-shrink-0 snap-center rounded-xl border border-neutral-200 bg-white p-3">
+      <div className="w-[124px] flex-shrink-0 snap-center rounded-xl border border-neutral-200 bg-white dark:bg-neutral-100 p-3">
         <div className="flex aspect-[4/3] items-center justify-center rounded-lg bg-parchment-card">
           <Search className="h-5 w-5 text-amber-500" />
         </div>
@@ -19,7 +19,7 @@ function MiniCard({ listing, index }: { listing: ComparableListing; index: numbe
   }
 
   return (
-    <div className="w-[124px] flex-shrink-0 snap-center overflow-hidden rounded-xl border border-neutral-200 bg-white">
+    <div className="w-[124px] flex-shrink-0 snap-center overflow-hidden rounded-xl border border-neutral-200 bg-white dark:bg-neutral-100">
       <div className="relative aspect-[4/3] overflow-hidden bg-neutral-100">
         {imgFailed || !listing.photo ? (
           <div className="flex h-full w-full items-center justify-center">

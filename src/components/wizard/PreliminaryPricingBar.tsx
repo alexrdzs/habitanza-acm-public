@@ -2,21 +2,48 @@ import { COPY } from '@shared/copy';
 import type { PreliminaryEstimate } from '@shared/pricing';
 import { formatCurrency } from '../../lib/utils';
 
-// A symmetric red-yellow-green-yellow-red bar with a frosted glass "pill"
-// floating over the recommended range in the middle. Red margins on both
-// ends mark prices that fall outside the range (too low or too high), and
-// the pill deliberately doesn't reach either edge so it reads as floating
-// between them. The formula is symmetric in ratio (low = mid*0.88 /
-// high = mid*1.12 for construcción; *0.8/*1.2 for terreno), so mid always
-// sits at the center (50%) and Mín/Máx land at the pill's two edges.
-const MIN_POS = 15; // % where the pill / Mín tick sits; red margin to its left
-const MAX_POS = 85; // % where the pill / Máx tick sits; red margin to its right
+// A red-yellow-green-yellow-red bar that reads in three layers:
+//   1. The whole coloured bar is the plausible market range. The red zones at
+//      each end are "fuera de mercado"; Mín / Máx (= low / high) sit right at
+//      the inner edge of that red, so past them is visibly out of market.
+//   2. The frosted "pill" is a narrower LIKELY band -- a fixed % of the range
+//      that rides with the aprox (so a better-equipped / newer property leans
+//      its likely band toward the upper end). It carries more room BELOW the
+//      aprox than above (PILL_DOWNSIDE_BIAS) because sellers' asking prices
+//      skew optimistic, so the realistic outcome clusters at or below the best
+//      guess -- but only "when needed": the clamp keeps the whole band inside
+//      the plausible range, so where the range runs out on one side the lean
+//      naturally flattens. It never spills into the red: "your property is
+//      probably somewhere in here."
+//   3. The Estimado pin is the single best guess, always sitting inside the
+//      pill, positioned at where the aprox actually falls within [low, high]
+//      (see estimateRangePosition in shared/pricing.ts).
+const RANGE_MIN = 14; // % where Mín (low) sits, just inside the left red zone
+const RANGE_MAX = 86; // % where Máx (high) sits, just inside the right red zone
+const PILL_WIDTH_FRACTION = 0.5; // likely band = 50% of the plausible range
+const PILL_DOWNSIDE_BIAS = 0.6; // share of the band below the aprox (0.5 = symmetric)
 
 interface Props {
   estimate: PreliminaryEstimate;
 }
 
 export function PreliminaryPricingBar({ estimate }: Props) {
+  // Where the aprox falls within [low, high], mapped onto the [RANGE_MIN,
+  // RANGE_MAX] track. Falls back to dead-center for a zero-width range.
+  const span = estimate.high - estimate.low;
+  const midFraction = span > 0 ? Math.min(1, Math.max(0, (estimate.mid - estimate.low) / span)) : 0.5;
+  const estimatePos = RANGE_MIN + midFraction * (RANGE_MAX - RANGE_MIN);
+
+  // The likely band leans below the aprox (optimism correction), then clamps
+  // so the whole band stays inside [RANGE_MIN, RANGE_MAX] -- it can shift
+  // toward an end but never crosses into the red, and the aprox always stays
+  // inside it (estimatePos is within [RANGE_MIN, RANGE_MAX], and the clamp
+  // moves the band by at most its own bias, so the pin can't fall outside).
+  const pillWidth = PILL_WIDTH_FRACTION * (RANGE_MAX - RANGE_MIN);
+  const pillLeft = Math.min(
+    RANGE_MAX - pillWidth,
+    Math.max(RANGE_MIN, estimatePos - pillWidth * PILL_DOWNSIDE_BIAS)
+  );
   return (
     // Generous top/bottom padding: the pin above and the Mín/Máx labels plus
     // the "fuera de mercado" note below are absolutely positioned (they don't
@@ -25,31 +52,31 @@ export function PreliminaryPricingBar({ estimate }: Props) {
     <div className="pb-16 pt-20">
       <div className="relative mx-1">
         {/* Draws in from the left -- reads as being plotted, then the pin
-            lands once it's done. Red at both ends, green in the middle,
-            yellow easing between; the reds sit under the margins left exposed
-            outside the glass pill. */}
+            lands once it's done. Solid red at both ends (fuera de mercado),
+            easing through yellow into green in the middle. Mín/Máx sit at the
+            inner edge of the red so past them reads as out of market. */}
         <div
           className="animate-draw-line h-2 rounded-full shadow-inner"
           style={{
-            background: `linear-gradient(90deg, #dc2626 0%, #fbbf24 ${MIN_POS}%, #34d399 50%, #fbbf24 ${MAX_POS}%, #dc2626 100%)`,
+            background: `linear-gradient(90deg, #dc2626 0%, #dc2626 6%, #fbbf24 ${RANGE_MIN}%, #34d399 50%, #fbbf24 ${RANGE_MAX}%, #dc2626 94%, #dc2626 100%)`,
           }}
         />
 
-        {/* Frosted "recommended range" pill floating over the Mín-Máx span,
-            red margins exposed on both sides. Opacity-only fade so it
+        {/* Frosted LIKELY-band pill: a % of the range that rides with the
+            aprox, clamped to never cross into the red. Opacity-only fade so it
             composes with the pin/tick transforms; no z-index, so it sits
             behind the pin (z-10) and ticks (z-0) by DOM order and never
             obscures a label. */}
         <div
           className="animate-in fade-in fill-mode-both absolute rounded-full border border-white/45 bg-white/15 shadow-[0_0_0_2px_rgba(37,211,102,0.15)] backdrop-blur-[2px] duration-500 delay-300"
-          style={{ left: `${MIN_POS}%`, width: `${MAX_POS - MIN_POS}%`, top: '-9px', height: '28px' }}
+          style={{ left: `${pillLeft}%`, width: `${pillWidth}%`, top: '-9px', height: '28px' }}
         />
 
-        {/* Estimado pin at 50%. Lands last, once the line has drawn, as the
-            payoff. */}
+        {/* Estimado pin. Lands last, once the line has drawn, as the payoff.
+            Positioned at the aprox's real place in the range, not always 50%. */}
         <div
           className="animate-in fade-in zoom-in-90 fill-mode-both absolute z-10 duration-500 delay-700"
-          style={{ left: '50%', bottom: '8px', transform: 'translateX(-50%)' }}
+          style={{ left: `${estimatePos}%`, bottom: '8px', transform: 'translateX(-50%)' }}
         >
           <div className="flex flex-col items-center">
             <div className="relative mb-1.5 flex flex-col items-center whitespace-nowrap rounded-lg bg-white px-3 py-1.5 shadow-lg ring-1 ring-brand-500/40">
@@ -63,10 +90,11 @@ export function PreliminaryPricingBar({ estimate }: Props) {
           </div>
         </div>
 
-        {/* Mín / Máx ticks at the pill edges, centered under them. */}
+        {/* Mín / Máx ticks at the plausible-range edges (by the red zones),
+            centered under them. */}
         <div
           className="animate-in fade-in fill-mode-both absolute z-0 duration-400 delay-300"
-          style={{ left: `${MIN_POS}%`, top: '12px', transform: 'translateX(-50%)' }}
+          style={{ left: `${RANGE_MIN}%`, top: '12px', transform: 'translateX(-50%)' }}
         >
           <div className="mx-auto h-2.5 w-0.5 rounded-full bg-white/40" />
           <div className="mt-1.5 flex flex-col items-center whitespace-nowrap">
@@ -78,7 +106,7 @@ export function PreliminaryPricingBar({ estimate }: Props) {
         </div>
         <div
           className="animate-in fade-in fill-mode-both absolute z-0 duration-400 delay-500"
-          style={{ left: `${MAX_POS}%`, top: '12px', transform: 'translateX(-50%)' }}
+          style={{ left: `${RANGE_MAX}%`, top: '12px', transform: 'translateX(-50%)' }}
         >
           <div className="mx-auto h-2.5 w-0.5 rounded-full bg-white/40" />
           <div className="mt-1.5 flex flex-col items-center whitespace-nowrap">

@@ -105,7 +105,7 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
           delivered; the range must not read as the end of the screen. */}
       <div
         ref={heroCardRef}
-        className="relative overflow-hidden rounded-card-lg bg-ink text-white shadow-[0_1px_2px_rgba(12,10,9,0.08),0_16px_36px_-16px_rgba(12,10,9,0.45)]"
+        className="relative overflow-hidden rounded-card-lg bg-ink text-white shadow-[0_1px_2px_rgba(12,10,9,0.08),0_16px_36px_-16px_rgba(12,10,9,0.45)] dark:ring-1 dark:ring-white/10"
       >
         {/* Ambient glow, deliberately slow and low-opacity: alive, not
             loading (see index.css glow-pulse). */}
@@ -113,7 +113,7 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
 
         <div className="relative p-7 text-center md:p-10">
           <p className="text-[11px] font-bold uppercase tracking-wider text-brand-400">{COPY.reveal.panelChip}</p>
-          <p className="mt-3 text-[13px] font-medium text-neutral-300">{COPY.reveal.headlinePrefix}</p>
+          <p className="mt-3 text-[13px] font-medium text-white/70">{COPY.reveal.headlinePrefix}</p>
           {/* Without the "Entre" prefix the "{low} a {high}" range is short
               enough to sit a notch larger and still stay on one line at 390px
               for the 7-8 figure values typical of this zone; leading-tight
@@ -138,10 +138,10 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
           <div className="mx-auto mt-6 flex max-w-xs flex-col items-center gap-3 border-t border-white/10 pt-6 text-center">
             <AdvisorAvatar
               advisor={advisor}
-              className="h-16 w-16 flex-shrink-0 border-2 border-brand-500/70 bg-neutral-800"
-              iconClassName="h-6 w-6 text-neutral-400"
+              className="h-16 w-16 flex-shrink-0 border-2 border-brand-500/70 bg-white/10"
+              iconClassName="h-6 w-6 text-white/50"
             />
-            <p className="text-[13px] leading-relaxed text-neutral-300">
+            <p className="text-[13px] leading-relaxed text-white/70">
               <span className="font-semibold text-white">{advisorFirstName}</span>
               {COPY.reveal.panelAdvisorNote.middle(advisor.roleLabel)}
               <span className="font-semibold text-white">{colonia}</span>
@@ -217,7 +217,7 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
         </h3>
 
         <div className="flex gap-3 rounded-r-xl border-l-4 border-brand-500 bg-neutral-50 p-4">
-          <Info className="mt-0.5 h-4 w-4 flex-shrink-0 text-brand-600" />
+          <Info className="mt-0.5 h-4 w-4 flex-shrink-0 text-brand-600 dark:text-brand-400" />
           <div>
             <p className="text-sm font-medium text-neutral-700">
               {hasComps ? COPY.reveal.notaOfertaTag : COPY.reveal.notaPlaceholderTag}
@@ -260,7 +260,7 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
             const Icon = ACM_CHECKLIST_ICONS[i];
             return (
               <li key={title} className="flex items-start gap-3">
-                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-brand-500/10 text-brand-600">
+                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-brand-500/10 text-brand-600 dark:text-brand-400">
                   <Icon className="h-4 w-4" />
                 </div>
                 <div>
