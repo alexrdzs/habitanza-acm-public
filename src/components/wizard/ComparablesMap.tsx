@@ -3,7 +3,7 @@ import { useLoadScript, GoogleMap } from '@react-google-maps/api';
 import { MapPin } from 'lucide-react';
 import type { ComparableListing } from '@shared/comparableListings';
 import { NEIGHBORHOOD_COORDINATES } from '@shared/neighborhoods';
-import { MAP_STYLES } from './NeighborhoodMap';
+import { useMapStyles } from './NeighborhoodMap';
 
 interface Props {
   listings: ComparableListing[];
@@ -35,7 +35,7 @@ function MapFallback({ colonia, researchCount }: Pick<Props, 'colonia' | 'resear
       {FALLBACK_DOT_POSITIONS.slice(0, researchCount).map((position) => (
         <span key={position} className={`absolute h-2.5 w-2.5 rounded-full bg-amber-400 ring-2 ring-white ${position}`} />
       ))}
-      <div className="relative z-10 rounded-lg bg-white/85 px-3 py-2 shadow-sm">
+      <div className="relative z-10 rounded-lg bg-parchment-card/85 px-3 py-2 shadow-sm backdrop-blur-sm">
         <p className="text-xs font-medium text-neutral-700">{researchCount} referencias en investigación</p>
         <p className="mt-0.5 text-[10px] text-neutral-500">Alrededor de {colonia}</p>
       </div>
@@ -54,6 +54,7 @@ const RESEARCH_DOT_OFFSETS = [
 export function ComparablesMap({ listings, colonia, researchCount = 0 }: Props) {
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string | undefined;
   const { isLoaded } = useLoadScript({ googleMapsApiKey: apiKey || '' });
+  const mapStyles = useMapStyles();
   const markersRef = useRef<google.maps.Marker[]>([]);
   // A single neighborhood center is enough for temporary dots. It is not a
   // property address and avoids asking Google for geocoding permission.
@@ -127,13 +128,13 @@ export function ComparablesMap({ listings, colonia, researchCount = 0 }: Props) 
           center={center}
           zoom={14}
           onLoad={onLoad}
-          options={{ styles: MAP_STYLES, disableDefaultUI: true, gestureHandling: 'cooperative' }}
+          options={{ styles: mapStyles, disableDefaultUI: true, gestureHandling: 'cooperative' }}
         />
       ) : (
         <div className="flex h-full items-center justify-center text-xs text-neutral-400">Cargando mapa...</div>
       )}
       {isLoaded && researchCount > 0 && listings.length === 0 && (
-        <p className="absolute bottom-2 left-2 rounded bg-white/90 px-2 py-1 text-[10px] font-medium text-neutral-600 shadow-sm">
+        <p className="absolute bottom-2 left-2 rounded bg-parchment-card/90 px-2 py-1 text-[10px] font-medium text-neutral-600 shadow-sm backdrop-blur-sm">
           Referencias por validar
         </p>
       )}

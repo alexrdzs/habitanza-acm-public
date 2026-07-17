@@ -3,7 +3,7 @@ import { useLoadScript, GoogleMap } from '@react-google-maps/api';
 import { Search } from 'lucide-react';
 import { NEIGHBORHOOD_COORDINATES, ZONA_ESMERALDA_CENTER } from '@shared/neighborhoods';
 import { readyComparableListings } from '@shared/comparableListings';
-import { MAP_STYLES, smoothZoomTo } from './NeighborhoodMap';
+import { useMapStyles, smoothZoomTo } from './NeighborhoodMap';
 
 interface Props {
   colonia: string;
@@ -29,6 +29,7 @@ const OVERVIEW_ZOOM = 11;
 export function AnalyzingMap({ colonia, narrow }: Props) {
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string | undefined;
   const { isLoaded } = useLoadScript({ googleMapsApiKey: apiKey || '' });
+  const mapStyles = useMapStyles();
   const mapRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.Marker[]>([]);
   const overviewCenter = NEIGHBORHOOD_COORDINATES[colonia] ?? ZONA_ESMERALDA_CENTER;
@@ -117,7 +118,7 @@ export function AnalyzingMap({ colonia, narrow }: Props) {
           center={overviewCenter}
           zoom={OVERVIEW_ZOOM}
           onLoad={onLoad}
-          options={{ styles: MAP_STYLES, disableDefaultUI: true, gestureHandling: 'none', clickableIcons: false }}
+          options={{ styles: mapStyles, disableDefaultUI: true, gestureHandling: 'none', clickableIcons: false }}
         />
       ) : (
         <div className="flex h-full items-center justify-center text-xs text-neutral-400">Cargando mapa...</div>
