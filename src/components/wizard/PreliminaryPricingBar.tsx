@@ -8,14 +8,20 @@ import { formatCurrency } from '../../lib/utils';
 //      the inner edge of that red, so past them is visibly out of market.
 //   2. The frosted "pill" is a narrower LIKELY band -- a fixed % of the range
 //      that rides with the aprox (so a better-equipped / newer property leans
-//      its likely band toward the upper end). It is clamped so it never spills
-//      into the red: "your property is probably somewhere in here."
+//      its likely band toward the upper end). It carries more room BELOW the
+//      aprox than above (PILL_DOWNSIDE_BIAS) because sellers' asking prices
+//      skew optimistic, so the realistic outcome clusters at or below the best
+//      guess -- but only "when needed": the clamp keeps the whole band inside
+//      the plausible range, so where the range runs out on one side the lean
+//      naturally flattens. It never spills into the red: "your property is
+//      probably somewhere in here."
 //   3. The Estimado pin is the single best guess, always sitting inside the
 //      pill, positioned at where the aprox actually falls within [low, high]
 //      (see estimateRangePosition in shared/pricing.ts).
 const RANGE_MIN = 14; // % where Mín (low) sits, just inside the left red zone
 const RANGE_MAX = 86; // % where Máx (high) sits, just inside the right red zone
 const PILL_WIDTH_FRACTION = 0.5; // likely band = 50% of the plausible range
+const PILL_DOWNSIDE_BIAS = 0.6; // share of the band below the aprox (0.5 = symmetric)
 
 interface Props {
   estimate: PreliminaryEstimate;
@@ -28,12 +34,16 @@ export function PreliminaryPricingBar({ estimate }: Props) {
   const midFraction = span > 0 ? Math.min(1, Math.max(0, (estimate.mid - estimate.low) / span)) : 0.5;
   const estimatePos = RANGE_MIN + midFraction * (RANGE_MAX - RANGE_MIN);
 
-  // The likely band centers on the aprox, then clamps so both edges stay
-  // inside [RANGE_MIN, RANGE_MAX] -- it can lean toward an end but never
-  // crosses into the red. The aprox stays inside it by construction.
-  const pillHalf = (PILL_WIDTH_FRACTION * (RANGE_MAX - RANGE_MIN)) / 2;
-  const pillCenter = Math.min(RANGE_MAX - pillHalf, Math.max(RANGE_MIN + pillHalf, estimatePos));
-  const pillLeft = pillCenter - pillHalf;
+  // The likely band leans below the aprox (optimism correction), then clamps
+  // so the whole band stays inside [RANGE_MIN, RANGE_MAX] -- it can shift
+  // toward an end but never crosses into the red, and the aprox always stays
+  // inside it (estimatePos is within [RANGE_MIN, RANGE_MAX], and the clamp
+  // moves the band by at most its own bias, so the pin can't fall outside).
+  const pillWidth = PILL_WIDTH_FRACTION * (RANGE_MAX - RANGE_MIN);
+  const pillLeft = Math.min(
+    RANGE_MAX - pillWidth,
+    Math.max(RANGE_MIN, estimatePos - pillWidth * PILL_DOWNSIDE_BIAS)
+  );
   return (
     // Generous top/bottom padding: the pin above and the Mín/Máx labels plus
     // the "fuera de mercado" note below are absolutely positioned (they don't
@@ -59,7 +69,7 @@ export function PreliminaryPricingBar({ estimate }: Props) {
             obscures a label. */}
         <div
           className="animate-in fade-in fill-mode-both absolute rounded-full border border-white/45 bg-white/15 shadow-[0_0_0_2px_rgba(37,211,102,0.15)] backdrop-blur-[2px] duration-500 delay-300"
-          style={{ left: `${pillLeft}%`, width: `${pillHalf * 2}%`, top: '-9px', height: '28px' }}
+          style={{ left: `${pillLeft}%`, width: `${pillWidth}%`, top: '-9px', height: '28px' }}
         />
 
         {/* Estimado pin. Lands last, once the line has drawn, as the payoff.
