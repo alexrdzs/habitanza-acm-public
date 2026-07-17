@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronUp, Check, Home } from 'lucide-react';
+import { ChevronDown, ChevronUp, Check, Plus, type LucideIcon } from 'lucide-react';
 import {
   ZONA_ESMERALDA_COLONIAS,
   ZONA_ESMERALDA_COLONIAS_EXTENDED,
   OTHER_COLONIA_VALUE,
 } from '@shared/validation';
-import { coloniaPhoto, sampleListingPhotos, optimizedPhotoUrl } from '@shared/comparableListings';
+import { neighborhoodIcon } from '@shared/neighborhoodIcons';
+import { neighborhoodImage } from '@shared/neighborhoodImages';
 import { COPY } from '@shared/copy';
 import { WizardShell } from './WizardShell';
 import { inputClass, labelClass } from './formStyles';
@@ -24,90 +25,99 @@ interface Props {
 // checkmark register before the screen changes, not a network wait.
 const AUTO_ADVANCE_DELAY_MS = 400;
 
-// A decorative "browse more" teaser on the expand trigger, echoing an
-// Airbnb-style "show all photos" tile. Derived from whatever listings exist
-// in shared/comparableListings.ts, not tied to specific colonia names.
-const TEASER_PHOTOS = sampleListingPhotos(3);
+// A small cluster of themed icons on the expand trigger -- a "there's more"
+// teaser that speaks the same icon language as the rows. Derived from the
+// first few extended fraccionamientos so it stays in sync with the list.
+const TEASER_ICONS = ZONA_ESMERALDA_COLONIAS_EXTENDED.slice(0, 3).map(neighborhoodIcon);
 
-interface ColoniaCardProps {
-  colonia: string;
-  active: boolean;
-  disabled: boolean;
-  onSelect: () => void;
-}
-
-function ColoniaCard({ colonia, active, disabled, onSelect }: ColoniaCardProps) {
-  const photo = coloniaPhoto(colonia);
-  const [imgFailed, setImgFailed] = useState(false);
-
-  return (
-    <button
-      type="button"
-      onClick={onSelect}
-      disabled={disabled}
-      className="flex w-full flex-col gap-1.5 text-left transition-opacity disabled:opacity-40"
-    >
-      <div
-        className={cn(
-          'relative aspect-[4/3] w-full overflow-hidden rounded-2xl border-2 bg-neutral-100 transition-all',
-          active ? 'scale-[0.97] border-brand-500' : 'border-transparent'
-        )}
-      >
-        {photo && !imgFailed ? (
-          <img
-            src={optimizedPhotoUrl(photo, 240)}
-            srcSet={`${optimizedPhotoUrl(photo, 240)} 240w, ${optimizedPhotoUrl(photo, 480)} 480w`}
-            sizes="(min-width: 640px) 240px, 45vw"
-            alt={colonia}
-            loading="lazy"
-            decoding="async"
-            className="h-full w-full object-cover"
-            referrerPolicy="no-referrer"
-            onError={() => setImgFailed(true)}
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center">
-            <Home className="h-6 w-6 text-neutral-300" />
-          </div>
-        )}
-        {active && (
-          <div className="absolute inset-0 flex items-center justify-center bg-brand-500/20">
-            <div className="flex h-8 w-8 animate-in items-center justify-center rounded-full bg-brand-500 shadow zoom-in-50 duration-200">
-              <Check className="h-4 w-4 text-white" strokeWidth={3} />
-            </div>
-          </div>
-        )}
-      </div>
-      <p className="line-clamp-2 text-sm font-semibold leading-tight text-neutral-800">{colonia}</p>
-    </button>
-  );
-}
-
-interface ColoniaPillProps {
+interface ColoniaRowProps {
   label: string;
   active: boolean;
   disabled: boolean;
-  dashed?: boolean;
   onSelect: () => void;
+  // Defaults to the fraccionamiento's themed icon (shared/neighborhoodIcons).
+  // Override only for the free-text "otra" row, which isn't a real colonia.
+  icon?: LucideIcon;
+  // Dashed treatment for the "otra" entry, to read as an escape hatch rather
+  // than a first-class option.
+  dashed?: boolean;
+  // Give the icon tile a faint emerald->brand-green tint (used for the second
+  // batch, whose rows stay plain white). Kept very subtle so it reads as the
+  // same soft styling as the primary tiles. Ignored when a row shows a real
+  // illustration.
+  brandIcon?: boolean;
 }
 
-function ColoniaPill({ label, active, disabled, dashed, onSelect }: ColoniaPillProps) {
+// A compact row: a visual on the left with the name beside it, so almost all
+// fraccionamientos fit on screen at a glance. The visual is a rich per-zone
+// illustration when one exists (shared/neighborhoodImages.ts -- e.g. an
+// Airbnb-style 3D icon), which gives the list real character; until that
+// artwork lands it falls back to a themed lucide icon that at least hints at
+// the neighborhood (a lake, a golf flag, woods, hills). Both are assigned in
+// one place each, so they're easy to customize.
+function ColoniaRow({ label, active, disabled, onSelect, icon, dashed, brandIcon }: ColoniaRowProps) {
+  const Icon = icon ?? neighborhoodIcon(label);
+  const image = dashed ? undefined : neighborhoodImage(label);
+  const [imgFailed, setImgFailed] = useState(false);
+  const showImage = !!image && !imgFailed;
+
   return (
     <button
       type="button"
       onClick={onSelect}
       disabled={disabled}
       className={cn(
-        'flex w-full items-center justify-between rounded-pill border px-4 py-3.5 text-left text-sm font-medium transition-all disabled:opacity-40',
+        'flex w-full items-center gap-3 rounded-2xl border p-2.5 text-left transition-all disabled:opacity-40',
         active
-          ? 'border-brand-500 bg-brand-500 text-white'
+          ? 'border-brand-500 bg-brand-500/5'
           : dashed
-            ? 'border-dashed border-neutral-300 text-neutral-500 hover:border-neutral-400 hover:bg-neutral-50'
-            : 'border-neutral-300 bg-white text-neutral-700 hover:border-neutral-400 hover:bg-neutral-50'
+            ? 'border-dashed border-neutral-300 hover:border-brand-400 hover:bg-brand-500/5'
+            : 'border-neutral-200 bg-parchment-card hover:border-brand-500 hover:bg-brand-500/5'
       )}
     >
-      {label}
-      {active && <Check className="h-4 w-4 flex-shrink-0" strokeWidth={3} />}
+      <div
+        className={cn(
+          'relative flex h-14 w-14 flex-shrink-0 items-center justify-center overflow-hidden rounded-2xl transition-colors',
+          // The tile also backs a transparent-background illustration, so it
+          // keeps a soft surface even in the image case.
+          active
+            ? 'bg-gradient-to-br from-brand-400 to-brand-500 text-white'
+            : dashed
+              ? 'bg-transparent text-neutral-400'
+              : brandIcon
+                ? 'bg-gradient-to-br from-emerald-deep/10 to-brand-500/15 text-emerald-deep'
+                : 'bg-gradient-to-br from-neutral-100 to-neutral-200 text-emerald-deep'
+        )}
+      >
+        {showImage ? (
+          <img
+            src={image}
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            decoding="async"
+            className="absolute inset-0 h-full w-full object-cover"
+            onError={() => setImgFailed(true)}
+          />
+        ) : (
+          <Icon className="h-6 w-6" strokeWidth={1.75} />
+        )}
+      </div>
+
+      <span
+        className={cn(
+          'min-w-0 flex-1 text-sm font-semibold leading-tight',
+          dashed && !active ? 'text-neutral-500' : 'text-neutral-800'
+        )}
+      >
+        {label}
+      </span>
+
+      {active && (
+        <div className="flex h-6 w-6 flex-shrink-0 animate-in items-center justify-center rounded-full bg-brand-500 shadow-sm zoom-in-50 duration-200">
+          <Check className="h-3.5 w-3.5 text-white" strokeWidth={3} />
+        </div>
+      )}
     </button>
   );
 }
@@ -149,47 +159,47 @@ export function WizardLocationStep(props: Props) {
     >
       <div className="flex flex-col gap-4">
         <div>
-          <div className="grid grid-cols-2 gap-3">
-            {ZONA_ESMERALDA_COLONIAS.map((c) => (
-              <ColoniaCard
-                key={c}
-                colonia={c}
-                active={props.colonia === c}
-                disabled={isAdvancing && props.colonia !== c}
-                onSelect={() => handleSelect(c)}
-              />
-            ))}
-          </div>
+          {/* Collapse the primary batch once "ver más" is open: the visitor
+              browsing the secondary list has clearly skipped these, so keep
+              them from adding scroll. */}
+          {!showMore && (
+            <div className="animate-in fade-in flex flex-col gap-2 duration-200">
+              {ZONA_ESMERALDA_COLONIAS.map((c) => (
+                <ColoniaRow
+                  key={c}
+                  label={c}
+                  active={props.colonia === c}
+                  disabled={isAdvancing && props.colonia !== c}
+                  onSelect={() => handleSelect(c)}
+                />
+              ))}
+            </div>
+          )}
 
           <button
             type="button"
             onClick={() => setShowMore((v) => !v)}
             className={cn(
-              'mt-3 flex w-full items-center gap-3 rounded-2xl border p-3 text-left transition-all',
+              'flex w-full items-center gap-3 rounded-2xl border p-3 text-left transition-all',
+              !showMore && 'mt-3',
               showMore || isExtendedSelection
                 ? 'border-brand-500 bg-brand-500/5'
-                : 'border-neutral-200 bg-parchment-card hover:border-neutral-300'
+                : 'border-neutral-200 bg-parchment-card hover:border-brand-500 hover:bg-brand-500/5'
             )}
           >
-            {/* A little fan of real property photos -- an Airbnb-style
-                "show more" teaser instead of a plain dashed button. */}
-            <div className="relative h-12 w-14 flex-shrink-0">
-              {TEASER_PHOTOS.map((photo, i) => (
-                <img
-                  key={photo}
-                  src={optimizedPhotoUrl(photo, 80)}
-                  alt=""
-                  aria-hidden="true"
-                  loading="lazy"
-                  decoding="async"
-                  referrerPolicy="no-referrer"
+            {/* A little cluster of themed icons -- a "there's more" teaser in
+                the same icon language as the rows, not a plain dashed button. */}
+            <div className="flex flex-shrink-0 items-center">
+              {TEASER_ICONS.map((Icon, i) => (
+                <div
+                  key={i}
                   className={cn(
-                    'absolute h-9 w-9 rounded-lg border-2 border-white object-cover shadow-sm',
-                    i === 0 && '-left-0 top-0 -rotate-6',
-                    i === 1 && 'right-0 top-0 rotate-6',
-                    i === 2 && 'bottom-0 left-1/2 -translate-x-1/2 shadow-md'
+                    'flex h-9 w-9 items-center justify-center rounded-lg border-2 border-parchment-card bg-neutral-100 text-emerald-deep shadow-sm',
+                    i > 0 && '-ml-3'
                   )}
-                />
+                >
+                  <Icon className="h-4 w-4" strokeWidth={1.75} />
+                </div>
               ))}
             </div>
             <div className="min-w-0 flex-1">
@@ -213,18 +223,20 @@ export function WizardLocationStep(props: Props) {
             <p className={labelClass}>{COPY.location.expandedPanelLabel}</p>
             <div className="flex flex-col gap-2">
               {ZONA_ESMERALDA_COLONIAS_EXTENDED.map((c) => (
-                <ColoniaPill
+                <ColoniaRow
                   key={c}
                   label={c}
                   active={props.colonia === c}
                   disabled={isAdvancing && props.colonia !== c}
+                  brandIcon
                   onSelect={() => handleSelect(c)}
                 />
               ))}
-              <ColoniaPill
+              <ColoniaRow
                 label={COPY.location.otherLabel}
                 active={props.colonia === OTHER_COLONIA_VALUE}
                 disabled={isAdvancing}
+                icon={Plus}
                 dashed
                 onSelect={handleSelectOtra}
               />
