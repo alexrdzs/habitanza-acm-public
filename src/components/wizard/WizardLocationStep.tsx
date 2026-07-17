@@ -30,16 +30,6 @@ const AUTO_ADVANCE_DELAY_MS = 400;
 // first few extended fraccionamientos so it stays in sync with the list.
 const TEASER_ICONS = ZONA_ESMERALDA_COLONIAS_EXTENDED.slice(0, 3).map(neighborhoodIcon);
 
-// Subtle, low-contrast background tones cycled across the extended batch so
-// the longer secondary list reads with a gentle rhythm instead of as a
-// repetitive endless run of identical rows. Kept within the cool palette.
-const EXTENDED_TONES = [
-  'bg-parchment-card',
-  'bg-neutral-50',
-  'bg-emerald-deep/5',
-  'bg-neutral-100/70',
-];
-
 interface ColoniaRowProps {
   label: string;
   active: boolean;
@@ -51,9 +41,10 @@ interface ColoniaRowProps {
   // Dashed treatment for the "otra" entry, to read as an escape hatch rather
   // than a first-class option.
   dashed?: boolean;
-  // Optional background tint (used to vary the extended batch so it doesn't
-  // read as a repetitive endless list). Applied only when inactive.
-  tone?: string;
+  // Give the icon tile a subtle emerald->brand-green gradient (used for the
+  // second batch, whose rows stay plain white). Ignored when a row shows a
+  // real illustration.
+  brandIcon?: boolean;
 }
 
 // A compact row: a visual on the left with the name beside it, so almost all
@@ -63,7 +54,7 @@ interface ColoniaRowProps {
 // artwork lands it falls back to a themed lucide icon that at least hints at
 // the neighborhood (a lake, a golf flag, woods, hills). Both are assigned in
 // one place each, so they're easy to customize.
-function ColoniaRow({ label, active, disabled, onSelect, icon, dashed, tone }: ColoniaRowProps) {
+function ColoniaRow({ label, active, disabled, onSelect, icon, dashed, brandIcon }: ColoniaRowProps) {
   const Icon = icon ?? neighborhoodIcon(label);
   const image = dashed ? undefined : neighborhoodImage(label);
   const [imgFailed, setImgFailed] = useState(false);
@@ -79,8 +70,8 @@ function ColoniaRow({ label, active, disabled, onSelect, icon, dashed, tone }: C
         active
           ? 'border-brand-500 bg-brand-500/5'
           : dashed
-            ? 'border-dashed border-neutral-300 hover:border-neutral-400 hover:bg-neutral-50'
-            : cn('border-neutral-200 hover:border-neutral-300', tone ?? 'bg-parchment-card')
+            ? 'border-dashed border-neutral-300 hover:border-brand-400 hover:bg-brand-500/5'
+            : 'border-neutral-200 bg-parchment-card hover:border-brand-500 hover:bg-brand-500/5'
       )}
     >
       <div
@@ -92,7 +83,9 @@ function ColoniaRow({ label, active, disabled, onSelect, icon, dashed, tone }: C
             ? 'bg-gradient-to-br from-brand-400 to-brand-500 text-white'
             : dashed
               ? 'bg-transparent text-neutral-400'
-              : 'bg-gradient-to-br from-neutral-100 to-neutral-200 text-emerald-deep'
+              : brandIcon
+                ? 'bg-gradient-to-br from-emerald-deep to-brand-500 text-white'
+                : 'bg-gradient-to-br from-neutral-100 to-neutral-200 text-emerald-deep'
         )}
       >
         {showImage ? (
@@ -190,7 +183,7 @@ export function WizardLocationStep(props: Props) {
               !showMore && 'mt-3',
               showMore || isExtendedSelection
                 ? 'border-brand-500 bg-brand-500/5'
-                : 'border-neutral-200 bg-parchment-card hover:border-neutral-300'
+                : 'border-neutral-200 bg-parchment-card hover:border-brand-500 hover:bg-brand-500/5'
             )}
           >
             {/* A little cluster of themed icons -- a "there's more" teaser in
@@ -228,13 +221,13 @@ export function WizardLocationStep(props: Props) {
           <div className="animate-in fade-in slide-in-from-top-2 flex flex-col gap-3 rounded-2xl border border-neutral-200/70 bg-parchment-card/80 p-4 backdrop-blur-md duration-300">
             <p className={labelClass}>{COPY.location.expandedPanelLabel}</p>
             <div className="flex flex-col gap-2">
-              {ZONA_ESMERALDA_COLONIAS_EXTENDED.map((c, i) => (
+              {ZONA_ESMERALDA_COLONIAS_EXTENDED.map((c) => (
                 <ColoniaRow
                   key={c}
                   label={c}
                   active={props.colonia === c}
                   disabled={isAdvancing && props.colonia !== c}
-                  tone={EXTENDED_TONES[i % EXTENDED_TONES.length]}
+                  brandIcon
                   onSelect={() => handleSelect(c)}
                 />
               ))}
