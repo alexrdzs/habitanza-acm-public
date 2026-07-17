@@ -2,6 +2,18 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Only apply hover styles on devices that actually support hovering (i.e.
+   desktop pointers). Without this, tapping a button on a touch device leaves
+   it stuck in its :hover state until you tap elsewhere. Redefining the
+   built-in `hover` variant gates every hover:* utility app-wide. */
+@custom-variant hover {
+  @media (hover: hover) {
+    &:hover {
+      @slot;
+    }
+  }
+}
+
 @theme {
   --font-sans: "Figtree", ui-sans-serif, system-ui, sans-serif;
 

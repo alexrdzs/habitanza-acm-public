@@ -6,6 +6,7 @@ import {
   OTHER_COLONIA_VALUE,
 } from '@shared/validation';
 import { neighborhoodIcon } from '@shared/neighborhoodIcons';
+import { neighborhoodImage } from '@shared/neighborhoodImages';
 import { COPY } from '@shared/copy';
 import { WizardShell } from './WizardShell';
 import { inputClass, labelClass } from './formStyles';
@@ -29,6 +30,16 @@ const AUTO_ADVANCE_DELAY_MS = 400;
 // first few extended fraccionamientos so it stays in sync with the list.
 const TEASER_ICONS = ZONA_ESMERALDA_COLONIAS_EXTENDED.slice(0, 3).map(neighborhoodIcon);
 
+// Subtle, low-contrast background tones cycled across the extended batch so
+// the longer secondary list reads with a gentle rhythm instead of as a
+// repetitive endless run of identical rows. Kept within the cool palette.
+const EXTENDED_TONES = [
+  'bg-parchment-card',
+  'bg-neutral-50',
+  'bg-emerald-deep/5',
+  'bg-neutral-100/70',
+];
+
 interface ColoniaRowProps {
   label: string;
   active: boolean;
@@ -40,16 +51,23 @@ interface ColoniaRowProps {
   // Dashed treatment for the "otra" entry, to read as an escape hatch rather
   // than a first-class option.
   dashed?: boolean;
+  // Optional background tint (used to vary the extended batch so it doesn't
+  // read as a repetitive endless list). Applied only when inactive.
+  tone?: string;
 }
 
-// A compact row: a small themed icon on the left with the name beside it, so
-// almost all fraccionamientos fit on screen at a glance. A property photo
-// rarely reads as "the zone," so instead of a thumbnail each row carries an
-// icon that hints at the neighborhood's character (a lake, a golf flag,
-// woods, hills). The name stays the hero; icons are assigned in one place
-// (shared/neighborhoodIcons.ts) so they're easy to customize.
-function ColoniaRow({ label, active, disabled, onSelect, icon, dashed }: ColoniaRowProps) {
+// A compact row: a visual on the left with the name beside it, so almost all
+// fraccionamientos fit on screen at a glance. The visual is a rich per-zone
+// illustration when one exists (shared/neighborhoodImages.ts -- e.g. an
+// Airbnb-style 3D icon), which gives the list real character; until that
+// artwork lands it falls back to a themed lucide icon that at least hints at
+// the neighborhood (a lake, a golf flag, woods, hills). Both are assigned in
+// one place each, so they're easy to customize.
+function ColoniaRow({ label, active, disabled, onSelect, icon, dashed, tone }: ColoniaRowProps) {
   const Icon = icon ?? neighborhoodIcon(label);
+  const image = dashed ? undefined : neighborhoodImage(label);
+  const [imgFailed, setImgFailed] = useState(false);
+  const showImage = !!image && !imgFailed;
 
   return (
     <button
@@ -62,20 +80,34 @@ function ColoniaRow({ label, active, disabled, onSelect, icon, dashed }: Colonia
           ? 'border-brand-500 bg-brand-500/5'
           : dashed
             ? 'border-dashed border-neutral-300 hover:border-neutral-400 hover:bg-neutral-50'
-            : 'border-neutral-200 bg-parchment-card hover:border-neutral-300'
+            : cn('border-neutral-200 hover:border-neutral-300', tone ?? 'bg-parchment-card')
       )}
     >
       <div
         className={cn(
-          'flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl transition-colors',
+          'relative flex h-14 w-14 flex-shrink-0 items-center justify-center overflow-hidden rounded-2xl transition-colors',
+          // The tile also backs a transparent-background illustration, so it
+          // keeps a soft surface even in the image case.
           active
-            ? 'bg-brand-500 text-white'
+            ? 'bg-gradient-to-br from-brand-400 to-brand-500 text-white'
             : dashed
               ? 'bg-transparent text-neutral-400'
-              : 'bg-neutral-100 text-emerald-deep'
+              : 'bg-gradient-to-br from-neutral-100 to-neutral-200 text-emerald-deep'
         )}
       >
-        <Icon className="h-5 w-5" strokeWidth={1.75} />
+        {showImage ? (
+          <img
+            src={image}
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            decoding="async"
+            className="absolute inset-0 h-full w-full object-cover"
+            onError={() => setImgFailed(true)}
+          />
+        ) : (
+          <Icon className="h-6 w-6" strokeWidth={1.75} />
+        )}
       </div>
 
       <span
@@ -133,23 +165,29 @@ export function WizardLocationStep(props: Props) {
     >
       <div className="flex flex-col gap-4">
         <div>
-          <div className="flex flex-col gap-2">
-            {ZONA_ESMERALDA_COLONIAS.map((c) => (
-              <ColoniaRow
-                key={c}
-                label={c}
-                active={props.colonia === c}
-                disabled={isAdvancing && props.colonia !== c}
-                onSelect={() => handleSelect(c)}
-              />
-            ))}
-          </div>
+          {/* Collapse the primary batch once "ver más" is open: the visitor
+              browsing the secondary list has clearly skipped these, so keep
+              them from adding scroll. */}
+          {!showMore && (
+            <div className="animate-in fade-in flex flex-col gap-2 duration-200">
+              {ZONA_ESMERALDA_COLONIAS.map((c) => (
+                <ColoniaRow
+                  key={c}
+                  label={c}
+                  active={props.colonia === c}
+                  disabled={isAdvancing && props.colonia !== c}
+                  onSelect={() => handleSelect(c)}
+                />
+              ))}
+            </div>
+          )}
 
           <button
             type="button"
             onClick={() => setShowMore((v) => !v)}
             className={cn(
-              'mt-3 flex w-full items-center gap-3 rounded-2xl border p-3 text-left transition-all',
+              'flex w-full items-center gap-3 rounded-2xl border p-3 text-left transition-all',
+              !showMore && 'mt-3',
               showMore || isExtendedSelection
                 ? 'border-brand-500 bg-brand-500/5'
                 : 'border-neutral-200 bg-parchment-card hover:border-neutral-300'
@@ -190,12 +228,13 @@ export function WizardLocationStep(props: Props) {
           <div className="animate-in fade-in slide-in-from-top-2 flex flex-col gap-3 rounded-2xl border border-neutral-200/70 bg-parchment-card/80 p-4 backdrop-blur-md duration-300">
             <p className={labelClass}>{COPY.location.expandedPanelLabel}</p>
             <div className="flex flex-col gap-2">
-              {ZONA_ESMERALDA_COLONIAS_EXTENDED.map((c) => (
+              {ZONA_ESMERALDA_COLONIAS_EXTENDED.map((c, i) => (
                 <ColoniaRow
                   key={c}
                   label={c}
                   active={props.colonia === c}
                   disabled={isAdvancing && props.colonia !== c}
+                  tone={EXTENDED_TONES[i % EXTENDED_TONES.length]}
                   onSelect={() => handleSelect(c)}
                 />
               ))}
