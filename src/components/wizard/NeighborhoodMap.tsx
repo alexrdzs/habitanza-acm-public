@@ -5,6 +5,7 @@
 // card.
 
 import { useEffect, useState } from 'react';
+import { useLoadScript } from '@react-google-maps/api';
 
 // Same muted style array the authenticated ACM tool uses for its property
 // map, so this feels like the same product rather than a bare default map.
@@ -55,6 +56,20 @@ export function useMapStyles() {
   }, []);
 
   return isDark ? MAP_STYLES_DARK : MAP_STYLES;
+}
+
+// Warms the Google Maps JS API ahead of the analyzing ("radar") screen.
+// LandingPage renders this as soon as a neighborhood is picked, so during the
+// two steps before the map appears (basics + contact) the script loads in the
+// background and the analyzing map -- and later the reveal's ComparablesMap --
+// render without the "Cargando mapa..." flash. Renders nothing: useLoadScript
+// shares one global load keyed by loader id, so this just kicks off the same
+// load the map components would otherwise trigger on mount, only earlier. Must
+// use the exact same options object as those calls so the loader dedupes
+// instead of warning about a re-init. Only mounted when a key exists.
+export function MapPreloader({ apiKey }: { apiKey: string }) {
+  useLoadScript({ googleMapsApiKey: apiKey });
+  return null;
 }
 
 // Google's Maps JS API doesn't animate zoom changes on its own (panTo does

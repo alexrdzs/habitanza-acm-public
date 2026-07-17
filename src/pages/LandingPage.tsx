@@ -6,6 +6,7 @@ import { WizardBasicsStep } from '../components/wizard/WizardBasicsStep';
 import { WizardAnalyzingStep } from '../components/wizard/WizardAnalyzingStep';
 import { WizardContactStep } from '../components/wizard/WizardContactStep';
 import { WizardRevealStep } from '../components/wizard/WizardRevealStep';
+import { MapPreloader } from '../components/wizard/NeighborhoodMap';
 import { OTHER_COLONIA_VALUE, normalizePhone, type PropertyAge, type Amenity } from '@shared/validation';
 import { estimatePreliminaryRange, type PreliminaryEstimate } from '@shared/pricing';
 import { COPY } from '@shared/copy';
@@ -138,8 +139,14 @@ export function LandingPage() {
     }
   }
 
+  const mapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string | undefined;
+
   return (
     <div className="min-h-screen">
+      {/* Warm the Maps script the moment a neighborhood is chosen, so the
+          analyzing ("radar") map is already loaded two steps later and doesn't
+          flash a loading state. No-op without a key. */}
+      {colonia && mapsApiKey && <MapPreloader apiKey={mapsApiKey} />}
       <header className="sticky top-0 z-30 border-b border-neutral-200 bg-white dark:bg-parchment-card/85 dark:backdrop-blur-md">
         <div className="mx-auto flex max-w-md items-center px-4 py-4 md:max-w-xl lg:max-w-2xl">
           <Logo className="h-7 text-neutral-900" />
