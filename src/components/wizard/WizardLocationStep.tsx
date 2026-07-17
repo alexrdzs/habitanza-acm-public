@@ -41,9 +41,10 @@ interface ColoniaRowProps {
   // Dashed treatment for the "otra" entry, to read as an escape hatch rather
   // than a first-class option.
   dashed?: boolean;
-  // Give the icon tile a subtle emerald->brand-green gradient (used for the
-  // second batch, whose rows stay plain white). Ignored when a row shows a
-  // real illustration.
+  // Give the icon tile a faint emerald->brand-green tint (used for the second
+  // batch, whose rows stay plain white). Kept very subtle so it reads as the
+  // same soft styling as the primary tiles. Ignored when a row shows a real
+  // illustration.
   brandIcon?: boolean;
 }
 
@@ -84,7 +85,7 @@ function ColoniaRow({ label, active, disabled, onSelect, icon, dashed, brandIcon
             : dashed
               ? 'bg-transparent text-neutral-400'
               : brandIcon
-                ? 'bg-gradient-to-br from-emerald-deep to-brand-500 text-white'
+                ? 'bg-gradient-to-br from-emerald-deep/10 to-brand-500/15 text-emerald-deep'
                 : 'bg-gradient-to-br from-neutral-100 to-neutral-200 text-emerald-deep'
         )}
       >
