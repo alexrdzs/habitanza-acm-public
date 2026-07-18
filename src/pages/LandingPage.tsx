@@ -15,7 +15,9 @@ type Step = 'hero' | 'location' | 'basics' | 'contact' | 'analyzing' | 'reveal';
 
 function parseRoomCount(v: string): number | undefined {
   if (!v) return undefined;
-  return v === '5+' ? 5 : Number(v);
+  // Options can carry a trailing "+" ("5+", "3+") meaning "that many or more".
+  const n = Number(v.replace('+', ''));
+  return Number.isFinite(n) ? n : undefined;
 }
 
 export function LandingPage() {
@@ -34,12 +36,16 @@ export function LandingPage() {
 
   // Property specifics
   const [tipoPropiedad, setTipoPropiedad] = useState('Casa');
-  const [antiguedad, setAntiguedad] = useState<PropertyAge | ''>('');
+  const [antiguedad, setAntiguedad] = useState<PropertyAge | ''>(() => (isRevealPreview ? 'A estrenar' : ''));
   const [m2Construccion, setM2Construccion] = useState(() => (isRevealPreview ? '240' : ''));
   const [m2Terreno, setM2Terreno] = useState(() => (isRevealPreview ? '320' : ''));
-  const [recamaras, setRecamaras] = useState('');
-  const [banos, setBanos] = useState('');
-  const [amenidades, setAmenidades] = useState<Amenity[]>([]);
+  const [recamaras, setRecamaras] = useState(() => (isRevealPreview ? '3' : ''));
+  const [banos, setBanos] = useState(() => (isRevealPreview ? '3' : ''));
+  const [mediosBanos, setMediosBanos] = useState(() => (isRevealPreview ? '1' : ''));
+  const [estacionamientos, setEstacionamientos] = useState(() => (isRevealPreview ? '2' : ''));
+  const [amenidades, setAmenidades] = useState<Amenity[]>(() =>
+    isRevealPreview ? ['Alberca o Jacuzzi', 'Vistas panorámicas', 'Casa inteligente'] : []
+  );
 
   // Contact
   const [nombre, setNombre] = useState(() => (isRevealPreview ? 'Cliente' : ''));
@@ -102,6 +108,8 @@ export function LandingPage() {
           m2Terreno: m2Terreno ? Number(m2Terreno) : undefined,
           recamaras: parseRoomCount(recamaras),
           banos: parseRoomCount(banos),
+          mediosBanos: parseRoomCount(mediosBanos),
+          estacionamientos: parseRoomCount(estacionamientos),
           amenidades: amenidades.length > 0 ? amenidades : undefined,
           comoNosConociste: comoNosConociste || undefined,
           comoNosConocisteOtro: comoNosConociste === 'otro' ? comoNosConocisteOtro || undefined : undefined,
@@ -180,6 +188,10 @@ export function LandingPage() {
             setRecamaras={setRecamaras}
             banos={banos}
             setBanos={setBanos}
+            mediosBanos={mediosBanos}
+            setMediosBanos={setMediosBanos}
+            estacionamientos={estacionamientos}
+            setEstacionamientos={setEstacionamientos}
             amenidades={amenidades}
             setAmenidades={setAmenidades}
             onBack={() => setStep('location')}
@@ -219,6 +231,16 @@ export function LandingPage() {
               nombre={nombre}
               tipoPropiedad={tipoPropiedad}
               colonia={resolvedColonia}
+              profile={{
+                m2Construccion: m2Construccion ? Number(m2Construccion) : undefined,
+                m2Terreno: m2Terreno ? Number(m2Terreno) : undefined,
+                recamaras: parseRoomCount(recamaras),
+                banos: parseRoomCount(banos),
+                mediosBanos: parseRoomCount(mediosBanos),
+                estacionamientos: parseRoomCount(estacionamientos),
+                antiguedad: antiguedad || undefined,
+                amenidades,
+              }}
             />
           ) : (
             <div className="animate-in fade-in slide-in-from-bottom-4 space-y-3 rounded-card-lg border border-neutral-200/70 bg-parchment-card/80 p-8 text-center shadow-sm backdrop-blur-md duration-500">

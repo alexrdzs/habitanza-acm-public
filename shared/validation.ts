@@ -81,7 +81,9 @@ export interface LeadSubmission {
   m2Construccion?: number;
   m2Terreno?: number;
   recamaras?: number;
-  banos?: number;
+  banos?: number; // baños completos
+  mediosBanos?: number; // medios baños (½), tracked separately from completos
+  estacionamientos?: number; // cajones de estacionamiento
   amenidades?: Amenity[];
   comoNosConociste?: ReferralSource;
   comoNosConocisteOtro?: string;

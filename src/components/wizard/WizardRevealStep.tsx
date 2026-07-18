@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ChevronDown, FileSearch, Info, MessageCircle, Route, Target } from 'lucide-react';
 import { PreliminaryPricingBar } from './PreliminaryPricingBar';
+import { PropertySummaryCard, type PropertyProfile } from './PropertySummaryCard';
 import { ComparablesMap } from './ComparablesMap';
 import { ComparableListingCards } from './ComparableListingCards';
 import { MethodologySection } from './MethodologySection';
@@ -20,6 +21,7 @@ interface Props {
   nombre: string;
   tipoPropiedad: string;
   colonia: string;
+  profile: PropertyProfile;
 }
 
 // Order-matched with COPY.reveal.acm.checklist.
@@ -37,7 +39,7 @@ function PulseTile({ label, value, subline, className = '' }: { label: string; v
   );
 }
 
-export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: Props) {
+export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, profile }: Props) {
   const firstName = nombre.trim().split(' ')[0] || 'gracias';
   // Randomized once per visit from the right coverage pool, so the same
   // advisor appears in the signature block and persistent WhatsApp bar.
@@ -174,6 +176,12 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia }: P
           </div>
         </div>
       </div>
+
+      {/* "Tu propiedad" -- bridges the zone-average price panel to the
+          numbered market chapters by echoing the visitor's own inputs as the
+          basis for the estimate. Unnumbered (neutral chip): it's their data,
+          not a market chapter. */}
+      <PropertySummaryCard profile={profile} tipoPropiedad={tipoPropiedad} colonia={colonia} estimate={estimate} />
 
       {/* 01 -- zone-level data the visitor didn't have before asking. Every
           value here is derived from real portfolio data (pricing.ts

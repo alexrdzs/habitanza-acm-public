@@ -160,11 +160,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     typeof body.recamaras === 'number' && body.recamaras >= 0 && body.recamaras <= 50
       ? Math.round(body.recamaras)
       : undefined;
-  // Baños allow half steps (a baño completo plus a medio baño, e.g. 2.5), so
-  // snap to the nearest 0.5 rather than the nearest whole number.
+  // Baños completos and medios baños (½) are counted separately, so each is a
+  // whole number. minimumConstructionM2 keys off completos only.
   const banos =
-    typeof body.banos === 'number' && body.banos >= 0 && body.banos <= 50
-      ? Math.round(body.banos * 2) / 2
+    typeof body.banos === 'number' && body.banos >= 0 && body.banos <= 50 ? Math.round(body.banos) : undefined;
+  const mediosBanos =
+    typeof body.mediosBanos === 'number' && body.mediosBanos >= 0 && body.mediosBanos <= 20
+      ? Math.round(body.mediosBanos)
+      : undefined;
+  const estacionamientos =
+    typeof body.estacionamientos === 'number' && body.estacionamientos >= 0 && body.estacionamientos <= 20
+      ? Math.round(body.estacionamientos)
       : undefined;
   const amenidades = Array.isArray(body.amenidades)
     ? body.amenidades.filter((a): a is Amenity => (AMENITIES as readonly string[]).includes(a))
@@ -216,6 +222,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     m2Terreno,
     recamaras,
     banos,
+    mediosBanos,
+    estacionamientos,
     amenidades,
     comoNosConociste,
     comoNosConocisteOtro,

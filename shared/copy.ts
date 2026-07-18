@@ -128,7 +128,9 @@ export const COPY = {
       m2Construccion: 'Construcción *',
       m2TerrenoRequired: 'Terreno *',
       recamaras: 'Recámaras',
-      banos: 'Baños',
+      banos: 'Baños completos',
+      mediosBanos: 'Medios baños',
+      estacionamientos: 'Estacionamientos',
     },
   },
 
@@ -213,6 +215,44 @@ export const COPY = {
       minLabel: 'Mín',
       maxLabel: 'Máx',
       outOfMarketNote: 'Los extremos en rojo quedan fuera de mercado.',
+    },
+    // "Tu propiedad" -- the bridge between the zone-average price panel above
+    // and the numbered market chapters below. Every value here is the
+    // visitor's own answer, echoed back so the estimate reads as grounded in
+    // their specifics rather than a generic average. Unnumbered on purpose:
+    // it's their inputs, not one of the market chapters.
+    propertyCard: {
+      chip: 'Tu propiedad',
+      title: (tipo: string) => `Analizamos tu ${tipo.toLowerCase()}, no un promedio`,
+      intro: 'Tu rango preliminar parte de lo que nos compartiste:',
+      labels: {
+        ubicacion: 'Ubicación',
+        construccion: 'Construcción',
+        terreno: 'Terreno',
+        recamaras: 'Recámaras',
+        banos: 'Baños',
+        // Shorter than the form's "Estacionamientos": the card cell is
+        // half-width, and "cajones" is the standard term for parking spaces.
+        estacionamientos: 'Cajones',
+        antiguedad: 'Antigüedad',
+        amenidades: 'Extras',
+      },
+      // Baños read as "3 completos · 1 medio" so the split the form now
+      // captures survives into the analysis.
+      banosValue: (completos?: number, medios?: number) => {
+        const parts: string[] = [];
+        if (completos) parts.push(`${completos} completo${completos === 1 ? '' : 's'}`);
+        if (medios) parts.push(`${medios} medio${medios === 1 ? '' : 's'}`);
+        return parts.join(' · ');
+      },
+      m2Value: (m2: number) => `${new Intl.NumberFormat('es-MX').format(m2)} m²`,
+      // A single derived number so the card does analysis, not just recap:
+      // the estimate's aprox spread across the visitor's own built m².
+      perM2Label: 'Precio aprox por m²',
+      perM2Subline: (m2: number, isTerreno: boolean) =>
+        `Tu estimación entre tus ${new Intl.NumberFormat('es-MX').format(m2)} m² de ${
+          isTerreno ? 'terreno' : 'construcción'
+        }.`,
     },
     // Section numbering mirrors the chaptered structure of the full ACM
     // ("01 Pulso del Mercado"...) so this screen reads as a preview of the
