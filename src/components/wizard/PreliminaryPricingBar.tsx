@@ -21,7 +21,7 @@ import { formatCurrency } from '../../lib/utils';
 const RANGE_MIN = 14; // % where Mín (low) sits, just inside the left red zone
 const RANGE_MAX = 86; // % where Máx (high) sits, just inside the right red zone
 const PILL_WIDTH_FRACTION = 0.5; // likely band = 50% of the plausible range
-const PILL_DOWNSIDE_BIAS = 0.6; // share of the band below the aprox (0.5 = symmetric)
+const PILL_DOWNSIDE_BIAS = 0.5; // share of the band below the aprox (0.5 = symmetric)
 
 interface Props {
   estimate: PreliminaryEstimate;
