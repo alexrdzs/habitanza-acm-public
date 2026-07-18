@@ -160,8 +160,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     typeof body.recamaras === 'number' && body.recamaras >= 0 && body.recamaras <= 50
       ? Math.round(body.recamaras)
       : undefined;
+  // Baños allow half steps (a baño completo plus a medio baño, e.g. 2.5), so
+  // snap to the nearest 0.5 rather than the nearest whole number.
   const banos =
-    typeof body.banos === 'number' && body.banos >= 0 && body.banos <= 50 ? Math.round(body.banos) : undefined;
+    typeof body.banos === 'number' && body.banos >= 0 && body.banos <= 50
+      ? Math.round(body.banos * 2) / 2
+      : undefined;
   const amenidades = Array.isArray(body.amenidades)
     ? body.amenidades.filter((a): a is Amenity => (AMENITIES as readonly string[]).includes(a))
     : undefined;

@@ -4,6 +4,7 @@ import type { PropertyAge, Amenity } from '@shared/validation';
 import { COPY } from '@shared/copy';
 import { WizardShell } from './WizardShell';
 import { SegmentedControl } from './SegmentedControl';
+import { BanosScale } from './BanosScale';
 import { ThousandsInput } from './ThousandsInput';
 import { inputClass } from './formStyles';
 import {
@@ -182,12 +183,7 @@ export function WizardBasicsStep(props: Props) {
                   <Bath className="h-4 w-4 text-neutral-400" />
                   {COPY.basics.fieldLabels.banos}
                 </label>
-                <SegmentedControl
-                  options={ROOM_COUNT_OPTIONS}
-                  value={props.banos}
-                  onChange={props.setBanos}
-                  className="w-full justify-between"
-                />
+                <BanosScale value={props.banos} onChange={props.setBanos} />
               </div>
             </div>
           )}
@@ -228,7 +224,7 @@ export function WizardBasicsStep(props: Props) {
           </div>
 
           {!isTerreno && (
-            <div className="relative">
+            <div className="relative mt-2">
               <CalendarDays className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
               <select
                 aria-label="Antigüedad de construcción (opcional)"
