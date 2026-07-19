@@ -221,7 +221,7 @@ export const COPY = {
     // their specifics rather than a generic average. Unnumbered on purpose:
     // it's their inputs, not one of the market chapters.
     propertyCard: {
-      chip: 'Tu propiedad',
+      chip: 'Análisis individual',
       title: 'Análisis de tu propiedad',
       labels: {
         ubicacion: 'Ubicación',
@@ -280,7 +280,7 @@ export const COPY = {
     // ("01 Pulso del Mercado"...) so this screen reads as a preview of the
     // real document, not a standalone widget.
     pulse: {
-      chip: '01 Pulso de la Zona',
+      chip: '01 Pulso del Mercado',
       title: 'Lo que el mercado ya nos dice',
       m2Label: 'Referencia por m²',
       m2SublineColonia: (colonia: string) => `Con base en listados reales de ${colonia}.`,
