@@ -1,7 +1,7 @@
 import { ArrowDownRight, ArrowUpRight, Equal } from 'lucide-react';
 import type { Amenity, PropertyAge } from '@shared/validation';
 import type { PreliminaryEstimate } from '@shared/pricing';
-import { zoneTypicalSpecs } from '@shared/comparableListings';
+import { zoneTypicalSpecs, zoneTypicalTerrenoM2 } from '@shared/comparableListings';
 import { COPY } from '@shared/copy';
 import { SectionChip } from './SectionChip';
 import { formatCurrency } from '../../lib/utils';
@@ -54,7 +54,10 @@ export function PropertySummaryCard({ profile, tipoPropiedad, colonia, estimate 
   const typical = zoneTypicalSpecs();
   const recDir = !isTerreno && profile.recamaras ? compareToTypical(profile.recamaras, typical.recamaras) : null;
   const banDir = !isTerreno && profile.banos ? compareToTypical(profile.banos, typical.banos) : null;
-  const analysisSegs = c.analysisSegments(recDir, banDir);
+  // Terrenos have no rooms/baths, so their one comparable attribute is lot
+  // size, benchmarked against the zone's other terrenos.
+  const terrenoDir = isTerreno && profile.m2Terreno ? compareToTypical(profile.m2Terreno, zoneTypicalTerrenoM2()) : null;
+  const analysisSegs = isTerreno ? c.analysisSegmentsTerreno(terrenoDir) : c.analysisSegments(recDir, banDir);
 
   const cells: SpecCell[] = [{ label: c.labels.ubicacion, value: colonia }];
 
@@ -62,7 +65,9 @@ export function PropertySummaryCard({ profile, tipoPropiedad, colonia, estimate 
     cells.push({ label: c.labels.construccion, value: c.m2Value(profile.m2Construccion) });
   }
   if (profile.m2Terreno) {
-    cells.push({ label: c.labels.terreno, value: c.m2Value(profile.m2Terreno) });
+    // The size arrow only applies to a raw lote (a house's yard isn't compared
+    // against the terreno pool).
+    cells.push({ label: c.labels.terreno, value: c.m2Value(profile.m2Terreno), direction: isTerreno ? terrenoDir : undefined });
   }
   if (!isTerreno && profile.recamaras) {
     cells.push({ label: c.labels.recamaras, value: String(profile.recamaras), direction: recDir });

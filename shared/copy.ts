@@ -275,6 +275,31 @@ export const COPY = {
         }
         return segs;
       },
+      // Terrenos have no rooms/baths, so their read is built on lot size vs the
+      // zone's other terrenos. A larger lot is framed as value; a smaller one
+      // stays honest (less total value) but notes the upside (easier to sell),
+      // so the paragraph never reads as pure bad news.
+      analysisSegmentsTerreno: (size: 'up' | 'down' | 'equal' | null): { t: string; tone?: 'pos' | 'neg' }[] => {
+        if (size === 'up') {
+          return [
+            { t: 'Tu terreno es ' },
+            { t: 'más amplio', tone: 'pos' },
+            { t: ' que el promedio de la zona, lo que suele ' },
+            { t: 'sumar valor', tone: 'pos' },
+            { t: ' y potencial de desarrollo.' },
+          ];
+        }
+        if (size === 'down') {
+          return [
+            { t: 'Tu terreno es ' },
+            { t: 'menos amplio', tone: 'neg' },
+            { t: ' que el promedio de la zona, lo que puede ' },
+            { t: 'acotar su valor total', tone: 'neg' },
+            { t: ', aunque suele facilitar una venta más ágil.' },
+          ];
+        }
+        return [];
+      },
     },
     // Section numbering mirrors the chaptered structure of the full ACM
     // ("01 Pulso del Mercado"...) so this screen reads as a preview of the

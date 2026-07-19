@@ -211,6 +211,9 @@ export function WizardBasicsStep(props: Props) {
           )}
         </section>
 
+        {/* Amenities + antigüedad are construction attributes; a raw terreno
+            has neither, so the whole "Adicionales" section is hidden for lotes. */}
+        {!isTerreno && (
         <section className="space-y-4 border-t border-neutral-200 pt-6">
           <h3 className="flex items-center gap-2 text-lg font-medium text-neutral-800">
             <Sparkles className="h-5 w-5 text-brand-500" />
@@ -265,6 +268,7 @@ export function WizardBasicsStep(props: Props) {
             </div>
           )}
         </section>
+        )}
       </div>
     </WizardShell>
   );

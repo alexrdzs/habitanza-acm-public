@@ -51,14 +51,25 @@ export const COMPARABLE_LISTINGS: Record<string, ComparableListing[]> = {
       lng: -99.2654659785737,
     },
   ],
+  // Both terrenos sit in the same "Castillo de Nottingham" privada, so they
+  // share the coordinate Alex hand-corrected (the portfolio's own coordinate
+  // placed the pin in the wrong spot). TXJ-575's size comes from its listing
+  // description (its structured superficie field is unset). The earlier single
+  // entry here mixed TAZ-393's price with TAC-805's size; these two replace it.
   'Condado de Sayavedra': [
     {
       tipo: 'Terreno residencial',
-      precio: 3800000,
+      precio: 4567000, // TAC-805
       m2: 572.62,
-      photo: 'https://images.pulppo.com/property/6812b95bc4b9d40da6848713/picture_ab59db6530f14c4c8824ad4b7747916d.jpg',
-      // Corrected by Alex -- the portfolio's own coordinate for this listing
-      // placed the pin in the wrong spot.
+      photo: 'https://images.pulppo.com/property/6812b95bc4b9d40da6848713/picture_c779a06850164202bf888daf87dd65f9.jpg',
+      lat: 19.568735,
+      lng: -99.321748,
+    },
+    {
+      tipo: 'Terreno residencial',
+      precio: 6900000, // TXJ-575
+      m2: 1147,
+      photo: 'https://images.pulppo.com/property/682bb72c0416496d73b46b8f/picture_c20711b17147487db599fcefbc5050f7.jpg',
       lat: 19.568735,
       lng: -99.321748,
     },
@@ -125,7 +136,14 @@ export const COMPARABLE_LISTINGS: Record<string, ComparableListing[]> = {
   // Add a Pulppo/CDN image URL where available, then delete `isPlaceholder`.
   // Do not publish zeros or approximate coordinates as completed comparables.
   'Bosque Real': [
-    { tipo: 'TODO: comparable 1', precio: 0, m2: 0, lat: 0, lng: 0, isPlaceholder: true },
+    {
+      tipo: 'Terreno residencial',
+      precio: 8900000, // TBQ-319, privada Las Pérgolas; size from its description
+      m2: 504.36,
+      photo: 'https://images.pulppo.com/property/69d0934d948582309180ca28/picture_1b4c0e95ac23445a8291d66ff717b95c.jpg',
+      lat: 19.427217,
+      lng: -99.282115,
+    },
     { tipo: 'TODO: comparable 2', precio: 0, m2: 0, lat: 0, lng: 0, isPlaceholder: true },
     { tipo: 'TODO: comparable 3', precio: 0, m2: 0, lat: 0, lng: 0, isPlaceholder: true },
     { tipo: 'TODO: comparable 4', precio: 0, m2: 0, lat: 0, lng: 0, isPlaceholder: true },
@@ -200,6 +218,22 @@ export function zoneTypicalSpecs(): ZoneTypicalSpecs {
     banos: pick((l) => l.banos),
     m2: pick((l) => l.m2),
   };
+}
+
+// Minimum real, sized terreno comps before we'll show a lot-size benchmark.
+// Below this the sample isn't representative enough to call a value "above" or
+// "below" the zone, so the reveal card shows no size arrow (see PropertyCard).
+const MIN_TERRENO_SAMPLE = 3;
+
+// Median lot size (m²) of the zone's real terreno listings, or undefined when
+// there aren't enough to be directional. Terrenos are benchmarked on their own
+// pool (never against built homes).
+export function zoneTypicalTerrenoM2(): number | undefined {
+  const sizes = Object.values(COMPARABLE_LISTINGS)
+    .flat()
+    .filter((l) => !l.isPlaceholder && l.tipo.startsWith('Terreno') && l.m2 > 0)
+    .map((l) => l.m2);
+  return sizes.length >= MIN_TERRENO_SAMPLE ? median(sizes) : undefined;
 }
 
 export function coloniaPhoto(colonia: string): string | undefined {
