@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ChevronDown, FileSearch, Info, MessageCircle, Route, Target } from 'lucide-react';
 import { PreliminaryPricingBar } from './PreliminaryPricingBar';
 import { PropertySummaryCard, type PropertyProfile } from './PropertySummaryCard';
@@ -10,7 +10,7 @@ import { TestimonialsCarousel } from './TestimonialsCarousel';
 import { AdvisorCTA } from './AdvisorCTA';
 import { AdvisorClosingSection } from './AdvisorClosingSection';
 import { AdvisorAvatar } from './AdvisorAvatar';
-import { advisorsForColonia, whatsappLink, buildWhatsAppMessage } from '@shared/advisors';
+import { whatsappLink, buildWhatsAppMessage, type Advisor } from '@shared/advisors';
 import { pendingComparableListings, readyComparableListings, totalReadyListingsCount } from '@shared/comparableListings';
 import { COPY } from '@shared/copy';
 import { referencePerM2, type PreliminaryEstimate } from '@shared/pricing';
@@ -22,6 +22,9 @@ interface Props {
   tipoPropiedad: string;
   colonia: string;
   profile: PropertyProfile;
+  // Chosen upstream (at submit) so the CRM webhook, the firma, and the
+  // WhatsApp CTA all reference the same assigned broker.
+  advisor: Advisor;
 }
 
 // Order-matched with COPY.reveal.acm.checklist.
@@ -39,20 +42,17 @@ function PulseTile({ label, value, subline, className = '' }: { label: string; v
   );
 }
 
-export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, profile }: Props) {
+export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, profile, advisor }: Props) {
   const firstName = nombre.trim().split(' ')[0] || 'gracias';
-  // Randomized once per visit from the right coverage pool, so the same
-  // advisor appears in the signature block and persistent WhatsApp bar.
-  const advisor = useMemo(() => {
-    const advisors = advisorsForColonia(colonia);
-    return advisors[Math.floor(Math.random() * advisors.length)];
-  }, [colonia]);
   const advisorFirstName = advisor.name.split(' ')[0];
   const comps = readyComparableListings(colonia);
   const pendingComps = pendingComparableListings(colonia);
   const hasComps = comps.length > 0;
   const hasPendingComps = pendingComps.length > 0;
-  const message = buildWhatsAppMessage(advisor, nombre, tipoPropiedad, colonia);
+  // The estimate result, exactly as shown in the price panel, pre-filled into
+  // every WhatsApp CTA on the screen.
+  const precioResultado = `${formatCurrency(estimate.low)} a ${formatCurrency(estimate.high)}`;
+  const message = buildWhatsAppMessage(advisor, nombre, tipoPropiedad, colonia, precioResultado);
   const zoneReference = referencePerM2(colonia, tipoPropiedad);
   const rangeWidth = formatCurrency(estimate.high - estimate.low);
 
@@ -220,9 +220,7 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, pro
           instead. */}
       <div className="space-y-4 rounded-card-lg border border-neutral-200/70 bg-parchment-card/80 p-6 backdrop-blur-md md:p-8">
         <SectionChip label={COPY.reveal.mercadoChip} />
-        <h3 className="text-base font-bold text-neutral-900">
-          {hasComps ? COPY.reveal.mercadoTitleWithComps(colonia) : COPY.reveal.mercadoTitleNoComps(colonia)}
-        </h3>
+        <h3 className="text-base font-bold text-neutral-900">{COPY.reveal.mercadoTitle}</h3>
 
         <div className="flex gap-3 rounded-r-xl border-l-4 border-brand-500 bg-neutral-50 p-4">
           <Info className="mt-0.5 h-4 w-4 flex-shrink-0 text-brand-600 dark:text-brand-400" />
@@ -297,10 +295,18 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, pro
         nombre={nombre}
         tipoPropiedad={tipoPropiedad}
         colonia={colonia}
+        precio={precioResultado}
         ctaRef={inlineCtaRef}
       />
 
-      <AdvisorCTA advisor={advisor} nombre={nombre} tipoPropiedad={tipoPropiedad} colonia={colonia} visible={isStickyBarVisible} />
+      <AdvisorCTA
+        advisor={advisor}
+        nombre={nombre}
+        tipoPropiedad={tipoPropiedad}
+        colonia={colonia}
+        precio={precioResultado}
+        visible={isStickyBarVisible}
+      />
     </div>
   );
 }

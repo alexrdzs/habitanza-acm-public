@@ -174,6 +174,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     : undefined;
   const comoNosConocisteOtro =
     comoNosConociste === 'otro' ? sanitizeText(body.comoNosConocisteOtro, 120) || undefined : undefined;
+  // Which broker the client-side router assigned this lead to. Forwarded to
+  // the CRM so it knows the owner; sanitized like any other free-text field.
+  const asesorAsignado = sanitizeText(body.asesorAsignado, 120) || undefined;
+  const asesorTelefono = sanitizeText(body.asesorTelefono, 20) || undefined;
   const consentimiento = body.consentimiento === true;
 
   const isKnownColonia =
@@ -220,6 +224,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     amenidades,
     comoNosConociste,
     comoNosConocisteOtro,
+    asesorAsignado,
+    asesorTelefono,
     fuente: 'landing-valuacion',
     zona: 'zona-esmeralda',
     creadoEn: new Date().toISOString(),

@@ -52,6 +52,15 @@ export function advisorsForColonia(colonia: string): Advisor[] {
   return BOSQUE_REAL_INTERLOMAS_COLONIAS.has(colonia) ? BOSQUE_REAL_INTERLOMAS_ADVISORS : ADVISORS;
 }
 
+// Assigns the lead to a broker from the right pool. Chosen once at submit
+// time (in LandingPage) so the same advisor is reported to the CRM webhook,
+// named in the reveal screen's firma, and pre-filled into the WhatsApp CTA --
+// they must not drift apart, which an in-component random pick would allow.
+export function pickAdvisor(colonia: string): Advisor {
+  const pool = advisorsForColonia(colonia);
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
 export function whatsappLink(advisor: Advisor, message: string): string {
   const digits = advisor.phone.replace(/\D/g, '');
   const withCountryCode = digits.startsWith('52') ? digits : `52${digits}`;
@@ -60,9 +69,21 @@ export function whatsappLink(advisor: Advisor, message: string): string {
 
 // Shared by every WhatsApp CTA on the reveal screen (the inline button next
 // to the firma block and the sticky bottom bar) so the pre-filled message
-// can't drift between the two.
-export function buildWhatsAppMessage(advisor: Advisor, nombre: string, tipoPropiedad: string, colonia: string): string {
+// can't drift between them. `precio` is the already-formatted estimate result
+// (e.g. "$8,870,000 a $11,290,000"); omitted, the result clause is dropped.
+export function buildWhatsAppMessage(
+  advisor: Advisor,
+  nombre: string,
+  tipoPropiedad: string,
+  colonia: string,
+  precio?: string
+): string {
   const homeownerName = nombre.trim();
   const introduction = homeownerName ? `soy ${homeownerName}. ` : '';
-  return `Hola ${advisor.name.split(' ')[0]}, ${introduction}Acabo de recibir la estimación preliminar de mi ${tipoPropiedad.toLowerCase()} en ${colonia} y me gustaría platicarla contigo. https://habitanza.com/vender`;
+  const resultado = precio ? ` y el resultado fue ${precio}` : '';
+  return (
+    `Hola ${advisor.name.split(' ')[0]}, ${introduction}Acabo de hacer el estimado de precio para mi ` +
+    `${tipoPropiedad.toLowerCase()} en ${colonia}${resultado}. Me gustaría platicar contigo para saber más de ` +
+    `sus servicios y hacer un plan a la medida.`
+  );
 }

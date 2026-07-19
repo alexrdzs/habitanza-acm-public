@@ -1,4 +1,4 @@
-import { ArrowDownRight, ArrowUpRight } from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight, Equal } from 'lucide-react';
 import type { Amenity, PropertyAge } from '@shared/validation';
 import type { PreliminaryEstimate } from '@shared/pricing';
 import { zoneTypicalSpecs } from '@shared/comparableListings';
@@ -6,16 +6,16 @@ import { COPY } from '@shared/copy';
 import { SectionChip } from './SectionChip';
 import { formatCurrency } from '../../lib/utils';
 
-type Direction = 'up' | 'down' | null;
+type Direction = 'up' | 'down' | 'equal' | null;
 
-// Above/below the zone's typical value (from real comparable listings). Only
-// a strict difference flags -- exactly typical shows nothing, so the card
-// highlights what stands out rather than labeling every field.
+// Above / below / in line with the zone's typical value (from real comparable
+// listings). Returns null only when there's no benchmark to compare against,
+// so those fields show no indicator at all.
 function compareToTypical(value: number | undefined, typical: number | undefined): Direction {
   if (value == null || typical == null) return null;
   if (value > typical) return 'up';
   if (value < typical) return 'down';
-  return null;
+  return 'equal';
 }
 
 export interface PropertyProfile {
@@ -54,7 +54,7 @@ export function PropertySummaryCard({ profile, tipoPropiedad, colonia, estimate 
   const typical = zoneTypicalSpecs();
   const recDir = !isTerreno && profile.recamaras ? compareToTypical(profile.recamaras, typical.recamaras) : null;
   const banDir = !isTerreno && profile.banos ? compareToTypical(profile.banos, typical.banos) : null;
-  const analysisText = c.analysisParagraph(recDir, banDir);
+  const analysisSegs = c.analysisSegments(recDir, banDir);
 
   const cells: SpecCell[] = [{ label: c.labels.ubicacion, value: colonia }];
 
@@ -86,7 +86,7 @@ export function PropertySummaryCard({ profile, tipoPropiedad, colonia, estimate 
   return (
     <div className="space-y-4 rounded-card-lg border border-neutral-200/70 bg-parchment-card/80 p-6 backdrop-blur-md md:p-8">
       <SectionChip label={c.chip} variant="neutral" />
-      <h3 className="text-base font-bold text-neutral-900">{c.title(tipoPropiedad)}</h3>
+      <h3 className="text-base font-bold text-neutral-900">{c.title}</h3>
 
       <dl className="grid grid-cols-3 gap-x-3 gap-y-4">
         {cells.map(({ label, value, direction }) => (
@@ -94,17 +94,37 @@ export function PropertySummaryCard({ profile, tipoPropiedad, colonia, estimate 
             <dt className="text-[10px] font-bold uppercase text-neutral-400">{label}</dt>
             <dd className="mt-0.5 flex items-center gap-1 text-sm font-semibold leading-snug text-neutral-900">
               <span>{value}</span>
-              {/* Diagonal arrows: up-right reads as growth, down-right as a
-                  drag on price. Up = a genuine strength (green); down stays
-                  muted-neutral, not red -- it's context, not a flaw. */}
+              {/* Diagonal arrows read as trend: up-right (green) = growth,
+                  down-right (red) = drags the price. An equals sign (blue)
+                  marks a value right on the zone average. */}
               {direction === 'up' && <ArrowUpRight aria-label={c.compareUp} className="h-3.5 w-3.5 text-brand-600 dark:text-brand-400" />}
-              {direction === 'down' && <ArrowDownRight aria-label={c.compareDown} className="h-3.5 w-3.5 text-neutral-400" />}
+              {direction === 'down' && <ArrowDownRight aria-label={c.compareDown} className="h-3.5 w-3.5 text-red-500 dark:text-red-400" />}
+              {direction === 'equal' && <Equal aria-label={c.compareEqual} className="h-3.5 w-3.5 text-blue-500 dark:text-blue-400" />}
             </dd>
           </div>
         ))}
       </dl>
 
-      {analysisText && <p className="text-xs leading-relaxed text-neutral-500">{analysisText}</p>}
+      {analysisSegs.length > 0 && (
+        <p className="text-xs leading-relaxed text-neutral-500">
+          {analysisSegs.map((seg, i) =>
+            seg.tone ? (
+              <strong
+                key={i}
+                className={
+                  seg.tone === 'pos'
+                    ? 'font-semibold text-brand-600 dark:text-brand-400'
+                    : 'font-semibold text-red-500 dark:text-red-400'
+                }
+              >
+                {seg.t}
+              </strong>
+            ) : (
+              <span key={i}>{seg.t}</span>
+            )
+          )}
+        </p>
+      )}
 
       {profile.amenidades.length > 0 && (
         <div className="flex flex-wrap gap-1.5 border-t border-neutral-200/70 pt-4">

@@ -222,7 +222,7 @@ export const COPY = {
     // it's their inputs, not one of the market chapters.
     propertyCard: {
       chip: 'Tu propiedad',
-      title: (tipo: string) => `Analizamos tu ${tipo.toLowerCase()}, no un promedio`,
+      title: 'Análisis de tu propiedad',
       labels: {
         ubicacion: 'Ubicación',
         construccion: 'Construcción',
@@ -243,31 +243,37 @@ export const COPY = {
         `Tu estimación entre tus ${new Intl.NumberFormat('es-MX').format(m2)} m² de ${
           isTerreno ? 'terreno' : 'construcción'
         }.`,
-      // Above/below the zone's typical, from real comparable listings.
+      // Above/below/in-line with the zone's typical, from real comparables.
       compareUp: 'Arriba del promedio de la zona',
       compareDown: 'Debajo del promedio de la zona',
-      // A short, self-adapting read of how the property's recámaras and baños
-      // compare to the zone. Mirrors the arrow logic in prose: only the fields
-      // that stand out (up/down) get a clause; an in-line field is omitted so
-      // the paragraph never states the obvious. Returns '' when nothing stands
-      // out, so the card renders no paragraph at all.
-      analysisParagraph: (rec: 'up' | 'down' | null, ban: 'up' | 'down' | null): string => {
-        const recTxt =
-          rec === 'up'
-            ? 'Tu propiedad tiene más recámaras que el promedio, lo que ayuda a destacar frente a la competencia.'
-            : rec === 'down'
-              ? 'Tu propiedad tiene menos recámaras que el promedio, lo que hace más complejo destacar frente a la competencia.'
-              : '';
-        const banTxt =
-          ban === 'up'
-            ? 'la cantidad de baños que ofrece es mayor que la de los comparables, lo cual suele ser una ventaja para la mayoría de compradores.'
-            : ban === 'down'
-              ? 'la cantidad de baños que ofrece es menor que la de los comparables, lo cual suele ser un inconveniente para la mayoría de compradores.'
-              : '';
-        if (recTxt && banTxt) return `${recTxt} Además, ${banTxt}`;
-        if (recTxt) return recTxt;
-        if (banTxt) return banTxt.charAt(0).toUpperCase() + banTxt.slice(1);
-        return '';
+      compareEqual: 'En línea con el promedio de la zona',
+      // A short, self-adapting read of how recámaras and baños compare to the
+      // zone, returned as segments so the component can shout the conditional
+      // keywords (green for a plus, red for a drag). Only fields that stand
+      // out (up/down) get a clause; an in-line or unknown field is omitted, so
+      // an empty array means "render no paragraph."
+      analysisSegments: (
+        rec: 'up' | 'down' | 'equal' | null,
+        ban: 'up' | 'down' | 'equal' | null
+      ): { t: string; tone?: 'pos' | 'neg' }[] => {
+        const segs: { t: string; tone?: 'pos' | 'neg' }[] = [];
+        if (rec === 'up' || rec === 'down') {
+          const pos = rec === 'up';
+          segs.push({ t: 'Tu propiedad tiene ' });
+          segs.push({ t: pos ? 'más' : 'menos', tone: pos ? 'pos' : 'neg' });
+          segs.push({ t: ' recámaras que el promedio, lo que ' });
+          segs.push({ t: pos ? 'ayuda a destacar' : 'hace más complejo destacar', tone: pos ? 'pos' : 'neg' });
+          segs.push({ t: ' frente a la competencia.' });
+        }
+        if (ban === 'up' || ban === 'down') {
+          const pos = ban === 'up';
+          segs.push({ t: segs.length > 0 ? ' Además, la cantidad de baños que ofrece es ' : 'La cantidad de baños que ofrece es ' });
+          segs.push({ t: pos ? 'mayor' : 'menor', tone: pos ? 'pos' : 'neg' });
+          segs.push({ t: ' que la de los comparables, lo cual suele ser ' });
+          segs.push({ t: pos ? 'una ventaja' : 'un inconveniente', tone: pos ? 'pos' : 'neg' });
+          segs.push({ t: ' para la mayoría de compradores.' });
+        }
+        return segs;
       },
     },
     // Section numbering mirrors the chaptered structure of the full ACM
@@ -286,8 +292,7 @@ export const COPY = {
       rangeWidthSubline: 'Tu ACM lo reduce a un precio exacto de salida.',
     },
     mercadoChip: '02 Referencias del Mercado',
-    mercadoTitleWithComps: (colonia: string) => `Referencias reales en ${colonia}`,
-    mercadoTitleNoComps: (colonia: string) => `Armando referencias para ${colonia}`,
+    mercadoTitle: 'Análisis del mercado',
     // Shown when real comparables render below: the same "oferta pública"
     // caveat the full ACM opens its comparables chapter with.
     notaOfertaTag: 'Nota sobre estas referencias',

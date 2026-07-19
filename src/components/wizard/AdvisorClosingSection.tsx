@@ -11,6 +11,7 @@ interface Props {
   nombre: string;
   tipoPropiedad: string;
   colonia: string;
+  precio: string;
   // Observed by the reveal screen so the sticky WhatsApp bar yields while
   // this card's CTA is on screen (no two green buttons stacked at once).
   ctaRef: RefObject<HTMLDivElement | null>;
@@ -21,9 +22,9 @@ interface Props {
 // advisor gets the only inline CTA on the screen (section 03 is value-only
 // now), and the rest of the team appears below so "a real team is behind
 // this" lands right before the visitor decides to reach out.
-export function AdvisorClosingSection({ advisor, nombre, tipoPropiedad, colonia, ctaRef }: Props) {
+export function AdvisorClosingSection({ advisor, nombre, tipoPropiedad, colonia, precio, ctaRef }: Props) {
   const advisorFirstName = advisor.name.split(' ')[0];
-  const message = buildWhatsAppMessage(advisor, nombre, tipoPropiedad, colonia);
+  const message = buildWhatsAppMessage(advisor, nombre, tipoPropiedad, colonia, precio);
   // "Other" team members: everyone except the assigned advisor. Matched by
   // first name because the advisor pool and the roster spell some names
   // differently ("Tere López B." vs "Tere López"); first names are unique

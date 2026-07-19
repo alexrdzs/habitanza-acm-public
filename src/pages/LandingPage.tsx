@@ -8,6 +8,7 @@ import { WizardContactStep } from '../components/wizard/WizardContactStep';
 import { WizardRevealStep } from '../components/wizard/WizardRevealStep';
 import { MapPreloader } from '../components/wizard/NeighborhoodMap';
 import { OTHER_COLONIA_VALUE, normalizePhone, type PropertyAge, type Amenity } from '@shared/validation';
+import { pickAdvisor, type Advisor } from '@shared/advisors';
 import { estimatePreliminaryRange, type PreliminaryEstimate } from '@shared/pricing';
 import { COPY } from '@shared/copy';
 
@@ -56,6 +57,11 @@ export function LandingPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  // The broker assigned to this lead. Chosen once at submit so the CRM
+  // webhook and the reveal screen (firma + WhatsApp CTA) all agree.
+  const [assignedAdvisor, setAssignedAdvisor] = useState<Advisor | null>(() =>
+    isRevealPreview ? pickAdvisor(revealPreviewColonia) : null
+  );
   const [estimate, setEstimate] = useState<PreliminaryEstimate | null>(() =>
     isRevealPreview
       ? estimatePreliminaryRange({
@@ -92,6 +98,10 @@ export function LandingPage() {
     }
 
     setIsSubmitting(true);
+    // Assign the broker now, before the webhook fires, so the CRM is told who
+    // owns the lead and the reveal screen shows that same person.
+    const advisor = pickAdvisor(resolvedColonia);
+    setAssignedAdvisor(advisor);
     try {
       const res = await fetch('/api/lead', {
         method: 'POST',
@@ -101,6 +111,8 @@ export function LandingPage() {
           telefono,
           colonia,
           colonia_otra: coloniaOtra || undefined,
+          asesorAsignado: advisor.name,
+          asesorTelefono: advisor.phone,
           tipoPropiedad,
           antiguedad: antiguedad || undefined,
           m2Construccion: m2Construccion ? Number(m2Construccion) : undefined,
@@ -224,12 +236,13 @@ export function LandingPage() {
         )}
 
         {step === 'reveal' &&
-          (estimate ? (
+          (estimate && assignedAdvisor ? (
             <WizardRevealStep
               estimate={estimate}
               nombre={nombre}
               tipoPropiedad={tipoPropiedad}
               colonia={resolvedColonia}
+              advisor={assignedAdvisor}
               profile={{
                 m2Construccion: m2Construccion ? Number(m2Construccion) : undefined,
                 m2Terreno: m2Terreno ? Number(m2Terreno) : undefined,

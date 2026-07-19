@@ -86,6 +86,8 @@ export interface LeadSubmission {
   amenidades?: Amenity[];
   comoNosConociste?: ReferralSource;
   comoNosConocisteOtro?: string;
+  asesorAsignado?: string; // broker this lead was routed to (client-assigned)
+  asesorTelefono?: string; // that broker's WhatsApp number
   consentimiento: boolean;
   empresa?: string; // honeypot — must stay empty
 }
