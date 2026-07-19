@@ -66,7 +66,7 @@ export function WizardShell({
                 <button
                   onClick={handleNext}
                   disabled={nextDisabled || isNextLoading}
-                  className="flex items-center gap-2 rounded-pill bg-brand-500 px-8 py-3 font-medium text-white shadow-sm transition-all active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-brand-600"
+                  className="flex items-center gap-2 rounded-pill bg-brand-500 px-8 py-3 font-medium text-white shadow-sm transition-all active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-brand-600 dark:bg-brand-600 dark:hover:bg-brand-700"
                 >
                   {isNextLoading ? (
                     <Loader2 className="h-4 w-4 animate-spin" />

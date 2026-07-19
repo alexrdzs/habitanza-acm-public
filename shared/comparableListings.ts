@@ -167,6 +167,41 @@ export function totalReadyListingsCount(): number {
   );
 }
 
+// Zone-typical specs, derived (median) from the real, non-placeholder,
+// non-terreno listings above. A directional benchmark for the reveal card's
+// "above/below the zone" indicators, NOT a precise statistic. Uses the whole
+// zone sample (per-colonia is too sparse) and the median, so one outlier
+// (e.g. a 38 m² studio or a 1,300 m² estate) doesn't drag it. Any field with
+// no data returns undefined, so consumers show no indicator rather than
+// compare against a fabricated number. Note the sample skews to large homes,
+// so this median runs high -- treat "below" as "below this premium zone," not
+// "small."
+export interface ZoneTypicalSpecs {
+  recamaras?: number;
+  banos?: number;
+  m2?: number;
+}
+
+function median(values: number[]): number | undefined {
+  if (values.length === 0) return undefined;
+  const sorted = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
+}
+
+export function zoneTypicalSpecs(): ZoneTypicalSpecs {
+  const listings = Object.values(COMPARABLE_LISTINGS)
+    .flat()
+    .filter((l) => !l.isPlaceholder && !l.tipo.startsWith('Terreno'));
+  const pick = (get: (l: ComparableListing) => number | undefined) =>
+    median(listings.map(get).filter((v): v is number => v != null));
+  return {
+    recamaras: pick((l) => l.recamaras),
+    banos: pick((l) => l.banos),
+    m2: pick((l) => l.m2),
+  };
+}
+
 export function coloniaPhoto(colonia: string): string | undefined {
   return readyComparableListings(colonia).find((listing) => listing.photo)?.photo;
 }

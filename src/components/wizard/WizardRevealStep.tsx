@@ -153,7 +153,7 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, pro
               href={whatsappLink(advisor, message)}
               target="_blank"
               rel="noreferrer"
-              className="mt-5 flex w-full items-center justify-center gap-2 rounded-pill bg-brand-500 px-4 py-3 text-sm font-semibold text-white shadow-[0_10px_24px_-8px_rgba(37,211,102,0.55)] transition-transform active:scale-95 hover:bg-brand-600"
+              className="mt-5 flex w-full items-center justify-center gap-2 rounded-pill bg-brand-500 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-transform active:scale-95 hover:bg-brand-600 dark:bg-brand-600 dark:hover:bg-brand-700"
             >
               <MessageCircle className="h-4 w-4" />
               {COPY.reveal.panelCtaLabel}

@@ -39,7 +39,7 @@ export function LandingPage() {
   const [antiguedad, setAntiguedad] = useState<PropertyAge | ''>(() => (isRevealPreview ? 'A estrenar' : ''));
   const [m2Construccion, setM2Construccion] = useState(() => (isRevealPreview ? '240' : ''));
   const [m2Terreno, setM2Terreno] = useState(() => (isRevealPreview ? '320' : ''));
-  const [recamaras, setRecamaras] = useState(() => (isRevealPreview ? '3' : ''));
+  const [recamaras, setRecamaras] = useState(() => (isRevealPreview ? '4' : ''));
   const [banos, setBanos] = useState(() => (isRevealPreview ? '3' : ''));
   const [estacionamientos, setEstacionamientos] = useState(() => (isRevealPreview ? '2' : ''));
   const [amenidades, setAmenidades] = useState<Amenity[]>(() =>

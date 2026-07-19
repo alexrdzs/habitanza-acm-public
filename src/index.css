@@ -123,36 +123,38 @@
   :root {
     color-scheme: dark;
 
-    /* Page ground + card surfaces. Ink panels are untouched (var(--color-ink)
-       stays #0c0a09), so the hierarchy becomes ink panel (deepest) < cards <
-       page. */
-    --color-parchment: #0f1c16;
-    --color-parchment-card: #1a2721;
+    /* Page ground + card surfaces. A neutral carbon tone (not green): the
+       dark theme should read as charcoal, with green reserved for brand
+       accents only. Ink panels are untouched (var(--color-ink) stays
+       #0c0a09), so the hierarchy stays ink panel (deepest) < page < cards. */
+    --color-parchment: #131316;
+    --color-parchment-card: #1c1c20;
 
     /* The jewel-green emerald accent brightens so icons/text that were a deep
        green on light cards stay legible on dark ones (and the analyzing
        completion circle reads as a vivid confirmation, not a muddy patch). */
     --color-emerald-deep: #34D399;
 
-    /* Green-grey neutral ramp, lightness-inverted. Surface/border shades
-       (50-300) go dark; text shades (400-950) go light. */
-    --color-neutral-50: #1c251f;
-    --color-neutral-100: #222c26;
-    --color-neutral-200: #2a342e;
-    --color-neutral-300: #3b463f;
-    --color-neutral-400: #849289;
-    --color-neutral-500: #9aa69d;
-    --color-neutral-600: #b8c1b8;
-    --color-neutral-700: #d0d7cf;
-    --color-neutral-800: #e4e9e3;
-    --color-neutral-900: #f2f5f1;
-    --color-neutral-950: #f8faf7;
+    /* Carbon-grey neutral ramp, lightness-inverted (a hair cool, no green
+       cast). Surface/border shades (50-300) go dark; text shades (400-950)
+       go light. */
+    --color-neutral-50: #1d1d20;
+    --color-neutral-100: #242429;
+    --color-neutral-200: #2e2e34;
+    --color-neutral-300: #40404a;
+    --color-neutral-400: #8a8a92;
+    --color-neutral-500: #9c9ca4;
+    --color-neutral-600: #bbbbc3;
+    --color-neutral-700: #d3d3d9;
+    --color-neutral-800: #e5e5ea;
+    --color-neutral-900: #f2f2f6;
+    --color-neutral-950: #f8f8fb;
   }
 
   body {
-    /* Same "very subtle vertical shift" idea as light mode, in the dark
-       green-grey range, so glass cards still have depth to pick up. */
-    background: linear-gradient(180deg, #12211a 0%, var(--color-parchment) 45%, #0c1712 100%);
+    /* Same "very subtle vertical shift" idea as light mode, in a dark carbon
+       range, so glass cards still have depth to pick up. */
+    background: linear-gradient(180deg, #171719 0%, var(--color-parchment) 45%, #0e0e10 100%);
   }
 }
 

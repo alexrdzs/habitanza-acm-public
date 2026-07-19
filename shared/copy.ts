@@ -243,6 +243,9 @@ export const COPY = {
         `Tu estimación entre tus ${new Intl.NumberFormat('es-MX').format(m2)} m² de ${
           isTerreno ? 'terreno' : 'construcción'
         }.`,
+      // Above/below the zone's typical, from real comparable listings.
+      compareUp: 'Arriba del promedio de la zona',
+      compareDown: 'Debajo del promedio de la zona',
     },
     // Section numbering mirrors the chaptered structure of the full ACM
     // ("01 Pulso del Mercado"...) so this screen reads as a preview of the

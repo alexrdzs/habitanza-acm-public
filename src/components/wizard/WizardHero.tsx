@@ -25,7 +25,7 @@ function CtaButton({ onStart }: { onStart: () => void }) {
   return (
     <button
       onClick={onStart}
-      className="rounded-pill bg-brand-500 px-9 py-4 text-base font-semibold text-white shadow-[0_10px_24px_-8px_rgba(37,211,102,0.55)] transition-all hover:bg-brand-600 active:scale-95"
+      className="rounded-pill bg-brand-500 px-9 py-4 text-base font-semibold text-white shadow-sm transition-all hover:bg-brand-600 active:scale-95 dark:bg-brand-600 dark:hover:bg-brand-700"
     >
       {COPY.hero.ctaLabel}
     </button>

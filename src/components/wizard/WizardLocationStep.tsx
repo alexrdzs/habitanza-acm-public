@@ -258,7 +258,7 @@ export function WizardLocationStep(props: Props) {
                   type="button"
                   onClick={() => props.onContinue()}
                   disabled={!canContinueOtra}
-                  className="rounded-pill bg-brand-500 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-brand-600"
+                  className="rounded-pill bg-brand-500 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-brand-600 dark:bg-brand-600 dark:hover:bg-brand-700"
                 >
                   {COPY.location.continueLabel}
                 </button>

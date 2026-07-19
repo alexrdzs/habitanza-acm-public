@@ -1,8 +1,22 @@
+import { ArrowDown, ArrowUp } from 'lucide-react';
 import type { Amenity, PropertyAge } from '@shared/validation';
 import type { PreliminaryEstimate } from '@shared/pricing';
+import { zoneTypicalSpecs } from '@shared/comparableListings';
 import { COPY } from '@shared/copy';
 import { SectionChip } from './SectionChip';
 import { formatCurrency } from '../../lib/utils';
+
+type Direction = 'up' | 'down' | null;
+
+// Above/below the zone's typical value (from real comparable listings). Only
+// a strict difference flags -- exactly typical shows nothing, so the card
+// highlights what stands out rather than labeling every field.
+function compareToTypical(value: number | undefined, typical: number | undefined): Direction {
+  if (value == null || typical == null) return null;
+  if (value > typical) return 'up';
+  if (value < typical) return 'down';
+  return null;
+}
 
 export interface PropertyProfile {
   m2Construccion?: number;
@@ -24,6 +38,7 @@ interface Props {
 interface SpecCell {
   label: string;
   value: string;
+  direction?: Direction;
 }
 
 // "Tu propiedad": a light 3-column recap of the visitor's own answers, plus
@@ -34,6 +49,9 @@ interface SpecCell {
 export function PropertySummaryCard({ profile, tipoPropiedad, colonia, estimate }: Props) {
   const c = COPY.reveal.propertyCard;
   const isTerreno = tipoPropiedad === 'Terreno';
+  // Benchmark the count fields against the zone's real listings, so an
+  // above-average room/bath count reads as the selling point it is.
+  const typical = zoneTypicalSpecs();
 
   const cells: SpecCell[] = [{ label: c.labels.ubicacion, value: colonia }];
 
@@ -44,10 +62,18 @@ export function PropertySummaryCard({ profile, tipoPropiedad, colonia, estimate 
     cells.push({ label: c.labels.terreno, value: c.m2Value(profile.m2Terreno) });
   }
   if (!isTerreno && profile.recamaras) {
-    cells.push({ label: c.labels.recamaras, value: String(profile.recamaras) });
+    cells.push({
+      label: c.labels.recamaras,
+      value: String(profile.recamaras),
+      direction: compareToTypical(profile.recamaras, typical.recamaras),
+    });
   }
   if (!isTerreno && profile.banos) {
-    cells.push({ label: c.labels.banos, value: String(profile.banos) });
+    cells.push({
+      label: c.labels.banos,
+      value: String(profile.banos),
+      direction: compareToTypical(profile.banos, typical.banos),
+    });
   }
   if (!isTerreno && profile.estacionamientos) {
     cells.push({ label: c.labels.estacionamientos, value: String(profile.estacionamientos) });
@@ -68,10 +94,16 @@ export function PropertySummaryCard({ profile, tipoPropiedad, colonia, estimate 
       <h3 className="text-base font-bold text-neutral-900">{c.title(tipoPropiedad)}</h3>
 
       <dl className="grid grid-cols-3 gap-x-3 gap-y-4">
-        {cells.map(({ label, value }) => (
+        {cells.map(({ label, value, direction }) => (
           <div key={label} className="min-w-0">
             <dt className="text-[10px] font-bold uppercase text-neutral-400">{label}</dt>
-            <dd className="mt-0.5 text-sm font-semibold leading-snug text-neutral-900">{value}</dd>
+            <dd className="mt-0.5 flex items-center gap-1 text-sm font-semibold leading-snug text-neutral-900">
+              <span>{value}</span>
+              {/* Up = a genuine strength (green). Down stays muted-neutral, not
+                  red -- it's context, not a flaw in the seller's property. */}
+              {direction === 'up' && <ArrowUp aria-label={c.compareUp} className="h-3.5 w-3.5 text-brand-600 dark:text-brand-400" />}
+              {direction === 'down' && <ArrowDown aria-label={c.compareDown} className="h-3.5 w-3.5 text-neutral-400" />}
+            </dd>
           </div>
         ))}
       </dl>
