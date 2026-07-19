@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUp } from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight } from 'lucide-react';
 import type { Amenity, PropertyAge } from '@shared/validation';
 import type { PreliminaryEstimate } from '@shared/pricing';
 import { zoneTypicalSpecs } from '@shared/comparableListings';
@@ -52,6 +52,9 @@ export function PropertySummaryCard({ profile, tipoPropiedad, colonia, estimate 
   // Benchmark the count fields against the zone's real listings, so an
   // above-average room/bath count reads as the selling point it is.
   const typical = zoneTypicalSpecs();
+  const recDir = !isTerreno && profile.recamaras ? compareToTypical(profile.recamaras, typical.recamaras) : null;
+  const banDir = !isTerreno && profile.banos ? compareToTypical(profile.banos, typical.banos) : null;
+  const analysisText = c.analysisParagraph(recDir, banDir);
 
   const cells: SpecCell[] = [{ label: c.labels.ubicacion, value: colonia }];
 
@@ -62,18 +65,10 @@ export function PropertySummaryCard({ profile, tipoPropiedad, colonia, estimate 
     cells.push({ label: c.labels.terreno, value: c.m2Value(profile.m2Terreno) });
   }
   if (!isTerreno && profile.recamaras) {
-    cells.push({
-      label: c.labels.recamaras,
-      value: String(profile.recamaras),
-      direction: compareToTypical(profile.recamaras, typical.recamaras),
-    });
+    cells.push({ label: c.labels.recamaras, value: String(profile.recamaras), direction: recDir });
   }
   if (!isTerreno && profile.banos) {
-    cells.push({
-      label: c.labels.banos,
-      value: String(profile.banos),
-      direction: compareToTypical(profile.banos, typical.banos),
-    });
+    cells.push({ label: c.labels.banos, value: String(profile.banos), direction: banDir });
   }
   if (!isTerreno && profile.estacionamientos) {
     cells.push({ label: c.labels.estacionamientos, value: String(profile.estacionamientos) });
@@ -99,14 +94,17 @@ export function PropertySummaryCard({ profile, tipoPropiedad, colonia, estimate 
             <dt className="text-[10px] font-bold uppercase text-neutral-400">{label}</dt>
             <dd className="mt-0.5 flex items-center gap-1 text-sm font-semibold leading-snug text-neutral-900">
               <span>{value}</span>
-              {/* Up = a genuine strength (green). Down stays muted-neutral, not
-                  red -- it's context, not a flaw in the seller's property. */}
-              {direction === 'up' && <ArrowUp aria-label={c.compareUp} className="h-3.5 w-3.5 text-brand-600 dark:text-brand-400" />}
-              {direction === 'down' && <ArrowDown aria-label={c.compareDown} className="h-3.5 w-3.5 text-neutral-400" />}
+              {/* Diagonal arrows: up-right reads as growth, down-right as a
+                  drag on price. Up = a genuine strength (green); down stays
+                  muted-neutral, not red -- it's context, not a flaw. */}
+              {direction === 'up' && <ArrowUpRight aria-label={c.compareUp} className="h-3.5 w-3.5 text-brand-600 dark:text-brand-400" />}
+              {direction === 'down' && <ArrowDownRight aria-label={c.compareDown} className="h-3.5 w-3.5 text-neutral-400" />}
             </dd>
           </div>
         ))}
       </dl>
+
+      {analysisText && <p className="text-xs leading-relaxed text-neutral-500">{analysisText}</p>}
 
       {profile.amenidades.length > 0 && (
         <div className="flex flex-wrap gap-1.5 border-t border-neutral-200/70 pt-4">

@@ -246,6 +246,29 @@ export const COPY = {
       // Above/below the zone's typical, from real comparable listings.
       compareUp: 'Arriba del promedio de la zona',
       compareDown: 'Debajo del promedio de la zona',
+      // A short, self-adapting read of how the property's recámaras and baños
+      // compare to the zone. Mirrors the arrow logic in prose: only the fields
+      // that stand out (up/down) get a clause; an in-line field is omitted so
+      // the paragraph never states the obvious. Returns '' when nothing stands
+      // out, so the card renders no paragraph at all.
+      analysisParagraph: (rec: 'up' | 'down' | null, ban: 'up' | 'down' | null): string => {
+        const recTxt =
+          rec === 'up'
+            ? 'Tu propiedad tiene más recámaras que el promedio, lo que ayuda a destacar frente a la competencia.'
+            : rec === 'down'
+              ? 'Tu propiedad tiene menos recámaras que el promedio, lo que hace más complejo destacar frente a la competencia.'
+              : '';
+        const banTxt =
+          ban === 'up'
+            ? 'la cantidad de baños que ofrece es mayor que la de los comparables, lo cual suele ser una ventaja para la mayoría de compradores.'
+            : ban === 'down'
+              ? 'la cantidad de baños que ofrece es menor que la de los comparables, lo cual suele ser un inconveniente para la mayoría de compradores.'
+              : '';
+        if (recTxt && banTxt) return `${recTxt} Además, ${banTxt}`;
+        if (recTxt) return recTxt;
+        if (banTxt) return banTxt.charAt(0).toUpperCase() + banTxt.slice(1);
+        return '';
+      },
     },
     // Section numbering mirrors the chaptered structure of the full ACM
     // ("01 Pulso del Mercado"...) so this screen reads as a preview of the
