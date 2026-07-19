@@ -267,7 +267,17 @@ export const COPY = {
         }
         if (ban === 'up' || ban === 'down') {
           const pos = ban === 'up';
-          segs.push({ t: segs.length > 0 ? ' Además, la cantidad de baños que ofrece es ' : 'La cantidad de baños que ofrece es ' });
+          // Connector reflects the relationship: "Además" only when both
+          // clauses point the same way; "Pero" when the baths contrast the
+          // recámaras read (a plus followed by a minus, or vice versa).
+          const recPresent = rec === 'up' || rec === 'down';
+          const sameDirection = recPresent && (rec === 'up') === pos;
+          const lead = !recPresent
+            ? 'La cantidad de baños que ofrece es '
+            : sameDirection
+              ? ' Además, la cantidad de baños que ofrece es '
+              : ' Pero la cantidad de baños que ofrece es ';
+          segs.push({ t: lead });
           segs.push({ t: pos ? 'mayor' : 'menor', tone: pos ? 'pos' : 'neg' });
           segs.push({ t: ' que la de los comparables, lo cual suele ser ' });
           segs.push({ t: pos ? 'una ventaja' : 'un inconveniente', tone: pos ? 'pos' : 'neg' });
