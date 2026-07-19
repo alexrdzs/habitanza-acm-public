@@ -28,8 +28,6 @@ import {
 import { cn } from '../../lib/utils';
 
 const ROOM_COUNT_OPTIONS = ['1', '2', '3', '4', '5+'];
-// Medios baños (½) are counted on their own, starting at none.
-const HALF_BATH_OPTIONS = ['0', '1', '2', '3+'];
 // Cajones de estacionamiento — a common valuation signal in these
 // fraccionamientos. Starts at none, same pill language as the rooms.
 const PARKING_OPTIONS = ['0', '1', '2', '3', '4+'];
@@ -70,8 +68,6 @@ interface Props {
   setRecamaras: (v: string) => void;
   banos: string;
   setBanos: (v: string) => void;
-  mediosBanos: string;
-  setMediosBanos: (v: string) => void;
   estacionamientos: string;
   setEstacionamientos: (v: string) => void;
   amenidades: Amenity[];
@@ -196,24 +192,6 @@ export function WizardBasicsStep(props: Props) {
                   options={ROOM_COUNT_OPTIONS}
                   value={props.banos}
                   onChange={props.setBanos}
-                  className="w-full justify-between"
-                />
-              </div>
-              {/* Medios baños are a separate quantity, not a fraction of the
-                  completos above: a home can have 3 completos and 2 medios.
-                  Same pill language, kept to a short 0–3+ row. */}
-              <div>
-                <label className="mb-2 flex items-center gap-1.5 text-sm font-medium text-neutral-700">
-                  <Bath className="h-4 w-4 text-neutral-400" />
-                  {COPY.basics.fieldLabels.mediosBanos}
-                  <span aria-hidden="true" className="text-neutral-400">
-                    ½
-                  </span>
-                </label>
-                <SegmentedControl
-                  options={HALF_BATH_OPTIONS}
-                  value={props.mediosBanos}
-                  onChange={props.setMediosBanos}
                   className="w-full justify-between"
                 />
               </div>

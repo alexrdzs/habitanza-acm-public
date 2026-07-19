@@ -128,8 +128,7 @@ export const COPY = {
       m2Construccion: 'Construcción *',
       m2TerrenoRequired: 'Terreno *',
       recamaras: 'Recámaras',
-      banos: 'Baños completos',
-      mediosBanos: 'Medios baños',
+      banos: 'Baños',
       estacionamientos: 'Estacionamientos',
     },
   },
@@ -224,7 +223,6 @@ export const COPY = {
     propertyCard: {
       chip: 'Tu propiedad',
       title: (tipo: string) => `Analizamos tu ${tipo.toLowerCase()}, no un promedio`,
-      intro: 'Tu rango preliminar parte de lo que nos compartiste:',
       labels: {
         ubicacion: 'Ubicación',
         construccion: 'Construcción',
@@ -236,14 +234,6 @@ export const COPY = {
         estacionamientos: 'Cajones',
         antiguedad: 'Antigüedad',
         amenidades: 'Extras',
-      },
-      // Baños read as "3 completos · 1 medio" so the split the form now
-      // captures survives into the analysis.
-      banosValue: (completos?: number, medios?: number) => {
-        const parts: string[] = [];
-        if (completos) parts.push(`${completos} completo${completos === 1 ? '' : 's'}`);
-        if (medios) parts.push(`${medios} medio${medios === 1 ? '' : 's'}`);
-        return parts.join(' · ');
       },
       m2Value: (m2: number) => `${new Intl.NumberFormat('es-MX').format(m2)} m²`,
       // A single derived number so the card does analysis, not just recap:

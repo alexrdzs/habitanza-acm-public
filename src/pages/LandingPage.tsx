@@ -41,7 +41,6 @@ export function LandingPage() {
   const [m2Terreno, setM2Terreno] = useState(() => (isRevealPreview ? '320' : ''));
   const [recamaras, setRecamaras] = useState(() => (isRevealPreview ? '3' : ''));
   const [banos, setBanos] = useState(() => (isRevealPreview ? '3' : ''));
-  const [mediosBanos, setMediosBanos] = useState(() => (isRevealPreview ? '1' : ''));
   const [estacionamientos, setEstacionamientos] = useState(() => (isRevealPreview ? '2' : ''));
   const [amenidades, setAmenidades] = useState<Amenity[]>(() =>
     isRevealPreview ? ['Alberca o Jacuzzi', 'Vistas panorámicas', 'Casa inteligente'] : []
@@ -108,7 +107,6 @@ export function LandingPage() {
           m2Terreno: m2Terreno ? Number(m2Terreno) : undefined,
           recamaras: parseRoomCount(recamaras),
           banos: parseRoomCount(banos),
-          mediosBanos: parseRoomCount(mediosBanos),
           estacionamientos: parseRoomCount(estacionamientos),
           amenidades: amenidades.length > 0 ? amenidades : undefined,
           comoNosConociste: comoNosConociste || undefined,
@@ -157,10 +155,13 @@ export function LandingPage() {
       {colonia && mapsApiKey && <MapPreloader apiKey={mapsApiKey} />}
       <header className="sticky top-0 z-30 border-b border-neutral-200 bg-white dark:bg-parchment-card/85 dark:backdrop-blur-md">
         <div className="mx-auto flex max-w-md items-center px-4 py-4 md:max-w-xl lg:max-w-2xl">
-          <Logo className="h-7 text-neutral-900" />
+          {/* Extra left padding lines the wordmark up with the card content
+              (title/fields) below, which sit inset by the card's own padding,
+              rather than with the card's outer edge. */}
+          <Logo className="h-7 pl-6 text-neutral-900 md:pl-8" />
         </div>
       </header>
-      <main className="mx-auto max-w-md px-4 pt-8 pb-20 md:max-w-xl lg:max-w-2xl">
+      <main className="mx-auto max-w-md px-4 pt-4 pb-20 md:max-w-xl lg:max-w-2xl">
         {step === 'hero' && <WizardHero onStart={() => setStep('location')} />}
 
         {step === 'location' && (
@@ -188,8 +189,6 @@ export function LandingPage() {
             setRecamaras={setRecamaras}
             banos={banos}
             setBanos={setBanos}
-            mediosBanos={mediosBanos}
-            setMediosBanos={setMediosBanos}
             estacionamientos={estacionamientos}
             setEstacionamientos={setEstacionamientos}
             amenidades={amenidades}
@@ -236,7 +235,6 @@ export function LandingPage() {
                 m2Terreno: m2Terreno ? Number(m2Terreno) : undefined,
                 recamaras: parseRoomCount(recamaras),
                 banos: parseRoomCount(banos),
-                mediosBanos: parseRoomCount(mediosBanos),
                 estacionamientos: parseRoomCount(estacionamientos),
                 antiguedad: antiguedad || undefined,
                 amenidades,

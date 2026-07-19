@@ -94,10 +94,16 @@ export function WizardContactStep(props: Props) {
           />
         </div>
 
-        <div>
-          <label className={labelClass}>{COPY.contact.fieldLabels.comoNosConociste}</label>
+        {/* Optional and deliberately de-emphasized: a hairline sets it apart
+            from the required fields above, and the muted label marks it as a
+            skippable extra so it doesn't read as one more thing to fill before
+            sending. */}
+        <div className="border-t border-neutral-200 pt-4">
+          <label className="mb-1.5 block text-xs font-medium text-neutral-400">
+            {COPY.contact.fieldLabels.comoNosConociste}
+          </label>
           <select
-            className={inputClass}
+            className={cn(inputClass, 'text-sm text-neutral-600')}
             value={props.comoNosConociste}
             onChange={(e) => props.setComoNosConociste(e.target.value)}
           >
