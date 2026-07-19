@@ -190,7 +190,12 @@ export function LandingPage() {
         {step === 'basics' && (
           <WizardBasicsStep
             tipoPropiedad={tipoPropiedad}
-            setTipoPropiedad={setTipoPropiedad}
+            setTipoPropiedad={(v) => {
+              // Características are type-specific, so a type switch clears any
+              // that were selected under the previous type.
+              if (v !== tipoPropiedad) setAmenidades([]);
+              setTipoPropiedad(v);
+            }}
             antiguedad={antiguedad}
             setAntiguedad={setAntiguedad}
             m2Construccion={m2Construccion}

@@ -49,19 +49,62 @@ export const PROPERTY_AGE_RANGES = [
 ] as const;
 export type PropertyAge = (typeof PROPERTY_AGE_RANGES)[number];
 
-// Optional "Características especiales" chips on the basics step — not used
-// by the preliminary pricing formula, just extra context passed to the
-// broker building the real ACM (matches BrokerNotes-style qualitative
-// signal in the authenticated tool).
-export const AMENITIES = [
-  'Casa inteligente',
-  'Calefacción integrada',
-  'Jardín muy amplio',
-  'Salón de juegos',
-  'Alberca o Jacuzzi',
-  'Vistas panorámicas',
-] as const;
-export type Amenity = (typeof AMENITIES)[number];
+// Optional "Características" chips on the basics step, tailored to the property
+// type. Each feature carries a hidden pricing `effect`: 'up' nudges the aprox
+// up within the range, 'down' (a challenge like a slope) nudges it down,
+// 'neutral' is context only. IMPORTANT: the form renders these as plain,
+// unlabeled pills — the polarity is NEVER shown there, so picking a "challenge"
+// isn't discouraged; it only surfaces as a slightly lower aprox pin and as
+// context for the broker. Keep the value list in sync (inlined) in api/lead.ts.
+export type FeatureEffect = 'up' | 'down' | 'neutral';
+export interface PropertyFeature {
+  value: string;
+  effect: FeatureEffect;
+}
+export const PROPERTY_FEATURES: Record<PublicPropertyType, readonly PropertyFeature[]> = {
+  Casa: [
+    { value: 'Casa inteligente', effect: 'up' },
+    { value: 'Calefacción integrada', effect: 'up' },
+    { value: 'Jardín muy amplio', effect: 'up' },
+    { value: 'Salón de juegos', effect: 'up' },
+    { value: 'Alberca o Jacuzzi', effect: 'up' },
+    { value: 'Vistas panorámicas', effect: 'up' },
+    { value: 'Una sola planta', effect: 'neutral' },
+  ],
+  Departamento: [
+    { value: 'Terraza o balcón', effect: 'up' },
+    { value: 'Vistas panorámicas', effect: 'up' },
+    { value: 'Casa inteligente', effect: 'up' },
+    { value: 'Calefacción integrada', effect: 'up' },
+    { value: 'Alberca o Jacuzzi', effect: 'up' },
+    { value: 'Salón de juegos', effect: 'up' },
+  ],
+  Terreno: [
+    { value: 'Vistas panorámicas', effect: 'up' },
+    { value: 'Servicios completos', effect: 'up' },
+    { value: 'En privada con seguridad', effect: 'up' },
+    { value: 'Terreno irregular', effect: 'down' },
+    { value: 'Con pendiente', effect: 'down' },
+  ],
+};
+
+// Every feature value that can appear in a submission, for server-side
+// validation regardless of type.
+export const ALL_FEATURE_VALUES = Array.from(
+  new Set(Object.values(PROPERTY_FEATURES).flat().map((f) => f.value))
+);
+
+// Effect lookup by value, for the pricing position model. A value keeps the
+// same effect across types, so the flat map is unambiguous.
+export const FEATURE_EFFECTS: Record<string, FeatureEffect> = Object.fromEntries(
+  Object.values(PROPERTY_FEATURES)
+    .flat()
+    .map((f) => [f.value, f.effect])
+);
+
+// A selected feature is just its string value; kept named `Amenity` so the
+// existing `amenidades` field and its consumers don't need renaming.
+export type Amenity = string;
 
 export const REFERRAL_SOURCES = [
   { value: 'publicidad', label: 'Publicidad' },

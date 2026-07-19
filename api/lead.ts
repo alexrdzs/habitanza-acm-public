@@ -41,14 +41,21 @@ const PROPERTY_AGE_RANGES = [
   'Entre 10 y 20 años',
   'Más de 20 años',
 ] as const;
-// Keep in sync with AMENITIES in shared/validation.ts.
-const AMENITIES = [
+// Keep in sync with ALL_FEATURE_VALUES (the union of every type's
+// PROPERTY_FEATURES) in shared/validation.ts.
+const FEATURE_VALUES = [
   'Casa inteligente',
   'Calefacción integrada',
   'Jardín muy amplio',
   'Salón de juegos',
   'Alberca o Jacuzzi',
   'Vistas panorámicas',
+  'Una sola planta',
+  'Terraza o balcón',
+  'Servicios completos',
+  'En privada con seguridad',
+  'Terreno irregular',
+  'Con pendiente',
 ] as const;
 // Keep in sync with REFERRAL_SOURCES in shared/validation.ts.
 const REFERRAL_SOURCES = ['publicidad', 'redes_sociales', 'recomendacion', 'otro'] as const;
@@ -167,7 +174,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ? Math.round(body.estacionamientos)
       : undefined;
   const amenidades = Array.isArray(body.amenidades)
-    ? body.amenidades.filter((a): a is Amenity => (AMENITIES as readonly string[]).includes(a))
+    ? body.amenidades.filter((a): a is Amenity => (FEATURE_VALUES as readonly string[]).includes(a))
     : undefined;
   const comoNosConociste = (REFERRAL_SOURCES as readonly string[]).includes(body.comoNosConociste ?? '')
     ? (body.comoNosConociste as ReferralSource)

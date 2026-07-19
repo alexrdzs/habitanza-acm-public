@@ -5,7 +5,7 @@
 // presentation concerns stay in the components -- this file is text only.
 //
 // Enum-like value/label pairs that are also validated server-side
-// (REFERRAL_SOURCES, AMENITIES, PROPERTY_AGE_RANGES, PUBLIC_PROPERTY_TYPES)
+// (REFERRAL_SOURCES, PROPERTY_FEATURES, PROPERTY_AGE_RANGES, PUBLIC_PROPERTY_TYPES)
 // live in shared/validation.ts instead, since that file is already the
 // single source of truth for those and duplicating them here would create a
 // second place to keep in sync. Testimonials live in shared/testimonials.ts
@@ -121,7 +121,7 @@ export const COPY = {
     description: 'Así podemos compararla con otras similares.',
     sectionLabels: {
       tamanoEspacios: 'Tamaño y espacios',
-      adicionales: 'Adicionales',
+      adicionales: 'Características',
     },
     fieldLabels: {
       tipoPropiedad: 'Tipo de propiedad *',
@@ -233,7 +233,7 @@ export const COPY = {
         // half-width, and "cajones" is the standard term for parking spaces.
         estacionamientos: 'Cajones',
         antiguedad: 'Antigüedad',
-        amenidades: 'Extras',
+        amenidades: 'Características',
       },
       m2Value: (m2: number) => `${new Intl.NumberFormat('es-MX').format(m2)} m²`,
       // A single derived number so the card does analysis, not just recap:

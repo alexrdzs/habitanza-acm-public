@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { PUBLIC_PROPERTY_TYPES, AMENITIES, PROPERTY_AGE_RANGES } from '@shared/validation';
-import type { PropertyAge, Amenity } from '@shared/validation';
+import { PUBLIC_PROPERTY_TYPES, PROPERTY_FEATURES, PROPERTY_AGE_RANGES } from '@shared/validation';
+import type { PropertyAge, Amenity, PublicPropertyType } from '@shared/validation';
 import { COPY } from '@shared/copy';
 import { WizardShell } from './WizardShell';
 import { SegmentedControl } from './SegmentedControl';
@@ -19,8 +19,14 @@ import {
   Gamepad2,
   House,
   LandPlot,
+  Mountain,
+  Plug,
+  RectangleHorizontal,
   Ruler,
+  Shapes,
+  ShieldCheck,
   Sparkles,
+  Sun,
   Trees,
   Waves,
   type LucideIcon,
@@ -42,13 +48,22 @@ function minimumConstructionM2(recamaras: string, banos: string): number {
   return 1;
 }
 
-const AMENITY_ICONS: Record<Amenity, LucideIcon> = {
+// Icons for every feature across all property types (see PROPERTY_FEATURES).
+// Challenge features (irregular, pendiente) get a plain, neutral icon like the
+// rest -- nothing flags them as negative in the form.
+const FEATURE_ICONS: Record<string, LucideIcon> = {
   'Casa inteligente': Bot,
   'Calefacción integrada': Flame,
   'Jardín muy amplio': Trees,
   'Salón de juegos': Gamepad2,
   'Alberca o Jacuzzi': Waves,
   'Vistas panorámicas': Eye,
+  'Una sola planta': RectangleHorizontal,
+  'Terraza o balcón': Sun,
+  'Servicios completos': Plug,
+  'En privada con seguridad': ShieldCheck,
+  'Terreno irregular': Shapes,
+  'Con pendiente': Mountain,
 };
 
 // WizardShell already provides the primary surface. Keep field groups flat and
@@ -78,6 +93,7 @@ interface Props {
 
 export function WizardBasicsStep(props: Props) {
   const isTerreno = props.tipoPropiedad === 'Terreno';
+  const features = PROPERTY_FEATURES[props.tipoPropiedad as PublicPropertyType] ?? [];
   const minimumConstruction = minimumConstructionM2(props.recamaras, props.banos);
 
   const lotValid = Number(props.m2Terreno) >= 50;
@@ -211,29 +227,31 @@ export function WizardBasicsStep(props: Props) {
           )}
         </section>
 
-        {/* Amenities + antigüedad are construction attributes; a raw terreno
-            has neither, so the whole "Adicionales" section is hidden for lotes. */}
-        {!isTerreno && (
+        {/* "Características": plain, unbiased pills tailored to the property
+            type (see PROPERTY_FEATURES). The polarity that moves the estimate is
+            never shown here -- every option is just a tappable pill. The set
+            re-enters with a subtle animation whenever the type changes. */}
         <section className="space-y-4 border-t border-neutral-200 pt-6">
           <h3 className="flex items-center gap-2 text-lg font-medium text-neutral-800">
             <Sparkles className="h-5 w-5 text-brand-500" />
             {COPY.basics.sectionLabels.adicionales}
           </h3>
-          {/* Amenities lead the "Adicionales" section: they're the tappable,
-              engaging part, so they come before the antigüedad dropdown. Two
-              columns at every breakpoint -- never four (too busy for a
-              six-item list) and never one (too tall). Labels wrap to a second
-              line on the narrow mobile column rather than truncate. */}
-          <div className="grid grid-cols-2 gap-2.5">
-            {AMENITIES.map((a) => {
-              const active = props.amenidades.includes(a);
-              const Icon = AMENITY_ICONS[a];
+          {/* Two columns at every breakpoint -- never four (too busy) and never
+              one (too tall). Labels wrap to a second line rather than truncate.
+              Keyed on the type so the pills fade/slide in when it changes. */}
+          <div
+            key={props.tipoPropiedad}
+            className="grid animate-in grid-cols-2 gap-2.5 duration-300 fade-in slide-in-from-bottom-2"
+          >
+            {features.map(({ value }) => {
+              const active = props.amenidades.includes(value);
+              const Icon = FEATURE_ICONS[value] ?? Sparkles;
               return (
                 <button
-                  key={a}
+                  key={value}
                   type="button"
                   aria-pressed={active}
-                  onClick={() => toggleAmenity(a)}
+                  onClick={() => toggleAmenity(value)}
                   className={cn(
                     'flex items-center gap-2.5 rounded-xl border px-3.5 py-3 text-left text-sm font-medium leading-tight transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2',
                     active
@@ -242,7 +260,7 @@ export function WizardBasicsStep(props: Props) {
                   )}
                 >
                   <Icon className={cn('h-5 w-5 shrink-0', active ? 'text-brand-500' : 'text-neutral-400')} />
-                  <span>{a}</span>
+                  <span>{value}</span>
                 </button>
               );
             })}
@@ -268,7 +286,6 @@ export function WizardBasicsStep(props: Props) {
             </div>
           )}
         </section>
-        )}
       </div>
     </WizardShell>
   );

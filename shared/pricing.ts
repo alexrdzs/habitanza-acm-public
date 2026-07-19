@@ -12,7 +12,7 @@
 // sales close; a colonia with no sample falls back to the blended default.
 // The `null` entries for the two temporary campaign zones are deliberate
 // research markers. Replace each only with a verified local price per m².
-import { AMENITIES } from './validation';
+import { FEATURE_EFFECTS } from './validation';
 import type { Amenity, PropertyAge, PublicPropertyType } from './validation';
 
 export const PRICE_PER_M2_CONSTRUCCION: Record<string, number | null> = {
@@ -59,7 +59,8 @@ const AGE_POSITION_SCORE: Record<PropertyAge, number> = {
   'Entre 10 y 20 años': -0.5,
   'Más de 20 años': -1,
 };
-const AMENITY_POSITION_WEIGHT = 0.12; // all listed amenities => +12% of the range
+const FEATURE_POSITION_WEIGHT = 0.12; // a fully-featured property => +12% of the range
+const FEATURE_NORMALIZER = 5; // net feature count that reaches ~full weight
 const AGE_POSITION_WEIGHT = 0.1; // a-estrenar => +10%, más-de-20 => -10%
 const POSITION_MIN = 0.3; // keep the pin off the low/high edge in both directions
 const POSITION_MAX = 0.7;
@@ -68,9 +69,18 @@ export function estimateRangePosition(params: {
   amenidades?: Amenity[];
   antiguedad?: PropertyAge | '';
 }): number {
-  const amenityLift = ((params.amenidades?.length ?? 0) / AMENITIES.length) * AMENITY_POSITION_WEIGHT;
+  // Net feature score: +1 per positive characteristic, -1 per challenge (a
+  // slope, an irregular lot), 0 for neutral ones. So a terreno with two
+  // challenges lands below center, a well-equipped home above it.
+  let score = 0;
+  for (const feature of params.amenidades ?? []) {
+    const effect = FEATURE_EFFECTS[feature];
+    if (effect === 'up') score += 1;
+    else if (effect === 'down') score -= 1;
+  }
+  const featureLift = Math.max(-1, Math.min(1, score / FEATURE_NORMALIZER)) * FEATURE_POSITION_WEIGHT;
   const ageLift = params.antiguedad ? (AGE_POSITION_SCORE[params.antiguedad] ?? 0) * AGE_POSITION_WEIGHT : 0;
-  return Math.min(POSITION_MAX, Math.max(POSITION_MIN, 0.5 + amenityLift + ageLift));
+  return Math.min(POSITION_MAX, Math.max(POSITION_MIN, 0.5 + featureLift + ageLift));
 }
 
 export interface PreliminaryEstimate {
@@ -122,14 +132,17 @@ export function estimatePreliminaryRange(params: {
 
   if (tipoPropiedad === 'Terreno') {
     if (!m2Terreno || m2Terreno <= 0) return null;
-    // Raw land: no built structure to grade, so the aprox stays centered --
-    // amenities/antigüedad don't apply to a lote.
+    // Land has no age, but its características (vistas lift it, a slope or an
+    // irregular shape drag it) move the aprox within the band, same as a home.
     const perM2 = PRICE_PER_M2_TERRENO[colonia] ?? DEFAULT_PRICE_PER_M2_TERRENO;
     const base = m2Terreno * perM2;
+    const low = base * 0.8;
+    const high = base * 1.2;
+    const mid = low + estimateRangePosition({ amenidades, antiguedad: undefined }) * (high - low);
     return {
-      low: roundPreliminaryEstimate(base * 0.8),
-      mid: roundPreliminaryEstimate(base),
-      high: roundPreliminaryEstimate(base * 1.2),
+      low: roundPreliminaryEstimate(low),
+      mid: roundPreliminaryEstimate(mid),
+      high: roundPreliminaryEstimate(high),
     };
   }
 

@@ -133,10 +133,13 @@ export function PropertySummaryCard({ profile, tipoPropiedad, colonia, estimate 
 
       {profile.amenidades.length > 0 && (
         <div className="flex flex-wrap gap-1.5 border-t border-neutral-200/70 pt-4">
+          {/* Neutral chips: a characteristic is just context here. A challenge
+              (e.g. "Con pendiente") never reads as a plus -- its effect on the
+              value already shows up in where the aprox pin lands. */}
           {profile.amenidades.map((a) => (
             <span
               key={a}
-              className="rounded-full border border-brand-500/20 bg-brand-500/5 px-2.5 py-0.5 text-xs font-medium text-neutral-600"
+              className="rounded-full border border-neutral-200 bg-neutral-50 px-2.5 py-0.5 text-xs font-medium text-neutral-600"
             >
               {a}
             </span>
