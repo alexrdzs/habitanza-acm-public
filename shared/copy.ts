@@ -252,12 +252,14 @@ export const COPY = {
       analysisTitle: 'Fortalezas y debilidades',
       analysisClosing: 'Esto será importante considerarlo al momento de crear tu estrategia.',
       // A short, self-adapting read of how the property's size (built m² and
-      // lot) and its recámaras/baños compare to the zone, returned as segments
-      // so the component can shout the conditional keywords (green for a plus,
-      // red for a drag). Only fields that stand out (up/down) get a clause; an
-      // in-line or unknown field is omitted, so an empty array means "render no
-      // paragraph." The size sentence leads because m² is the most fundamental
-      // comparison; distribution (recámaras/baños) follows.
+      // lot) and its recámaras/baños compare to the zone, returned as segments.
+      // Each toned segment is a *complete concept* ("menos m² de construcción",
+      // "más recámaras"), not a lone polarity word, so the highlight reads as a
+      // finding rather than a stray colored word; the surrounding prose stays
+      // plain. Only fields that stand out (up/down) get a clause; an in-line or
+      // unknown field is omitted, so an empty array means "render no paragraph."
+      // The size sentence leads because m² is the most fundamental comparison;
+      // distribution (recámaras/baños) follows.
       analysisSegments: (
         con: 'up' | 'down' | 'equal' | null, // built m² vs the zone's typical built m²
         ter: 'up' | 'down' | 'equal' | null, // lot m² vs the zone's typical lot size
@@ -268,21 +270,20 @@ export const COPY = {
         const conRel = con === 'up' || con === 'down';
         const terRel = ter === 'up' || ter === 'down';
 
-        // Size sentence: "Tu propiedad tiene más m² de construcción, en un
-        // terreno más grande que el promedio de la zona." Each half only shows
-        // when it actually stands out, so the sentence reads naturally with one
-        // half or both.
+        // Size sentence: "Tu propiedad tiene [menos m² de construcción], en un
+        // [terreno más pequeño] que el promedio de la zona." Each half only
+        // shows when it actually stands out, so the sentence reads naturally
+        // with one half or both.
         if (conRel || terRel) {
           segs.push({ t: 'Tu propiedad tiene ' });
           if (conRel) {
             const pos = con === 'up';
-            segs.push({ t: pos ? 'más' : 'menos', tone: pos ? 'pos' : 'neg' });
-            segs.push({ t: ' m² de construcción' });
+            segs.push({ t: `${pos ? 'más' : 'menos'} m² de construcción`, tone: pos ? 'pos' : 'neg' });
           }
           if (terRel) {
             const pos = ter === 'up';
-            segs.push({ t: conRel ? ', en un terreno ' : 'un terreno ' });
-            segs.push({ t: pos ? 'más grande' : 'más pequeño', tone: pos ? 'pos' : 'neg' });
+            segs.push({ t: conRel ? ', en un ' : 'un ' });
+            segs.push({ t: `terreno ${pos ? 'más grande' : 'más pequeño'}`, tone: pos ? 'pos' : 'neg' });
           }
           segs.push({ t: ' que el promedio de la zona.' });
         }
@@ -291,7 +292,7 @@ export const COPY = {
 
         // Bridge off the size sentence: size is a headline buyer criterion.
         // When a recámaras read follows it runs straight into it ("...para los
-        // compradores, también tiene más recámaras..."); on its own it closes
+        // compradores, también tiene [más recámaras]..."); on its own it closes
         // as a full sentence.
         if (sizePresent) {
           segs.push({
@@ -303,13 +304,15 @@ export const COPY = {
 
         if (recRel) {
           const pos = rec === 'up';
-          // With the size bridge already carrying "también tiene", the clause
-          // starts at the keyword; without it, it opens the paragraph itself.
+          // With the size bridge already carrying "también tiene", the concept
+          // starts the clause; without it, it opens the paragraph itself.
           if (!sizePresent) segs.push({ t: 'Tu propiedad tiene ' });
-          segs.push({ t: pos ? 'más' : 'menos', tone: pos ? 'pos' : 'neg' });
-          segs.push({ t: ' recámaras que el promedio, lo que ' });
-          segs.push({ t: pos ? 'ayuda a destacar' : 'hace más complejo destacar', tone: pos ? 'pos' : 'neg' });
-          segs.push({ t: ' frente a la competencia.' });
+          segs.push({ t: `${pos ? 'más' : 'menos'} recámaras`, tone: pos ? 'pos' : 'neg' });
+          segs.push({
+            t: pos
+              ? ' que el promedio, lo que ayuda a destacar frente a la competencia.'
+              : ' que el promedio, lo que hace más complejo destacar frente a la competencia.',
+          });
         }
         if (ban === 'up' || ban === 'down') {
           const pos = ban === 'up';
@@ -320,39 +323,40 @@ export const COPY = {
           // clean new sentence (leading space only when something preceded it).
           const sameDirection = recRel && (rec === 'up') === pos;
           const lead = !recRel
-            ? (sizePresent ? ' La cantidad de baños que ofrece es ' : 'La cantidad de baños que ofrece es ')
+            ? sizePresent
+              ? ' Ofrece '
+              : 'Tu propiedad ofrece '
             : sameDirection
-              ? ' Además, la cantidad de baños que ofrece es '
-              : ' Pero la cantidad de baños que ofrece es ';
+              ? ' Además, ofrece '
+              : ' Pero ofrece ';
           segs.push({ t: lead });
-          segs.push({ t: pos ? 'mayor' : 'menor', tone: pos ? 'pos' : 'neg' });
-          segs.push({ t: ' que la de los comparables, lo cual suele ser ' });
-          segs.push({ t: pos ? 'una ventaja' : 'un inconveniente', tone: pos ? 'pos' : 'neg' });
-          segs.push({ t: ' para la mayoría de compradores.' });
+          segs.push({ t: `${pos ? 'más' : 'menos'} baños`, tone: pos ? 'pos' : 'neg' });
+          segs.push({
+            t: pos
+              ? ' que los comparables, lo cual suele ser una ventaja para la mayoría de compradores.'
+              : ' que los comparables, lo cual suele ser un inconveniente para la mayoría de compradores.',
+          });
         }
         return segs;
       },
       // Terrenos have no rooms/baths, so their read is built on lot size vs the
       // zone's other terrenos. A larger lot is framed as value; a smaller one
       // stays honest (less total value) but notes the upside (easier to sell),
-      // so the paragraph never reads as pure bad news.
+      // so the paragraph never reads as pure bad news. The lot-size concept is
+      // the single highlighted finding.
       analysisSegmentsTerreno: (size: 'up' | 'down' | 'equal' | null): { t: string; tone?: 'pos' | 'neg' }[] => {
         if (size === 'up') {
           return [
-            { t: 'Tu terreno es ' },
-            { t: 'más amplio', tone: 'pos' },
-            { t: ' que el promedio de la zona, lo que suele ' },
-            { t: 'sumar valor', tone: 'pos' },
-            { t: ' y potencial de desarrollo.' },
+            { t: 'Tu ' },
+            { t: 'terreno es más amplio', tone: 'pos' },
+            { t: ' que el promedio de la zona, lo que suele sumar valor y potencial de desarrollo.' },
           ];
         }
         if (size === 'down') {
           return [
-            { t: 'Tu terreno es ' },
-            { t: 'menos amplio', tone: 'neg' },
-            { t: ' que el promedio de la zona, lo que puede ' },
-            { t: 'acotar su valor total', tone: 'neg' },
-            { t: ', aunque suele facilitar una venta más ágil.' },
+            { t: 'Tu ' },
+            { t: 'terreno es más pequeño', tone: 'neg' },
+            { t: ' que el promedio de la zona, lo que puede acotar su valor total, aunque suele facilitar una venta más ágil.' },
           ];
         }
         return [];

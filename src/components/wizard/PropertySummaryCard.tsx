@@ -111,12 +111,17 @@ export function PropertySummaryCard({ profile, tipoPropiedad, colonia, estimate 
           <p className="text-sm leading-relaxed text-neutral-600">
             {analysisSegs.map((seg, i) =>
               seg.tone ? (
+                // Full-concept highlight: a soft tinted marker (green = plus,
+                // red = drag) instead of a loud colored word, so the finding
+                // reads as analysis, subtly. whitespace-nowrap keeps each
+                // concept on one line so the marker stays a single clean unit
+                // instead of splitting mid-phrase in the narrow column.
                 <strong
                   key={i}
                   className={
                     seg.tone === 'pos'
-                      ? 'font-semibold text-brand-600 dark:text-brand-400'
-                      : 'font-semibold text-red-500 dark:text-red-400'
+                      ? 'whitespace-nowrap rounded bg-brand-500/10 px-1 font-semibold text-brand-700 dark:bg-brand-400/15 dark:text-brand-200'
+                      : 'whitespace-nowrap rounded bg-red-500/10 px-1 font-semibold text-red-600 dark:bg-red-400/15 dark:text-red-200'
                   }
                 >
                   {seg.t}
