@@ -247,19 +247,50 @@ export const COPY = {
       compareUp: 'Arriba del promedio de la zona',
       compareDown: 'Debajo del promedio de la zona',
       compareEqual: 'En línea con el promedio de la zona',
-      // A short, self-adapting read of how recámaras and baños compare to the
-      // zone, returned as segments so the component can shout the conditional
-      // keywords (green for a plus, red for a drag). Only fields that stand
-      // out (up/down) get a clause; an in-line or unknown field is omitted, so
-      // an empty array means "render no paragraph."
+      // A short, self-adapting read of how the property's size (built m² and
+      // lot) and its recámaras/baños compare to the zone, returned as segments
+      // so the component can shout the conditional keywords (green for a plus,
+      // red for a drag). Only fields that stand out (up/down) get a clause; an
+      // in-line or unknown field is omitted, so an empty array means "render no
+      // paragraph." The size sentence leads because m² is the most fundamental
+      // comparison; distribution (recámaras/baños) follows.
       analysisSegments: (
+        con: 'up' | 'down' | 'equal' | null, // built m² vs the zone's typical built m²
+        ter: 'up' | 'down' | 'equal' | null, // lot m² vs the zone's typical lot size
         rec: 'up' | 'down' | 'equal' | null,
         ban: 'up' | 'down' | 'equal' | null
       ): { t: string; tone?: 'pos' | 'neg' }[] => {
         const segs: { t: string; tone?: 'pos' | 'neg' }[] = [];
-        if (rec === 'up' || rec === 'down') {
-          const pos = rec === 'up';
+        const conRel = con === 'up' || con === 'down';
+        const terRel = ter === 'up' || ter === 'down';
+
+        // Size sentence: "Tu propiedad tiene más m² de construcción, en un
+        // terreno más grande que el promedio de la zona." Each half only shows
+        // when it actually stands out, so the sentence reads naturally with one
+        // half or both.
+        if (conRel || terRel) {
           segs.push({ t: 'Tu propiedad tiene ' });
+          if (conRel) {
+            const pos = con === 'up';
+            segs.push({ t: pos ? 'más' : 'menos', tone: pos ? 'pos' : 'neg' });
+            segs.push({ t: ' m² de construcción' });
+          }
+          if (terRel) {
+            const pos = ter === 'up';
+            segs.push({ t: conRel ? ', en un terreno ' : 'un terreno ' });
+            segs.push({ t: pos ? 'más grande' : 'más pequeño', tone: pos ? 'pos' : 'neg' });
+          }
+          segs.push({ t: ' que el promedio de la zona.' });
+        }
+        const sizePresent = conRel || terRel;
+
+        const recRel = rec === 'up' || rec === 'down';
+        if (recRel) {
+          const pos = rec === 'up';
+          // Neutral connector after the size sentence -- "Cuenta con" doesn't
+          // imply agreement, so it stays correct even when the room count
+          // contrasts the size read (e.g. bigger home, fewer recámaras).
+          segs.push({ t: sizePresent ? ' Cuenta con ' : 'Tu propiedad tiene ' });
           segs.push({ t: pos ? 'más' : 'menos', tone: pos ? 'pos' : 'neg' });
           segs.push({ t: ' recámaras que el promedio, lo que ' });
           segs.push({ t: pos ? 'ayuda a destacar' : 'hace más complejo destacar', tone: pos ? 'pos' : 'neg' });
@@ -267,13 +298,14 @@ export const COPY = {
         }
         if (ban === 'up' || ban === 'down') {
           const pos = ban === 'up';
-          // Connector reflects the relationship: "Además" only when both
-          // clauses point the same way; "Pero" when the baths contrast the
-          // recámaras read (a plus followed by a minus, or vice versa).
-          const recPresent = rec === 'up' || rec === 'down';
-          const sameDirection = recPresent && (rec === 'up') === pos;
-          const lead = !recPresent
-            ? 'La cantidad de baños que ofrece es '
+          // Connector reflects the relationship to the recámaras read:
+          // "Además" only when both clauses point the same way; "Pero" when the
+          // baths contrast the recámaras read (a plus followed by a minus, or
+          // vice versa). With no recámaras clause before it, the baths open a
+          // clean new sentence (leading space only when something preceded it).
+          const sameDirection = recRel && (rec === 'up') === pos;
+          const lead = !recRel
+            ? (sizePresent ? ' La cantidad de baños que ofrece es ' : 'La cantidad de baños que ofrece es ')
             : sameDirection
               ? ' Además, la cantidad de baños que ofrece es '
               : ' Pero la cantidad de baños que ofrece es ';

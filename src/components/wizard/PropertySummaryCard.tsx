@@ -54,10 +54,18 @@ export function PropertySummaryCard({ profile, tipoPropiedad, colonia, estimate 
   const typical = zoneTypicalSpecs();
   const recDir = !isTerreno && profile.recamaras ? compareToTypical(profile.recamaras, typical.recamaras) : null;
   const banDir = !isTerreno && profile.banos ? compareToTypical(profile.banos, typical.banos) : null;
+  // A home's own size read: built m² vs the zone's typical built m², and its
+  // lot vs the zone's terreno pool (the only lot-size benchmark we have -- it's
+  // a directional size comparison, so it stays in the prose only, not on the
+  // spec-grid arrow, which deliberately never marks a house's yard).
+  const construccionDir = !isTerreno && profile.m2Construccion ? compareToTypical(profile.m2Construccion, typical.m2) : null;
+  const casaLoteDir = !isTerreno && profile.m2Terreno ? compareToTypical(profile.m2Terreno, zoneTypicalTerrenoM2()) : null;
   // Terrenos have no rooms/baths, so their one comparable attribute is lot
   // size, benchmarked against the zone's other terrenos.
   const terrenoDir = isTerreno && profile.m2Terreno ? compareToTypical(profile.m2Terreno, zoneTypicalTerrenoM2()) : null;
-  const analysisSegs = isTerreno ? c.analysisSegmentsTerreno(terrenoDir) : c.analysisSegments(recDir, banDir);
+  const analysisSegs = isTerreno
+    ? c.analysisSegmentsTerreno(terrenoDir)
+    : c.analysisSegments(construccionDir, casaLoteDir, recDir, banDir);
 
   const cells: SpecCell[] = [{ label: c.labels.ubicacion, value: colonia }];
 
@@ -111,24 +119,29 @@ export function PropertySummaryCard({ profile, tipoPropiedad, colonia, estimate 
       </dl>
 
       {analysisSegs.length > 0 && (
-        <p className="text-xs leading-relaxed text-neutral-500">
-          {analysisSegs.map((seg, i) =>
-            seg.tone ? (
-              <strong
-                key={i}
-                className={
-                  seg.tone === 'pos'
-                    ? 'font-semibold text-brand-600 dark:text-brand-400'
-                    : 'font-semibold text-red-500 dark:text-red-400'
-                }
-              >
-                {seg.t}
-              </strong>
-            ) : (
-              <span key={i}>{seg.t}</span>
-            )
-          )}
-        </p>
+        // Subtle-background card, same "back sutil que facilita la lectura"
+        // treatment the Pulse tiles and the Mercado nota use -- it sets the
+        // derived read apart from the raw spec recap above it.
+        <div className="rounded-xl border border-neutral-100 bg-neutral-50 p-4">
+          <p className="text-sm leading-relaxed text-neutral-600">
+            {analysisSegs.map((seg, i) =>
+              seg.tone ? (
+                <strong
+                  key={i}
+                  className={
+                    seg.tone === 'pos'
+                      ? 'font-semibold text-brand-600 dark:text-brand-400'
+                      : 'font-semibold text-red-500 dark:text-red-400'
+                  }
+                >
+                  {seg.t}
+                </strong>
+              ) : (
+                <span key={i}>{seg.t}</span>
+              )
+            )}
+          </p>
+        </div>
       )}
 
       {profile.amenidades.length > 0 && (
