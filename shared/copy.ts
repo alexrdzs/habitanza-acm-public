@@ -247,6 +247,10 @@ export const COPY = {
       compareUp: 'Arriba del promedio de la zona',
       compareDown: 'Debajo del promedio de la zona',
       compareEqual: 'En línea con el promedio de la zona',
+      // Small title + closing takeaway wrapping the derived read, which opens
+      // the card so it's the first thing the visitor reads.
+      analysisTitle: 'Fortalezas y debilidades',
+      analysisClosing: 'Esto será importante considerarlo al momento de crear tu estrategia.',
       // A short, self-adapting read of how the property's size (built m² and
       // lot) and its recámaras/baños compare to the zone, returned as segments
       // so the component can shout the conditional keywords (green for a plus,
@@ -283,14 +287,25 @@ export const COPY = {
           segs.push({ t: ' que el promedio de la zona.' });
         }
         const sizePresent = conRel || terRel;
-
         const recRel = rec === 'up' || rec === 'down';
+
+        // Bridge off the size sentence: size is a headline buyer criterion.
+        // When a recámaras read follows it runs straight into it ("...para los
+        // compradores, también tiene más recámaras..."); on its own it closes
+        // as a full sentence.
+        if (sizePresent) {
+          segs.push({
+            t: recRel
+              ? ' Esto suele ser uno de los principales criterios para los compradores, también tiene '
+              : ' Esto suele ser uno de los principales criterios para los compradores.',
+          });
+        }
+
         if (recRel) {
           const pos = rec === 'up';
-          // Neutral connector after the size sentence -- "Cuenta con" doesn't
-          // imply agreement, so it stays correct even when the room count
-          // contrasts the size read (e.g. bigger home, fewer recámaras).
-          segs.push({ t: sizePresent ? ' Cuenta con ' : 'Tu propiedad tiene ' });
+          // With the size bridge already carrying "también tiene", the clause
+          // starts at the keyword; without it, it opens the paragraph itself.
+          if (!sizePresent) segs.push({ t: 'Tu propiedad tiene ' });
           segs.push({ t: pos ? 'más' : 'menos', tone: pos ? 'pos' : 'neg' });
           segs.push({ t: ' recámaras que el promedio, lo que ' });
           segs.push({ t: pos ? 'ayuda a destacar' : 'hace más complejo destacar', tone: pos ? 'pos' : 'neg' });

@@ -101,28 +101,13 @@ export function PropertySummaryCard({ profile, tipoPropiedad, colonia, estimate 
       <SectionChip label={c.chip} variant="neutral" />
       <h3 className="text-base font-bold text-neutral-900">{c.title}</h3>
 
-      <dl className="grid grid-cols-3 gap-x-3 gap-y-4">
-        {cells.map(({ label, value, direction }) => (
-          <div key={label} className="min-w-0">
-            <dt className="text-[10px] font-bold uppercase text-neutral-400">{label}</dt>
-            <dd className="mt-0.5 flex items-center gap-1 text-sm font-semibold leading-snug text-neutral-900">
-              <span>{value}</span>
-              {/* Diagonal arrows read as trend: up-right (green) = growth,
-                  down-right (red) = drags the price. An equals sign (blue)
-                  marks a value right on the zone average. */}
-              {direction === 'up' && <ArrowUpRight aria-label={c.compareUp} className="h-3.5 w-3.5 text-brand-600 dark:text-brand-400" />}
-              {direction === 'down' && <ArrowDownRight aria-label={c.compareDown} className="h-3.5 w-3.5 text-red-500 dark:text-red-400" />}
-              {direction === 'equal' && <Equal aria-label={c.compareEqual} className="h-3.5 w-3.5 text-blue-500 dark:text-blue-400" />}
-            </dd>
-          </div>
-        ))}
-      </dl>
-
       {analysisSegs.length > 0 && (
-        // Subtle-background card, same "back sutil que facilita la lectura"
-        // treatment the Pulse tiles and the Mercado nota use -- it sets the
-        // derived read apart from the raw spec recap above it.
-        <div className="rounded-xl border border-neutral-100 bg-neutral-50 p-4">
+        // Opens the card so the plain-language read is the first thing seen,
+        // ahead of the raw spec recap. Subtle-background box, the same "back
+        // sutil que facilita la lectura" treatment the Pulse tiles and the
+        // Mercado nota use.
+        <div className="space-y-2 rounded-xl border border-neutral-100 bg-neutral-50 p-4">
+          <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-500">{c.analysisTitle}</p>
           <p className="text-sm leading-relaxed text-neutral-600">
             {analysisSegs.map((seg, i) =>
               seg.tone ? (
@@ -141,8 +126,26 @@ export function PropertySummaryCard({ profile, tipoPropiedad, colonia, estimate 
               )
             )}
           </p>
+          <p className="text-sm leading-relaxed text-neutral-500">{c.analysisClosing}</p>
         </div>
       )}
+
+      <dl className="grid grid-cols-3 gap-x-3 gap-y-4">
+        {cells.map(({ label, value, direction }) => (
+          <div key={label} className="min-w-0">
+            <dt className="text-[10px] font-bold uppercase text-neutral-400">{label}</dt>
+            <dd className="mt-0.5 flex items-center gap-1 text-sm font-semibold leading-snug text-neutral-900">
+              <span>{value}</span>
+              {/* Diagonal arrows read as trend: up-right (green) = growth,
+                  down-right (red) = drags the price. An equals sign (blue)
+                  marks a value right on the zone average. */}
+              {direction === 'up' && <ArrowUpRight aria-label={c.compareUp} className="h-3.5 w-3.5 text-brand-600 dark:text-brand-400" />}
+              {direction === 'down' && <ArrowDownRight aria-label={c.compareDown} className="h-3.5 w-3.5 text-red-500 dark:text-red-400" />}
+              {direction === 'equal' && <Equal aria-label={c.compareEqual} className="h-3.5 w-3.5 text-blue-500 dark:text-blue-400" />}
+            </dd>
+          </div>
+        ))}
+      </dl>
 
       {profile.amenidades.length > 0 && (
         <div className="flex flex-wrap gap-1.5 border-t border-neutral-200/70 pt-4">
