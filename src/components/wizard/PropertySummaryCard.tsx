@@ -1,7 +1,7 @@
 import { ArrowDownRight, ArrowUpRight, Equal } from 'lucide-react';
 import type { Amenity, PropertyAge } from '@shared/validation';
 import type { PreliminaryEstimate } from '@shared/pricing';
-import { zoneTypicalSpecs, zoneTypicalTerrenoM2 } from '@shared/comparableListings';
+import { zoneTypicalConstruccionM2, zoneTypicalSpecs, zoneTypicalTerrenoM2 } from '@shared/comparableListings';
 import { COPY } from '@shared/copy';
 import { SectionChip } from './SectionChip';
 import { formatCurrency } from '../../lib/utils';
@@ -54,10 +54,26 @@ export function PropertySummaryCard({ profile, tipoPropiedad, colonia, estimate 
   const typical = zoneTypicalSpecs();
   const recDir = !isTerreno && profile.recamaras ? compareToTypical(profile.recamaras, typical.recamaras) : null;
   const banDir = !isTerreno && profile.banos ? compareToTypical(profile.banos, typical.banos) : null;
+  // A home's own size read: built m² vs the zone's typical built m² *of the
+  // same property type* (a casa against casas, a depto against deptos -- a
+  // blended pool made deptos routinely read "menos" just because casas run far
+  // larger), and its lot vs the zone's terreno pool. When a type has too few
+  // same-type comps for a directional benchmark (today: deptos), the construcción
+  // clause is simply omitted. The lot comparison is a directional size read that
+  // stays in the prose only, not on the spec-grid arrow (which never marks a
+  // house's yard) -- lot size is worth surfacing since a home's lot can differ a
+  // lot from its construction footprint.
+  const construccionDir =
+    !isTerreno && profile.m2Construccion
+      ? compareToTypical(profile.m2Construccion, zoneTypicalConstruccionM2(tipoPropiedad))
+      : null;
+  const casaLoteDir = !isTerreno && profile.m2Terreno ? compareToTypical(profile.m2Terreno, zoneTypicalTerrenoM2()) : null;
   // Terrenos have no rooms/baths, so their one comparable attribute is lot
   // size, benchmarked against the zone's other terrenos.
   const terrenoDir = isTerreno && profile.m2Terreno ? compareToTypical(profile.m2Terreno, zoneTypicalTerrenoM2()) : null;
-  const analysisSegs = isTerreno ? c.analysisSegmentsTerreno(terrenoDir) : c.analysisSegments(recDir, banDir);
+  const analysisSegs = isTerreno
+    ? c.analysisSegmentsTerreno(terrenoDir)
+    : c.analysisSegments(construccionDir, casaLoteDir, recDir, banDir);
 
   const cells: SpecCell[] = [{ label: c.labels.ubicacion, value: colonia }];
 
@@ -93,6 +109,40 @@ export function PropertySummaryCard({ profile, tipoPropiedad, colonia, estimate 
       <SectionChip label={c.chip} variant="neutral" />
       <h3 className="text-base font-bold text-neutral-900">{c.title}</h3>
 
+      {analysisSegs.length > 0 && (
+        // Opens the card so the plain-language read is the first thing seen,
+        // ahead of the raw spec recap. Subtle-background box, the same "back
+        // sutil que facilita la lectura" treatment the Pulse tiles and the
+        // Mercado nota use.
+        <div className="space-y-2 rounded-xl border border-neutral-100 bg-neutral-50 p-4">
+          <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-500">{c.analysisTitle}</p>
+          <p className="text-sm leading-relaxed text-neutral-600">
+            {analysisSegs.map((seg, i) =>
+              seg.tone ? (
+                // Full-concept highlight: a soft tinted marker (green = plus,
+                // red = drag) instead of a loud colored word, so the finding
+                // reads as analysis, subtly. whitespace-nowrap keeps each
+                // concept on one line so the marker stays a single clean unit
+                // instead of splitting mid-phrase in the narrow column.
+                <strong
+                  key={i}
+                  className={
+                    seg.tone === 'pos'
+                      ? 'whitespace-nowrap rounded bg-brand-500/10 px-1 font-semibold text-brand-700 dark:bg-brand-400/15 dark:text-brand-200'
+                      : 'whitespace-nowrap rounded bg-red-500/10 px-1 font-semibold text-red-600 dark:bg-red-400/15 dark:text-red-200'
+                  }
+                >
+                  {seg.t}
+                </strong>
+              ) : (
+                <span key={i}>{seg.t}</span>
+              )
+            )}
+          </p>
+          <p className="text-sm leading-relaxed text-neutral-500">{c.analysisClosing}</p>
+        </div>
+      )}
+
       <dl className="grid grid-cols-3 gap-x-3 gap-y-4">
         {cells.map(({ label, value, direction }) => (
           <div key={label} className="min-w-0">
@@ -109,27 +159,6 @@ export function PropertySummaryCard({ profile, tipoPropiedad, colonia, estimate 
           </div>
         ))}
       </dl>
-
-      {analysisSegs.length > 0 && (
-        <p className="text-xs leading-relaxed text-neutral-500">
-          {analysisSegs.map((seg, i) =>
-            seg.tone ? (
-              <strong
-                key={i}
-                className={
-                  seg.tone === 'pos'
-                    ? 'font-semibold text-brand-600 dark:text-brand-400'
-                    : 'font-semibold text-red-500 dark:text-red-400'
-                }
-              >
-                {seg.t}
-              </strong>
-            ) : (
-              <span key={i}>{seg.t}</span>
-            )
-          )}
-        </p>
-      )}
 
       {profile.amenidades.length > 0 && (
         <div className="flex flex-wrap gap-1.5 border-t border-neutral-200/70 pt-4">

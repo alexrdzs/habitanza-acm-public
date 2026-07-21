@@ -16,14 +16,14 @@ Two constraints shape almost every design decision below:
 
 ## Visual identity, for quick reference
 
-- **Font:** Figtree everywhere for UI/copy. IBM Plex Mono is reserved for *data only* — step numbers, m², prices — so numbers read like a ledger entry, not conversational text.
+- **Font:** Figtree everywhere — it's the only family loaded (`src/index.css`). There's no separate mono face; numeric data (prices, m², counts, step numbers) is set in Figtree with `tabular-nums` (and usually `font-bold`) so figures align in a column and read like a ledger entry, not conversational text.
 - **Palette:** not a generic SaaS palette — built around the literal meaning of "Esmeralda" (emerald).
 
   | Token | Hex | Use |
   |---|---|---|
   | `brand-500` | `#25D366` | The literal Habitanza logo/WhatsApp green — primary CTAs, active-state accents |
   | `emerald-deep` / `emerald-glow` | `#146C48` / `#4ADE80` | Rings, icon chips, the reveal card's ambient glow |
-  | `ink` / `ink-soft` | `#10201A` / `#17281F` | Dark panel background — the reveal screen's price card only |
+  | `ink` / `ink-soft` | `#0c0a09` / `#1c1917` | Dark panel background — the reveal screen's price card only. A near-black (matches the full ACM report's darkest surface); the green in this panel comes from the glow accent, not the surface (an earlier emerald-tinted ink read as "dark green" and was rejected) |
   | `parchment` / `parchment-card` | `#F5F6F6` / `#FDFCF8` | Page background / card background — deliberately a **cool light gray**, not the warm beige this used to be; a very subtle top-to-bottom gradient sits on `<body>` for depth |
   | `brass` / `brass-soft` | `#A9814F` / `#CDB07C` | Hairline trim, "valuation seal" accents |
   | `sky-400`, `amber-500` | Tailwind defaults | Condition-picker accent colors only (see Basics screen) — not part of the core brand palette |
@@ -112,21 +112,76 @@ Six steps, tracked by a `step` state machine: `hero → location → basics → 
 
 **Job:** Reward the visitor immediately (so handing over contact info didn't feel like a one-way data grab), while being unmistakable that this is a preliminary teaser, not the final ACM, and driving them to WhatsApp an advisor *now* if they want to skip the wait.
 
+The whole screen is deliberately staged as a **preview of the real ACM**: the numbered chapters below (01/02/03) mirror the authenticated report's own structure so this reads as the opening of a longer document, not a one-off widget.
+
 **On screen, top to bottom:**
 1. **Plain-text greeting** (not a card): "Muchas gracias, {nombre}." / "Con esta información podemos darte un rango aproximado." Centered on mobile, left-aligned at desktop widths.
-2. **The price card** — the one dark "ink" panel that breaks from the light glass aesthetic everywhere else, staged like a certificate: a slow breathing glow plus a very low-opacity rotating sheen (ambient "this is alive" motion, not a loading indicator), a "Rango de precio" eyebrow, the headline range ("Tu propiedad estaría en un rango de $X a $Y" — the two numbers fade/slide in with a short stagger), a caption naming the fraccionamiento and that it's based on historical data, the horizontal min/max/estimado positioning bar (draws itself in left-to-right with an ease-out curve; the ticks fade in as the line passes them; the highlighted "Estimado" pin lands last, as the payoff), a paragraph naming the **assigned advisor** in the third person (randomized once per visit between Rogelio and Tere, with grammatically correct "asesor experto"/"asesora experta" agreement) and what happens next, then a **centered signature block** — the advisor's photo, name, and real job title (Director Comercial / Directora de ventas) stacked and centered — and a full-width WhatsApp CTA, **"Platicar con {advisor's first name}."**
-3. **"Mercado de la zona"** — a glass card with a placeholder note slot for a fraccionamiento-specific note (not yet written) and, where real comps exist, a small map + a horizontal scroll of mini listing cards; falls back to an honest "Todavía no tenemos comparables específicos..." message for fraccionamientos without sampled listings yet.
-4. **Metodología** — same shared card as the Hero, a 3-step numbered list explaining how the number was produced without claiming it's a full ACM.
-5. **Testimonials carousel**, repeated from the Hero — someone who scrolled all the way to a price gets one more nudge of social proof right before deciding whether to reach out.
-6. **A persistent WhatsApp CTA bar**, fixed to the bottom of the viewport, showing the same advisor's photo/name/title and a shorter static **"Chatear ahora"** button (deliberately shorter than the inline card's dynamic label — this bar has much less horizontal room). Only slides into view once the visitor has scrolled past the inline CTA in the price card, so the two never show at once.
+2. **The price panel** — the one dark "ink" panel that breaks from the light glass aesthetic everywhere else, staged like a certificate: a slow breathing glow (ambient "this is alive" motion, not a loading indicator), a **"Rango preliminar"** chip, the prefix "Tu propiedad podría estar en un rango de:", the headline low–high range (the two numbers fade/slide in with a short stagger), the horizontal min/máx/"Precio aprox" positioning bar (see the implementation section — a red-amber-green plausible range that draws itself in, a frosted-glass "likely" band pill, and the estimate pin landing last), the **assigned advisor's** face + a short note (randomized once per visit between Rogelio and Tere, with correct gender agreement), a **"Chatear ahora"** CTA, a fine-print disclaimer that the range is a historical average, and a **"Tu análisis continúa"** scroll cue so the panel never reads as the end of the screen.
+3. **"Análisis de tu propiedad"** (chip: "Análisis individual") — the visitor's own data turned into a read. It opens with a **"Fortalezas y debilidades"** box: a plain-language paragraph that leads with size (built m² + lot vs the zone) then bridges into recámaras/baños, with each standout concept highlighted green (a strength) or red (a drag). Below it, a 3-column recap of their inputs carries the same comparison as up/down/in-line trend arrows, the característica chips, and a derived **"precio aprox por m²."** (See the implementation section for how the highlighting and benchmarks work.)
+4. **"01 Pulso del Mercado"** — three stat tiles (referencia por m², referencias activas, amplitud de tu rango), all derived from real portfolio data or the visitor's own estimate.
+5. **"02 Referencias del Mercado"** — an "oferta pública, no de cierre" note, plus a small map + a scroll of mini listing cards where real comps exist for the fraccionamiento; falls back to an honest "todavía no tenemos comparables específicos…" / "en investigación" message where they don't.
+6. **"03 Tu ACM Completo"** — quantifies the gap between the range's mín and máx and names exactly what the full ACM adds on top (a 3-item checklist), so "the range is all I needed" isn't the exit thought.
+7. **Metodología** — same shared card as the Hero, a 3-step numbered list explaining how the number was produced without claiming it's a full ACM.
+8. **Testimonials carousel**, repeated from the Hero — one more nudge of social proof right before deciding whether to reach out.
+9. **Advisor closing section + a persistent WhatsApp CTA bar.** The closing card carries the advisor's photo/name/title again and the longer inline CTA; the sticky bottom bar (shorter static **"Chatear ahora"** — it has much less horizontal room) only slides into view once the price panel has scrolled away and yields while the closing card's own CTA is on screen, so two green buttons never stack.
 
 **Current decisions, and why they changed:**
-- The price used to be **blurred**; feedback was that blurring reads as "hiding something," so the range is shown plainly, with future-tense phrasing and an explicit "this is a historical average" caption doing the honesty work instead.
-- The advisor's identity block was originally a left-aligned row sharing space with the CTA button — a real name plus a real job title plus "Chatear ahora" don't reliably fit one row at 390px. It's now a centered, stacked block (photo → name → title → full-width CTA), which also reads as tidier on mobile.
+- The screen now mirrors the full ACM's **chaptered structure** (numbered 01/02/03) so the teaser reads as a preview of the real document, and a per-property **"Fortalezas y debilidades"** analysis leads the individual card — size first, because m² is the most fundamental buyer criterion, then distribution.
+- The price used to be **blurred**; feedback was that blurring reads as "hiding something," so the range is shown plainly, with future-tense phrasing and a "historical average" caption doing the honesty work instead.
+- The advisor's identity block was originally a left-aligned row sharing space with the CTA button — a real name plus a real job title plus a CTA don't reliably fit one row at 390px. It's now a centered, stacked block (photo → name → title → full-width CTA).
 - The reveal screen's original first-person "cuando platiquemos, te armo un cálculo..." paragraph was rewritten to third person, naming the advisor directly, once the identity block below it made clear who's speaking.
 - Testimonials now appear **twice** (Hero and Reveal) — a deliberate repeat, not an oversight.
 
 **Open for feedback:** This screen still carries the most jobs (reassurance, the payoff number, a named human, methodology, market context, social proof, a live CTA) across one scroll. Does the price card's ambient glow/sheen animation read as "premium" or as a distraction from the number itself? Is six stacked sections (price card + market card + methodology + testimonials + sticky bar) still the right length, or does it dilute the payoff by asking for more scrolling right after the thing that mattered (contact info) is already submitted?
+
+## How the surfaces are built — cards, values, and the price panel
+
+This is the implementation companion to the visual identity above: the concrete recipes behind the recurring surfaces, so a change to one card is made the same way everywhere and a new element inherits the existing system instead of inventing a parallel one. All tokens referenced here live in the `@theme` block of `src/index.css`.
+
+### The glass card — one recipe, used everywhere
+
+Every light card in the app is the same lockup:
+
+```
+rounded-card-lg border border-neutral-200/70 bg-parchment-card/80 p-6 backdrop-blur-md md:p-8
+```
+
+- `bg-parchment-card/80` + `backdrop-blur-md` **is** the frosted glass: the near-white card surface at 80% opacity, with the page's subtle background gradient blurring through it as you scroll. The identical recipe is on the sticky header and the sticky bottom CTA, so chrome and content read as one system of frosted surfaces, not a mix of solid and glass.
+- `rounded-card-lg` = `--radius-card-lg` (2rem). Radii are tokens (`--radius-card`, `--radius-card-lg`, `--radius-input`, `--radius-pill`), never magic numbers.
+- The standard in-card header is a `SectionChip` (small pill label — numbered "01…/02…/03…" for the reveal chapters, neutral/uncentered elsewhere) followed by a `text-base font-bold` title.
+
+### Subtle inner boxes — "back sutil que facilita la lectura"
+
+When a block *inside* a card needs to read as its own callout, it gets a flat, **non-glass** inner box — deliberately the opposite of the card, a quiet solid ground that lifts reading text off the surface:
+
+```
+rounded-xl border border-neutral-100 bg-neutral-50 p-4
+```
+
+Reused for: the reveal's "01" stat tiles, the "02" market note (with a `border-l-4 border-brand-500` accent stripe), and the "Fortalezas y debilidades" analysis box. If you add a new "read this" block, use this box — don't stack another glass layer inside a glass card.
+
+### Values — how numbers and the analysis read
+
+- **Numerals:** Figtree with `tabular-nums` (+ usually `font-bold`), so prices/m²/counts align in a column. There is no separate mono font.
+- **Spec recap** (`PropertySummaryCard`): a 3-column `<dl>` echoing the visitor's own inputs; each cell can carry a trend arrow vs the zone's real listings — `ArrowUpRight` (brand green = above the zone), `ArrowDownRight` (red = a drag), `Equal` (blue = in line). Benchmarks are medians of real comps (`zoneTypicalSpecs()` / `zoneTypicalTerrenoM2()` in `shared/comparableListings.ts`); a field with no benchmark shows no arrow rather than compare against a fabricated number.
+- **The analysis paragraph is data, not prose-with-color.** `COPY.reveal.propertyCard.analysisSegments()` returns an array of `{ t, tone? }` segments; the component renders a toned segment as a soft highlighter (`bg-brand-500/10` green for a strength, `bg-red-500/10` red for a drag) and a plain segment as normal text. Each toned segment is a **complete concept** ("menos m² de construcción", "más recámaras"), held on one line with `whitespace-nowrap`, so a finding reads as an annotation rather than a stray colored word. The paragraph leads with size (built m² + lot), then bridges into rooms/baths; a `analysisTitle` opens the box and a `analysisClosing` line points at strategy.
+- **Derived per-m²:** the estimate's mid spread across the visitor's own built (or lot) m², rounded to a clean step so it stays directional, not falsely precise.
+
+### The price panel and its glass "range" bar
+
+The reveal's price card is the **one** surface that breaks the light-glass system — the dark `bg-ink` (#0c0a09) panel, staged like a certificate being issued:
+
+- **Ambient motion, not loading:** a low-opacity brand-green blob runs `animate-glow-pulse` (a 5s breathing scale/opacity cycle, defined in `index.css`) — reads as "alive," never as a spinner.
+- **The range bar (`PreliminaryPricingBar`)** reads in three layers:
+  1. A full-width **gradient bar = the plausible range**: red at both ends (fuera de mercado), easing through amber into green in the middle. It `animate-draw-line`s in from the left (an ease-out-expo `cubic-bezier(0.16, 1, 0.3, 1)` scaleX) so it reads as being plotted, not just fading in.
+  2. A **frosted-glass "likely band" pill** floating over the middle — `bg-white/15 border border-white/45 backdrop-blur-[2px]` — the same glass idea as the app's cards, here as a translucent band that rides with the estimate and is clamped so it never crosses into the red.
+  3. The **"Precio aprox" pin** lands last (delayed fade/zoom) at the estimate's real position within `[low, high]`, as the payoff.
+
+  The staggered delays (bar → ticks → pill → pin) are the "premium means restrained" reveal; every custom animation collapses to its end state under `prefers-reduced-motion` (global override in `index.css`).
+
+### Light/dark without `dark:` everywhere
+
+The theme flips by **remapping the semantic tokens** under `prefers-color-scheme: dark` in `index.css`, not by sprinkling `dark:` on every element: the green-grey neutral ramp inverts (so `text-neutral-900` becomes near-white, `bg-neutral-50`/`border-neutral-200` go dark) and `parchment`/`parchment-card` darken. The `bg-ink` price panel is deliberately **left out** of the remap so it stays the deepest black in both themes. Practical consequence for new work: use the neutral ramp semantically (low numbers = surfaces/borders, high numbers = text) and it themes itself — only reach for a `dark:` override for the few direction-dependent accents (a literal `bg-white`, deep-green icons that would vanish on a dark card, the modal scrim). The inline `PulppoLogo` component follows the same idea: it fills with `currentColor` and masks its octopus mark as a transparent cut-out, so one component is ink on the light team card and white on the dark one, with no `<picture>` swap or second asset.
 
 ## Known technical constraints worth knowing before proposing changes
 

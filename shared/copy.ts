@@ -52,15 +52,9 @@ export const COPY = {
     // just an institutional fact, so it sits with experienceStatement
     // rather than inside the checklist below.
     backingStatement: 'Somos parte de la aceleradora inmobiliaria más importante de LATAM.',
-    // The default (light-background) Pulppo mark. TeamSection swaps to
-    // backingLogoUrlDark under prefers-color-scheme: dark via <picture>.
-    backingLogoUrl: 'https://pulppo.com/images/logo_claro.svg',
-    // PLACEHOLDER -- replace with the real white/light Pulppo logo for dark
-    // backgrounds when it's available. The default logo_claro.svg is a
-    // colored mark that reads dim on the dark surface, so until the white
-    // version lands this stands in as an obvious dashed placeholder.
-    backingLogoUrlDark:
-      'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22160%22%20height%3D%2248%22%20viewBox%3D%220%200%20160%2048%22%3E%3Crect%20x%3D%221%22%20y%3D%221%22%20width%3D%22158%22%20height%3D%2246%22%20rx%3D%227%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-opacity%3D%220.35%22%20stroke-dasharray%3D%225%204%22/%3E%3Ctext%20x%3D%2280%22%20y%3D%2231%22%20font-family%3D%22sans-serif%22%20font-size%3D%2218%22%20font-weight%3D%22700%22%20fill%3D%22%23ffffff%22%20text-anchor%3D%22middle%22%3EPulppo%3C/text%3E%3C/svg%3E',
+    // The Pulppo mark itself is rendered inline by the PulppoLogo component
+    // (currentColor + a transparent cut-out), so it needs no URL here and
+    // adapts to light/dark on its own -- no external asset, no dark placeholder.
     checklist: [
       {
         title: 'Estaremos contigo en todo el proceso',
@@ -135,7 +129,7 @@ export const COPY = {
 
   contact: {
     title: 'Cuéntanos de ti',
-    description: 'Así un asesor puede contactarte para platicar la mejor estrategia para tu propiedad.',
+    description: 'Un asesor te contactará para platicar la mejor estrategia para tu propiedad.',
     fieldLabels: {
       nombre: 'Nombre completo *',
       telefono: 'Teléfono / WhatsApp *',
@@ -148,7 +142,7 @@ export const COPY = {
       linkLabel: 'aviso de privacidad',
       suffix: ' y autorizo que me contacten.',
     },
-    nextLabel: 'Ver mi estimación',
+    nextLabel: 'Ver mi estimado',
   },
 
   analyzing: {
@@ -162,15 +156,15 @@ export const COPY = {
       },
       {
         label: 'Revisando portafolio y similares',
-        detail: 'Tenemos inventario real en tu zona: comparamos contra propiedades que existen, no las adivinamos.',
+        detail: 'Tenemos inventario en tu zona y lo comparamos con propiedades que existen.',
       },
       {
-        label: 'Ajustando por el estado de tu propiedad',
-        detail: 'Una casa remodelada no vale lo mismo que una para renovar: lo consideramos desde el primer cálculo.',
+        label: 'Ajustando por variables de la propiedad',
+        detail: 'Las características únicas de cada proiedad se consideran desde el primer cálculo.',
       },
       {
-        label: 'Preparando tu estimación',
-        detail: 'Tu Análisis Comparativo de Mercado completo lo arma un asesor humano, no un algoritmo genérico.',
+        label: 'Preparando el análisis de zona',
+        detail: 'A partir del estado actual del mercado y los comparables visibles actualmente..',
       },
     ],
   },
@@ -247,65 +241,116 @@ export const COPY = {
       compareUp: 'Arriba del promedio de la zona',
       compareDown: 'Debajo del promedio de la zona',
       compareEqual: 'En línea con el promedio de la zona',
-      // A short, self-adapting read of how recámaras and baños compare to the
-      // zone, returned as segments so the component can shout the conditional
-      // keywords (green for a plus, red for a drag). Only fields that stand
-      // out (up/down) get a clause; an in-line or unknown field is omitted, so
-      // an empty array means "render no paragraph."
+      // Small title + closing takeaway wrapping the derived read, which opens
+      // the card so it's the first thing the visitor reads.
+      analysisTitle: 'Fortalezas y debilidades',
+      analysisClosing: 'Esto será importante considerarlo al momento de crear tu estrategia.',
+      // A short, self-adapting read of how the property's size (built m² and
+      // lot) and its recámaras/baños compare to the zone, returned as segments.
+      // Each toned segment is a *complete concept* ("menos m² de construcción",
+      // "más recámaras"), not a lone polarity word, so the highlight reads as a
+      // finding rather than a stray colored word; the surrounding prose stays
+      // plain. Only fields that stand out (up/down) get a clause; an in-line or
+      // unknown field is omitted, so an empty array means "render no paragraph."
+      // The size sentence leads because m² is the most fundamental comparison;
+      // distribution (recámaras/baños) follows.
       analysisSegments: (
+        con: 'up' | 'down' | 'equal' | null, // built m² vs the zone's typical built m²
+        ter: 'up' | 'down' | 'equal' | null, // lot m² vs the zone's typical lot size
         rec: 'up' | 'down' | 'equal' | null,
         ban: 'up' | 'down' | 'equal' | null
       ): { t: string; tone?: 'pos' | 'neg' }[] => {
         const segs: { t: string; tone?: 'pos' | 'neg' }[] = [];
-        if (rec === 'up' || rec === 'down') {
-          const pos = rec === 'up';
+        const conRel = con === 'up' || con === 'down';
+        const terRel = ter === 'up' || ter === 'down';
+
+        // Size sentence: "Tu propiedad tiene [menos m² de construcción], en un
+        // [terreno más pequeño] que el promedio de la zona." Each half only
+        // shows when it actually stands out, so the sentence reads naturally
+        // with one half or both.
+        if (conRel || terRel) {
           segs.push({ t: 'Tu propiedad tiene ' });
-          segs.push({ t: pos ? 'más' : 'menos', tone: pos ? 'pos' : 'neg' });
-          segs.push({ t: ' recámaras que el promedio, lo que ' });
-          segs.push({ t: pos ? 'ayuda a destacar' : 'hace más complejo destacar', tone: pos ? 'pos' : 'neg' });
-          segs.push({ t: ' frente a la competencia.' });
+          if (conRel) {
+            const pos = con === 'up';
+            segs.push({ t: `${pos ? 'más' : 'menos'} m² de construcción`, tone: pos ? 'pos' : 'neg' });
+          }
+          if (terRel) {
+            const pos = ter === 'up';
+            segs.push({ t: conRel ? ', en un ' : 'un ' });
+            segs.push({ t: `terreno ${pos ? 'más grande' : 'más pequeño'}`, tone: pos ? 'pos' : 'neg' });
+          }
+          segs.push({ t: ' que el promedio de la zona.' });
+        }
+        const sizePresent = conRel || terRel;
+        const recRel = rec === 'up' || rec === 'down';
+
+        // Bridge off the size sentence: size is a headline buyer criterion.
+        // When a recámaras read follows it runs straight into it ("...para los
+        // compradores, también tiene [más recámaras]..."); on its own it closes
+        // as a full sentence.
+        if (sizePresent) {
+          segs.push({
+            t: recRel
+              ? ' Esto suele ser uno de los principales criterios para los compradores, también tiene '
+              : ' Esto suele ser uno de los principales criterios para los compradores.',
+          });
+        }
+
+        if (recRel) {
+          const pos = rec === 'up';
+          // With the size bridge already carrying "también tiene", the concept
+          // starts the clause; without it, it opens the paragraph itself.
+          if (!sizePresent) segs.push({ t: 'Tu propiedad tiene ' });
+          segs.push({ t: `${pos ? 'más' : 'menos'} recámaras`, tone: pos ? 'pos' : 'neg' });
+          segs.push({
+            t: pos
+              ? ' que el promedio, lo que ayuda a destacar frente a la competencia.'
+              : ' que el promedio, lo que hace más complejo destacar frente a la competencia.',
+          });
         }
         if (ban === 'up' || ban === 'down') {
           const pos = ban === 'up';
-          // Connector reflects the relationship: "Además" only when both
-          // clauses point the same way; "Pero" when the baths contrast the
-          // recámaras read (a plus followed by a minus, or vice versa).
-          const recPresent = rec === 'up' || rec === 'down';
-          const sameDirection = recPresent && (rec === 'up') === pos;
-          const lead = !recPresent
-            ? 'La cantidad de baños que ofrece es '
+          // Connector reflects the relationship to the recámaras read:
+          // "Además" only when both clauses point the same way; "Pero" when the
+          // baths contrast the recámaras read (a plus followed by a minus, or
+          // vice versa). With no recámaras clause before it, the baths open a
+          // clean new sentence (leading space only when something preceded it).
+          const sameDirection = recRel && (rec === 'up') === pos;
+          const lead = !recRel
+            ? sizePresent
+              ? ' Ofrece '
+              : 'Tu propiedad ofrece '
             : sameDirection
-              ? ' Además, la cantidad de baños que ofrece es '
-              : ' Pero la cantidad de baños que ofrece es ';
+              ? ' Además, ofrece '
+              : ' Pero ofrece ';
           segs.push({ t: lead });
-          segs.push({ t: pos ? 'mayor' : 'menor', tone: pos ? 'pos' : 'neg' });
-          segs.push({ t: ' que la de los comparables, lo cual suele ser ' });
-          segs.push({ t: pos ? 'una ventaja' : 'un inconveniente', tone: pos ? 'pos' : 'neg' });
-          segs.push({ t: ' para la mayoría de compradores.' });
+          segs.push({ t: `${pos ? 'más' : 'menos'} baños`, tone: pos ? 'pos' : 'neg' });
+          segs.push({
+            t: pos
+              ? ' que los comparables, lo cual suele ser una ventaja para la mayoría de compradores.'
+              : ' que los comparables, lo cual suele ser un inconveniente para la mayoría de compradores.',
+          });
         }
         return segs;
       },
       // Terrenos have no rooms/baths, so their read is built on lot size vs the
       // zone's other terrenos. A larger lot is framed as value; a smaller one
       // stays honest (less total value) but notes the upside (easier to sell),
-      // so the paragraph never reads as pure bad news.
+      // so the paragraph never reads as pure bad news. The lot-size concept is
+      // the single highlighted finding.
       analysisSegmentsTerreno: (size: 'up' | 'down' | 'equal' | null): { t: string; tone?: 'pos' | 'neg' }[] => {
         if (size === 'up') {
           return [
-            { t: 'Tu terreno es ' },
-            { t: 'más amplio', tone: 'pos' },
-            { t: ' que el promedio de la zona, lo que suele ' },
-            { t: 'sumar valor', tone: 'pos' },
-            { t: ' y potencial de desarrollo.' },
+            { t: 'Tu ' },
+            { t: 'terreno es más amplio', tone: 'pos' },
+            { t: ' que el promedio de la zona, lo que suele sumar valor y potencial de desarrollo.' },
           ];
         }
         if (size === 'down') {
           return [
-            { t: 'Tu terreno es ' },
-            { t: 'menos amplio', tone: 'neg' },
-            { t: ' que el promedio de la zona, lo que puede ' },
-            { t: 'acotar su valor total', tone: 'neg' },
-            { t: ', aunque suele facilitar una venta más ágil.' },
+            { t: 'Tu ' },
+            { t: 'terreno es más pequeño', tone: 'neg' },
+            { t: ' que el promedio de la zona, lo que puede acotar su valor total, aunque suele facilitar una venta más ágil.' },
           ];
         }
         return [];

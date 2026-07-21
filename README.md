@@ -14,6 +14,12 @@ For a screen-by-screen breakdown of what each step is trying to accomplish and w
 
 The per-colonia baselines and the `ZONA_ESMERALDA_COLONIAS` list are derived from real, currently-published listings in Habitanza's own portfolio (sampled 2026-07-10 via the internal inventory search), not guessed — but most colonias only had one or two comps available, so they're directional, not precise. Re-derive periodically as more sales close; see the comments in `shared/pricing.ts`.
 
+## Reveal screen — a preview of the real ACM
+
+The reveal step is structured to read as a preview of the authenticated Análisis Comparativo de Mercado a broker delivers later, not a standalone widget: the dark price panel up top, then a per-property **"Análisis de tu propiedad"** card, then three numbered chapters that mirror the real report — **01 Pulso del Mercado**, **02 Referencias del Mercado**, **03 Tu ACM Completo**.
+
+The per-property card (`PropertySummaryCard.tsx`) leads with a **"Fortalezas y debilidades"** read: a plain-language paragraph that compares the visitor's built m², lot size, recámaras and baños against zone-typical medians (`zoneTypicalSpecs()` / `zoneTypicalTerrenoM2()` in `shared/comparableListings.ts`, both computed from real listings), highlighting each standout as a strength (green) or a drag (red). Below it, a 3-column recap of their own inputs carries the same comparison as up/down/in-line trend arrows, plus a derived "precio aprox por m²." Same rule as the price formula: these are directional reads off real portfolio data, never invented — a field with no benchmark simply shows no arrow. The analysis copy is a single source of truth in `shared/copy.ts` (`reveal.propertyCard.analysisSegments`), returned as tone-tagged segments so the component can highlight complete concepts without hardcoding strings.
+
 ## Testimonials
 
 The reveal step closes with a swipeable carousel of real client testimonials (`shared/testimonials.ts`), as a trust/social-proof signal. These are real quotes supplied by Habitanza, not fabricated — if more are added later, keep that the same.

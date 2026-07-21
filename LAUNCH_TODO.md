@@ -41,17 +41,11 @@ better/more accurate but won't stop a launch.
 
 ## 🎨 Brand assets & keys you still need to supply
 
-- [ ] **White Pulppo logo for dark mode**
-  File: `shared/copy.ts` → `team.backingLogoUrlDark`.
-  Right now it's an obvious dashed **"Pulppo" placeholder** (added during the
-  dark-mode work) so nothing looks broken on dark. Light mode already uses the
-  real `logo_claro.svg`.
-  - **What to do:** replace the `backingLogoUrlDark` value with the URL (or
-    inline data URI) of the real **white / light** Pulppo mark. It's a
-    one-line change — no component edits needed; the `<picture>` swap in
-    `TeamSection.tsx` already wires it to `prefers-color-scheme: dark`.
-  - **Verify:** view the team card with your phone/OS in dark mode — the real
-    white logo shows instead of the dashed placeholder.
+- [x] **White Pulppo logo for dark mode** — done.
+  The mark is now rendered inline by `src/components/PulppoLogo.tsx`: the
+  octopus is a transparent cut-out and the whole logo fills with `currentColor`,
+  so it's ink on the light team card and white in dark mode automatically. No
+  external asset, no `<picture>` swap, and the dashed placeholder is gone.
 
 - [ ] **Google Maps API key — `VITE_GOOGLE_MAPS_API_KEY`**
   Set in Vercel. Restrict it to this domain in Google Cloud Console →
