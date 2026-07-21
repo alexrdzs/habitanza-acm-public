@@ -6,7 +6,6 @@
 // returned by published listings in Atizapán de Zaragoza), not guessed.
 export const ZONA_ESMERALDA_COLONIAS = [
   'Condado de Sayavedra',
-  'Bosque Esmeralda',
   'Hacienda de Valle Escondido',
   'Bosque Real',
   'Residencial Lago Esmeralda',
@@ -22,15 +21,18 @@ export const ZONA_ESMERALDA_COLONIAS = [
 // not guessed -- they have real coordinates but no active listings yet, so
 // they get the default price/m² fallback and no "Mercado de la zona" comps.
 export const ZONA_ESMERALDA_COLONIAS_EXTENDED = [
-  'Fincas de Sayavedra',
+  'Bosque Esmeralda',
   'Club de Golf Valle Escondido',
+  'Fincas de Sayavedra',
+  'Interlomas y Hda. de las Palmas',
+  
   'Lomas de Valle Escondido',
   'La Estadía',
   'Prado Largo',
   // Temporary campaign coverage. These zones use the generic preliminary
   // baseline until their local comparable data is added.
   'Rancho San Juan',
-  'Interlomas y Hda. de las Palmas',
+  
 ] as const;
 
 // Sentinel value for "my colonia isn't in the list" — paired with the
