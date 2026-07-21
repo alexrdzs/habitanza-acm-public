@@ -1,7 +1,7 @@
 import { ArrowDownRight, ArrowUpRight, Equal } from 'lucide-react';
 import type { Amenity, PropertyAge } from '@shared/validation';
 import type { PreliminaryEstimate } from '@shared/pricing';
-import { zoneTypicalSpecs, zoneTypicalTerrenoM2 } from '@shared/comparableListings';
+import { zoneTypicalConstruccionM2, zoneTypicalSpecs, zoneTypicalTerrenoM2 } from '@shared/comparableListings';
 import { COPY } from '@shared/copy';
 import { SectionChip } from './SectionChip';
 import { formatCurrency } from '../../lib/utils';
@@ -54,11 +54,19 @@ export function PropertySummaryCard({ profile, tipoPropiedad, colonia, estimate 
   const typical = zoneTypicalSpecs();
   const recDir = !isTerreno && profile.recamaras ? compareToTypical(profile.recamaras, typical.recamaras) : null;
   const banDir = !isTerreno && profile.banos ? compareToTypical(profile.banos, typical.banos) : null;
-  // A home's own size read: built m² vs the zone's typical built m², and its
-  // lot vs the zone's terreno pool (the only lot-size benchmark we have -- it's
-  // a directional size comparison, so it stays in the prose only, not on the
-  // spec-grid arrow, which deliberately never marks a house's yard).
-  const construccionDir = !isTerreno && profile.m2Construccion ? compareToTypical(profile.m2Construccion, typical.m2) : null;
+  // A home's own size read: built m² vs the zone's typical built m² *of the
+  // same property type* (a casa against casas, a depto against deptos -- a
+  // blended pool made deptos routinely read "menos" just because casas run far
+  // larger), and its lot vs the zone's terreno pool. When a type has too few
+  // same-type comps for a directional benchmark (today: deptos), the construcción
+  // clause is simply omitted. The lot comparison is a directional size read that
+  // stays in the prose only, not on the spec-grid arrow (which never marks a
+  // house's yard) -- lot size is worth surfacing since a home's lot can differ a
+  // lot from its construction footprint.
+  const construccionDir =
+    !isTerreno && profile.m2Construccion
+      ? compareToTypical(profile.m2Construccion, zoneTypicalConstruccionM2(tipoPropiedad))
+      : null;
   const casaLoteDir = !isTerreno && profile.m2Terreno ? compareToTypical(profile.m2Terreno, zoneTypicalTerrenoM2()) : null;
   // Terrenos have no rooms/baths, so their one comparable attribute is lot
   // size, benchmarked against the zone's other terrenos.

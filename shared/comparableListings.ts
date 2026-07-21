@@ -225,6 +225,12 @@ export function zoneTypicalSpecs(): ZoneTypicalSpecs {
 // "below" the zone, so the reveal card shows no size arrow (see PropertyCard).
 const MIN_TERRENO_SAMPLE = 3;
 
+// Same idea for built m², applied per property type (see
+// zoneTypicalConstruccionM2): a type with fewer than this many real comps
+// (today: departamentos) gets no construcción benchmark, so the card omits that
+// clause instead of comparing against a two-listing median.
+const MIN_CONSTRUCCION_SAMPLE = 3;
+
 // Median lot size (m²) of the zone's real terreno listings, or undefined when
 // there aren't enough to be directional. Terrenos are benchmarked on their own
 // pool (never against built homes).
@@ -234,6 +240,22 @@ export function zoneTypicalTerrenoM2(): number | undefined {
     .filter((l) => !l.isPlaceholder && l.tipo.startsWith('Terreno') && l.m2 > 0)
     .map((l) => l.m2);
   return sizes.length >= MIN_TERRENO_SAMPLE ? median(sizes) : undefined;
+}
+
+// Median built m² of the zone's real listings *of a single property type*
+// ('Casa' or 'Departamento'), or undefined when there aren't enough to be
+// directional. Built m² varies enormously by type (this zone's casas run many
+// times larger than its departamentos), so benchmarking a property against the
+// blended pool made e.g. an apartment routinely read "menos m² de construcción"
+// only because large casas share the pool. Keeping the benchmark within the
+// selected type fixes that; below the sample floor the reveal card omits the
+// construcción read rather than compare against a too-thin same-type median.
+export function zoneTypicalConstruccionM2(tipoPropiedad: string): number | undefined {
+  const sizes = Object.values(COMPARABLE_LISTINGS)
+    .flat()
+    .filter((l) => !l.isPlaceholder && l.tipo === tipoPropiedad && l.m2 > 0)
+    .map((l) => l.m2);
+  return sizes.length >= MIN_CONSTRUCCION_SAMPLE ? median(sizes) : undefined;
 }
 
 export function coloniaPhoto(colonia: string): string | undefined {
