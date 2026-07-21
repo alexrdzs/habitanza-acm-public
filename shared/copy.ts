@@ -129,7 +129,7 @@ export const COPY = {
 
   contact: {
     title: 'Cuéntanos de ti',
-    description: 'Así un asesor puede contactarte para platicar la mejor estrategia para tu propiedad.',
+    description: 'Un asesor te contactará para platicar la mejor estrategia para tu propiedad.',
     fieldLabels: {
       nombre: 'Nombre completo *',
       telefono: 'Teléfono / WhatsApp *',
@@ -142,7 +142,7 @@ export const COPY = {
       linkLabel: 'aviso de privacidad',
       suffix: ' y autorizo que me contacten.',
     },
-    nextLabel: 'Ver mi estimación',
+    nextLabel: 'Ver mi estimado',
   },
 
   analyzing: {
@@ -156,15 +156,15 @@ export const COPY = {
       },
       {
         label: 'Revisando portafolio y similares',
-        detail: 'Tenemos inventario real en tu zona: comparamos contra propiedades que existen, no las adivinamos.',
+        detail: 'Tenemos inventario en tu zona y lo comparamos con propiedades que existen.',
       },
       {
-        label: 'Ajustando por el estado de tu propiedad',
-        detail: 'Una casa remodelada no vale lo mismo que una para renovar: lo consideramos desde el primer cálculo.',
+        label: 'Ajustando por variables de la propiedad',
+        detail: 'Las características únicas de cada proiedad se consideran desde el primer cálculo.',
       },
       {
-        label: 'Preparando tu estimación',
-        detail: 'Tu Análisis Comparativo de Mercado completo lo arma un asesor humano, no un algoritmo genérico.',
+        label: 'Preparando el análisis de zona',
+        detail: 'A partir del estado actual del mercado y los comparables visibles actualmente..',
       },
     ],
   },
