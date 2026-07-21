@@ -52,15 +52,9 @@ export const COPY = {
     // just an institutional fact, so it sits with experienceStatement
     // rather than inside the checklist below.
     backingStatement: 'Somos parte de la aceleradora inmobiliaria más importante de LATAM.',
-    // The default (light-background) Pulppo mark. TeamSection swaps to
-    // backingLogoUrlDark under prefers-color-scheme: dark via <picture>.
-    backingLogoUrl: 'https://pulppo.com/images/logo_claro.svg',
-    // PLACEHOLDER -- replace with the real white/light Pulppo logo for dark
-    // backgrounds when it's available. The default logo_claro.svg is a
-    // colored mark that reads dim on the dark surface, so until the white
-    // version lands this stands in as an obvious dashed placeholder.
-    backingLogoUrlDark:
-      'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22160%22%20height%3D%2248%22%20viewBox%3D%220%200%20160%2048%22%3E%3Crect%20x%3D%221%22%20y%3D%221%22%20width%3D%22158%22%20height%3D%2246%22%20rx%3D%227%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-opacity%3D%220.35%22%20stroke-dasharray%3D%225%204%22/%3E%3Ctext%20x%3D%2280%22%20y%3D%2231%22%20font-family%3D%22sans-serif%22%20font-size%3D%2218%22%20font-weight%3D%22700%22%20fill%3D%22%23ffffff%22%20text-anchor%3D%22middle%22%3EPulppo%3C/text%3E%3C/svg%3E',
+    // The Pulppo mark itself is rendered inline by the PulppoLogo component
+    // (currentColor + a transparent cut-out), so it needs no URL here and
+    // adapts to light/dark on its own -- no external asset, no dark placeholder.
     checklist: [
       {
         title: 'Estaremos contigo en todo el proceso',
