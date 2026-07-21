@@ -5,12 +5,13 @@
 // Verified against Habitanza's actual live portfolio (real colonia values
 // returned by published listings in Atizapán de Zaragoza), not guessed.
 export const ZONA_ESMERALDA_COLONIAS = [
-  'Bosque Esmeralda',
-  'Residencial Lago Esmeralda',
   'Condado de Sayavedra',
-  'Lomas de Valle Escondido',
+  'Bosque Esmeralda',
   'Hacienda de Valle Escondido',
-  'Rancho San Juan',
+  'Bosque Real',
+  'Residencial Lago Esmeralda',
+  'Club de Golf Chiluca',
+
 ] as const;
 
 // Additional real colonias shown behind the location step's "Ver más"
@@ -23,13 +24,13 @@ export const ZONA_ESMERALDA_COLONIAS = [
 export const ZONA_ESMERALDA_COLONIAS_EXTENDED = [
   'Fincas de Sayavedra',
   'Club de Golf Valle Escondido',
-  'Club de Golf Chiluca',
+  'Lomas de Valle Escondido',
   'La Estadía',
   'Prado Largo',
   // Temporary campaign coverage. These zones use the generic preliminary
   // baseline until their local comparable data is added.
-  'Bosque Real',
-  'Interlomas',
+  'Rancho San Juan',
+  'Interlomas y Hda. de las Palmas',
 ] as const;
 
 // Sentinel value for "my colonia isn't in the list" — paired with the
