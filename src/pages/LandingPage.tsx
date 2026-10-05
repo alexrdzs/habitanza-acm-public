@@ -27,7 +27,7 @@ export function LandingPage() {
   const previewParams = new URLSearchParams(window.location.search);
   const isRevealPreview = import.meta.env.DEV && previewParams.get('preview') === 'reveal';
   const revealPreviewColonia =
-    { interlomas: 'Interlomas', lomas: 'Lomas de Valle Escondido' }[previewParams.get('colonia') ?? ''] ??
+    { interlomas: 'Interlomas y Hda. de las Palmas', lomas: 'Lomas de Valle Escondido' }[previewParams.get('colonia') ?? ''] ??
     'Bosque Real';
   const [step, setStep] = useState<Step>(() => (isRevealPreview ? 'reveal' : 'hero'));
 

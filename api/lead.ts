@@ -13,23 +13,22 @@ import type { LeadSubmission, Amenity, ReferralSource } from '../shared/validati
 // that file if they change. shared/validation.ts remains the source of
 // truth for the client wizard, which Vite bundles normally.
 const ZONA_ESMERALDA_COLONIAS = [
-  'Bosque Esmeralda',
-  'Residencial Lago Esmeralda',
   'Condado de Sayavedra',
-  'Lomas de Valle Escondido',
   'Hacienda de Valle Escondido',
+  'Bosque Real',
+  'Club de Golf Chiluca',
+  'Prado Largo',
   'Rancho San Juan',
 ] as const;
 // Keep in sync with ZONA_ESMERALDA_COLONIAS_EXTENDED in shared/validation.ts.
 const ZONA_ESMERALDA_COLONIAS_EXTENDED = [
-  'Fincas de Sayavedra',
+  'Residencial Lago Esmeralda',
+  'Bosque Esmeralda',
   'Club de Golf Valle Escondido',
-  'Club de Golf Chiluca',
+  'Fincas de Sayavedra',
+  'Interlomas y Hda. de las Palmas',
+  'Lomas de Valle Escondido',
   'La Estadía',
-  'Prado Largo',
-  // Keep temporary campaign areas in sync with shared/validation.ts.
-  'Bosque Real',
-  'Interlomas',
 ] as const;
 const OTHER_COLONIA_VALUE = 'otra';
 const PUBLIC_PROPERTY_TYPES = ['Casa', 'Departamento', 'Terreno'] as const;
