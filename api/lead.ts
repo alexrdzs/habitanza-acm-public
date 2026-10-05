@@ -137,7 +137,6 @@ function buildNotification(lead: {
   m2Construccion?: number;
   m2Terreno?: number;
   asesorAsignado?: string;
-  asesorTelefono?: string;
 }) {
   const digits = lead.telefono.replace(/\D/g, '');
   const waNumber = digits.length === 10 ? `52${digits}` : digits;
@@ -149,7 +148,6 @@ function buildNotification(lead: {
     title: 'Nuevo lead de valuación',
     message: [`${lead.nombre} quiere valuar su ${lead.tipoPropiedad.toLowerCase()} en ${lead.colonia}.`, ...specs, `WhatsApp: ${lead.telefono}`].join('\n'),
     mention: lead.asesorAsignado ?? '',
-    destination: lead.asesorTelefono ?? '',
     url: waNumber ? `https://wa.me/${waNumber}` : '',
     cta: 'Escribirle por WhatsApp',
     footer: 'Landing de valuación · Zona Esmeralda',
