@@ -8,31 +8,25 @@ export const ZONA_ESMERALDA_COLONIAS = [
   'Condado de Sayavedra',
   'Hacienda de Valle Escondido',
   'Bosque Real',
-  'Residencial Lago Esmeralda',
   'Club de Golf Chiluca',
-
+  'Prado Largo',
+  'Rancho San Juan',
 ] as const;
 
 // Additional real colonias shown behind the location step's "Ver más"
-// expansion instead of in the main carousel -- kept separate because the
-// primary six are what Habitanza actually specializes in (real listings,
-// real pricing baselines). These four (plus Fincas de Sayavedra) are
-// verified against Pulppo's own location catalog via resolver_ubicacion,
-// not guessed -- they have real coordinates but no active listings yet, so
-// they get the default price/m² fallback and no "Mercado de la zona" comps.
+// expansion. The main list holds the fraccionamientos that have 3D artwork
+// (shared/neighborhoodImages.ts); the rest wait here with their lucide icon
+// until their artwork lands, then move up. Most have real coordinates but
+// no active listings yet, so they get the default price/m² fallback and no
+// "Mercado de la zona" comps.
 export const ZONA_ESMERALDA_COLONIAS_EXTENDED = [
+  'Residencial Lago Esmeralda',
   'Bosque Esmeralda',
   'Club de Golf Valle Escondido',
   'Fincas de Sayavedra',
   'Interlomas y Hda. de las Palmas',
-  
   'Lomas de Valle Escondido',
   'La Estadía',
-  'Prado Largo',
-  // Temporary campaign coverage. These zones use the generic preliminary
-  // baseline until their local comparable data is added.
-  'Rancho San Juan',
-  
 ] as const;
 
 // Sentinel value for "my colonia isn't in the list" — paired with the

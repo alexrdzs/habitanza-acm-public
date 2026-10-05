@@ -5,21 +5,21 @@
 // giving each row a distinctive, dynamic thumbnail instead of a generic icon.
 //
 // This is the ONE place a fraccionamiento is tied to an image. Drop square
-// artwork in `/public` (e.g. /public/neighborhoods/bosque-esmeralda.png) and
+// artwork in `/public` (e.g. /public/neighborhoods/bosque-esmeralda.webp) and
 // reference it by path, or paste a full https URL. The tile renders the image
-// edge to edge (object-cover), so square art works best; art with a
+// edge to edge (object-cover), so square art works best (192x192 WebP, a few KB, is plenty for the 56px tile); art with a
 // transparent background sits on a soft tile so it still reads.
 //
 // Any name left out (or set to undefined) simply falls back to its lucide
 // icon, so the picker keeps working while the artwork is produced one
 // fraccionamiento at a time.
 export const NEIGHBORHOOD_IMAGES: Record<string, string | undefined> = {
-  'Condado de Sayavedra': '/neighborhoods/condado-sayavedra.png',
-  // 'Bosque Esmeralda': '/neighborhoods/bosque-esmeralda.png',
-  // 'Residencial Lago Esmeralda': '/neighborhoods/lago-esmeralda.png',
-  // 'Lomas de Valle Escondido': '/neighborhoods/lomas-valle-escondido.png',
-  // 'Hacienda de Valle Escondido': '/neighborhoods/hacienda-valle-escondido.png',
-  // 'Rancho San Juan': '/neighborhoods/rancho-san-juan.png',
+  'Condado de Sayavedra': '/neighborhoods/condado-sayavedra.webp',
+  'Hacienda de Valle Escondido': '/neighborhoods/hacienda-valle-escondido.webp',
+  'Bosque Real': '/neighborhoods/bosque-real.webp',
+  'Club de Golf Chiluca': '/neighborhoods/club-golf-chiluca.webp',
+  'Prado Largo': '/neighborhoods/prado-largo.webp',
+  'Rancho San Juan': '/neighborhoods/rancho-san-juan.webp',
 };
 
 export function neighborhoodImage(colonia: string): string | undefined {
