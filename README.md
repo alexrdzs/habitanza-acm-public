@@ -60,7 +60,7 @@ See `env.example`. At minimum, set `MAKE_WEBHOOK_URL` in Vercel before this can 
 - [ ] Legal review of `src/pages/PrivacyNoticePage.tsx` — the aviso de privacidad shipped here is a starting draft (not reviewed by counsel) and has a placeholder contact email
 - [ ] Add more/refresh `shared/testimonials.ts` if Habitanza wants to rotate in newer client quotes
 - [ ] Re-derive `PRICE_PER_M2_CONSTRUCCION` / `PRICE_PER_M2_TERRENO` in `shared/pricing.ts` as more of the portfolio's sales close — most colonias currently rest on a single comp
-- [ ] Point the subdomain (e.g. `valua.habitanza.com`) at this Vercel project, then update the canonical/OG URLs in `index.html`, `public/robots.txt`, and `public/sitemap.xml` to match -- and re-render `public/og-image.png` if the domain changes before launch (it's a static PNG, not generated from the live URL)
+- [ ] Point the subdomain (e.g. `valora.habitanza.com`) at this Vercel project, then update the canonical/OG URLs in `index.html`, `public/robots.txt`, and `public/sitemap.xml` to match -- and re-render `public/og-image.png` if the domain changes before launch (it's a static PNG, not generated from the live URL)
 - [ ] Consider adding real `telephone`/`streetAddress` to the `RealEstateAgent` JSON-LD in `index.html` if Habitanza wants richer local-business search results
 - [ ] Set `VITE_GOOGLE_MAPS_API_KEY` in Vercel and restrict it to this domain in Google Cloud Console for the real map to render on the location step (falls back gracefully to a static pin card without it)
 - [ ] Keep `shared/advisors.ts` current if Rogelio or Tere's number/photo changes, or if the team wants to add/remove who appears in the CTA rotation

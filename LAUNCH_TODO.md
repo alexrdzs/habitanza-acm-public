@@ -86,7 +86,7 @@ better/more accurate but won't stop a launch.
 
 ## 🌐 Domain, SEO & deploy
 
-- [ ] **Point the subdomain at the Vercel project** (e.g. `valua.habitanza.com`).
+- [ ] **Point the subdomain at the Vercel project** (e.g. `valora.habitanza.com`).
 
 - [ ] **Update the URLs to match the real domain** once DNS is live:
   - `index.html` — `<link rel="canonical">` and the OG/Twitter URL/image tags
