@@ -150,10 +150,10 @@ export const COMPARABLE_LISTINGS: Record<string, ComparableListing[]> = {
     { tipo: 'TODO: comparable 5', precio: 0, m2: 0, lat: 0, lng: 0, isPlaceholder: true },
   ],
 
-  // RESEARCH QUEUE — Interlomas
+  // RESEARCH QUEUE — Interlomas y Hda. de las Palmas
   // Same workflow: complete all factual fields, add an optional photo, then
   // delete `isPlaceholder` on each researched listing.
-  'Interlomas': [
+  'Interlomas y Hda. de las Palmas': [
     { tipo: 'TODO: comparable 1', precio: 0, m2: 0, lat: 0, lng: 0, isPlaceholder: true },
     { tipo: 'TODO: comparable 2', precio: 0, m2: 0, lat: 0, lng: 0, isPlaceholder: true },
     { tipo: 'TODO: comparable 3', precio: 0, m2: 0, lat: 0, lng: 0, isPlaceholder: true },

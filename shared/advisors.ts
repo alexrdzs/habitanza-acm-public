@@ -46,7 +46,7 @@ export const BOSQUE_REAL_INTERLOMAS_ADVISORS: Advisor[] = [
   },
 ];
 
-const BOSQUE_REAL_INTERLOMAS_COLONIAS = new Set(['Bosque Real', 'Interlomas']);
+const BOSQUE_REAL_INTERLOMAS_COLONIAS = new Set(['Bosque Real', 'Interlomas y Hda. de las Palmas']);
 
 export function advisorsForColonia(colonia: string): Advisor[] {
   return BOSQUE_REAL_INTERLOMAS_COLONIAS.has(colonia) ? BOSQUE_REAL_INTERLOMAS_ADVISORS : ADVISORS;

@@ -38,7 +38,7 @@ export const NEIGHBORHOOD_ICONS: Record<string, LucideIcon> = {
   'La Estadía': House,
   'Prado Largo': Flower2,
   'Bosque Real': TreePine,
-  Interlomas: Building2,
+  'Interlomas y Hda. de las Palmas': Building2,
 };
 
 // Fallback for any fraccionamiento (and the free-text "otra" option) with no

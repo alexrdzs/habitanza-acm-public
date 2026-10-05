@@ -23,7 +23,7 @@ export const PRICE_PER_M2_CONSTRUCCION: Record<string, number | null> = {
   'Rancho San Juan': 34000, // TAP-307: $44.9M / 1,327m²
   // Condado de Sayavedra has no construcción comp sampled yet — falls back to the default below.
   'Bosque Real': null, // TODO research: verified construcción price per m²
-  Interlomas: null, // TODO research: verified construcción price per m²
+  'Interlomas y Hda. de las Palmas': null, // TODO research: verified construcción price per m²
 };
 export const DEFAULT_PRICE_PER_M2_CONSTRUCCION = 42000;
 
@@ -31,7 +31,7 @@ export const PRICE_PER_M2_TERRENO: Record<string, number | null> = {
   'Condado de Sayavedra': 6000, // TXJ-575: $6.9M / 1,147m²
   // Other colonias have no raw-land comp sampled yet — fall back to the default below.
   'Bosque Real': null, // TODO research: verified terreno price per m²
-  Interlomas: null, // TODO research: verified terreno price per m²
+  'Interlomas y Hda. de las Palmas': null, // TODO research: verified terreno price per m²
 };
 export const DEFAULT_PRICE_PER_M2_TERRENO = 6000;
 
