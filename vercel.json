@@ -1,11 +1,5 @@
 {
-  "outputDirectory": "dist",
-  "redirects": [
-    { "source": "/", "destination": "/valora/", "permanent": false },
-    { "source": "/aviso-de-privacidad", "destination": "/valora/aviso-de-privacidad", "permanent": false }
-  ],
   "rewrites": [
-    { "source": "/valora/api/:path*", "destination": "/api/:path*" },
-    { "source": "/valora/:path*", "destination": "/valora/index.html" }
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }

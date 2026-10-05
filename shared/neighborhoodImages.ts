@@ -13,16 +13,13 @@
 // Any name left out (or set to undefined) simply falls back to its lucide
 // icon, so the picker keeps working while the artwork is produced one
 // fraccionamiento at a time.
-// Vite's base ('/valora/'), so images resolve under the /valora mount.
-const BASE = import.meta.env.BASE_URL;
-
 export const NEIGHBORHOOD_IMAGES: Record<string, string | undefined> = {
-  'Condado de Sayavedra': `${BASE}neighborhoods/condado-sayavedra.webp`,
-  'Hacienda de Valle Escondido': `${BASE}neighborhoods/hacienda-valle-escondido.webp`,
-  'Bosque Real': `${BASE}neighborhoods/bosque-real.webp`,
-  'Club de Golf Chiluca': `${BASE}neighborhoods/club-golf-chiluca.webp`,
-  'Prado Largo': `${BASE}neighborhoods/prado-largo.webp`,
-  'Rancho San Juan': `${BASE}neighborhoods/rancho-san-juan.webp`,
+  'Condado de Sayavedra': '/neighborhoods/condado-sayavedra.webp',
+  'Hacienda de Valle Escondido': '/neighborhoods/hacienda-valle-escondido.webp',
+  'Bosque Real': '/neighborhoods/bosque-real.webp',
+  'Club de Golf Chiluca': '/neighborhoods/club-golf-chiluca.webp',
+  'Prado Largo': '/neighborhoods/prado-largo.webp',
+  'Rancho San Juan': '/neighborhoods/rancho-san-juan.webp',
 };
 
 export function neighborhoodImage(colonia: string): string | undefined {
