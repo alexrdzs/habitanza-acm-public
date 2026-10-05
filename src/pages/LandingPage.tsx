@@ -103,7 +103,7 @@ export function LandingPage() {
     const advisor = pickAdvisor(resolvedColonia);
     setAssignedAdvisor(advisor);
     try {
-      const res = await fetch('/api/lead', {
+      const res = await fetch(`${import.meta.env.BASE_URL}api/lead`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
