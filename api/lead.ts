@@ -128,6 +128,35 @@ function getClientIp(req: VercelRequest): string {
   return req.socket?.remoteAddress || 'unknown';
 }
 
+// Temporary WhatsApp alert for the team. Flat string fields only, since the
+// Make scenario maps them straight into a message template.
+function buildNotification(lead: {
+  nombre: string;
+  telefono: string;
+  colonia: string;
+  tipoPropiedad: string;
+  m2Construccion?: number;
+  m2Terreno?: number;
+  asesorAsignado?: string;
+  asesorTelefono?: string;
+}) {
+  const digits = lead.telefono.replace(/\D/g, '');
+  const waNumber = digits.length === 10 ? `52${digits}` : digits;
+  const specs = [
+    lead.m2Construccion ? `${lead.m2Construccion} m² construcción` : '',
+    lead.m2Terreno ? `${lead.m2Terreno} m² terreno` : '',
+  ].filter(Boolean);
+  return {
+    title: 'Nuevo lead de valuación',
+    message: [`${lead.nombre} quiere valuar su ${lead.tipoPropiedad.toLowerCase()} en ${lead.colonia}.`, ...specs, `WhatsApp: ${lead.telefono}`].join('\n'),
+    mention: lead.asesorAsignado ?? '',
+    destination: lead.asesorTelefono ?? '',
+    url: waNumber ? `https://wa.me/${waNumber}` : '',
+    cta: 'Escribirle por WhatsApp',
+    footer: 'Landing de valuación · Zona Esmeralda',
+  };
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -256,6 +285,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   } catch (err) {
     console.error('Error al enviar lead a Make:', err);
     return res.status(502).json({ error: 'No se pudo procesar tu solicitud. Intenta de nuevo más tarde.' });
+  }
+
+  // Best-effort team alert (Make -> WhatsApp). The lead is already stored by
+  // the webhook above, so a failure here is logged and never surfaced to the
+  // visitor. Awaited with a short timeout because Vercel freezes the function
+  // as soon as the response is sent.
+  const notifyUrl = process.env.MAKE_NOTIFY_WEBHOOK_URL;
+  if (notifyUrl) {
+    try {
+      const notifyRes = await fetch(notifyUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(buildNotification(payload)),
+        signal: AbortSignal.timeout(4000),
+      });
+      if (!notifyRes.ok) console.error('Webhook de aviso respondió con error:', notifyRes.status);
+    } catch (err) {
+      console.error('Error al enviar aviso a Make:', err);
+    }
   }
 
   return res.status(200).json({ ok: true });
