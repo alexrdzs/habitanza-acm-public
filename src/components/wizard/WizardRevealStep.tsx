@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { ChevronDown, FileSearch, Info, MessageCircle, Route, Target } from 'lucide-react';
+import { ArrowLeftRight, Building2, ChevronDown, FileSearch, Info, LineChart, MessageCircle, Route, Target } from 'lucide-react';
 import { PreliminaryPricingBar } from './PreliminaryPricingBar';
 import { PropertySummaryCard, type PropertyProfile } from './PropertySummaryCard';
 import { ComparablesMap } from './ComparablesMap';
 import { ComparableListingCards } from './ComparableListingCards';
 import { MethodologySection } from './MethodologySection';
-import { SectionChip } from './SectionChip';
+import { SlideBullets, SlideCard } from './SlideCard';
 import { TestimonialsCarousel } from './TestimonialsCarousel';
 import { AdvisorCTA } from './AdvisorCTA';
 import { AdvisorClosingSection } from './AdvisorClosingSection';
@@ -29,18 +29,6 @@ interface Props {
 
 // Order-matched with COPY.reveal.acm.checklist.
 const ACM_CHECKLIST_ICONS = [FileSearch, Target, Route];
-
-// A stat tile in the full ACM's "Pulso del Mercado" style: micro label,
-// bold value, one-line caption.
-function PulseTile({ label, value, subline, className = '' }: { label: string; value: string; subline: string; className?: string }) {
-  return (
-    <div className={`flex flex-col gap-1 rounded-xl border border-neutral-100 bg-neutral-50 p-4 ${className}`}>
-      <p className="text-[10px] md:text-xs font-bold uppercase tracking-wider text-neutral-400">{label}</p>
-      <p className="text-lg font-bold tabular-nums text-neutral-900">{value}</p>
-      <p className="text-[11px] md:text-xs leading-snug text-neutral-500">{subline}</p>
-    </div>
-  );
-}
 
 export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, profile, advisor }: Props) {
   const firstName = nombre.trim().split(' ')[0] || 'gracias';
@@ -187,40 +175,38 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, pro
           value here is derived from real portfolio data (pricing.ts
           baselines, comparableListings.ts counts) or the visitor's own
           estimate; nothing is invented to look thorough. */}
-      <div className="space-y-4 rounded-card-lg border border-neutral-200/70 bg-parchment-card/80 p-6 backdrop-blur-md md:p-8">
-        <SectionChip label={COPY.reveal.pulse.chip} />
-        <h3 className="text-base font-bold text-neutral-900">{COPY.reveal.pulse.title}</h3>
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-          <PulseTile
-            label={COPY.reveal.pulse.m2Label}
-            value={formatCurrency(zoneReference.perM2)}
-            subline={
-              zoneReference.isColoniaSpecific
+      <SlideCard chip={COPY.reveal.pulse.chip} title={COPY.reveal.pulse.title} subtitle={COPY.reveal.pulse.subtitle}>
+        <SlideBullets
+          items={[
+            {
+              icon: LineChart,
+              title: COPY.reveal.pulse.m2Label,
+              detail: zoneReference.isColoniaSpecific
                 ? COPY.reveal.pulse.m2SublineColonia(colonia)
-                : COPY.reveal.pulse.m2SublineZona
-            }
-            className="col-span-2 md:col-span-1"
-          />
-          <PulseTile
-            label={COPY.reveal.pulse.listingsLabel}
-            value={COPY.reveal.pulse.listingsValue(totalReadyListingsCount())}
-            subline={COPY.reveal.pulse.listingsSubline}
-          />
-          <PulseTile
-            label={COPY.reveal.pulse.rangeWidthLabel}
-            value={rangeWidth}
-            subline={COPY.reveal.pulse.rangeWidthSubline}
-          />
-        </div>
-      </div>
+                : COPY.reveal.pulse.m2SublineZona,
+              value: formatCurrency(zoneReference.perM2),
+            },
+            {
+              icon: Building2,
+              title: COPY.reveal.pulse.listingsLabel,
+              detail: COPY.reveal.pulse.listingsSubline,
+              value: COPY.reveal.pulse.listingsValue(totalReadyListingsCount()),
+            },
+            {
+              icon: ArrowLeftRight,
+              title: COPY.reveal.pulse.rangeWidthLabel,
+              detail: COPY.reveal.pulse.rangeWidthSubline,
+              value: rangeWidth,
+            },
+          ]}
+        />
+      </SlideCard>
 
       {/* 02 -- real references. The nota switches with the data: with
           comparables on screen it carries the report's own "oferta pública"
           caveat; while a colonia is still being researched it explains that
           instead. */}
-      <div className="space-y-4 rounded-card-lg border border-neutral-200/70 bg-parchment-card/80 p-6 backdrop-blur-md md:p-8">
-        <SectionChip label={COPY.reveal.mercadoChip} />
-        <h3 className="text-base font-bold text-neutral-900">{COPY.reveal.mercadoTitle}</h3>
+      <SlideCard chip={COPY.reveal.mercadoChip} title={COPY.reveal.mercadoTitle} subtitle={COPY.reveal.mercadoSubtitle}>
 
         <div className="flex gap-3 rounded-r-xl border-l-4 border-brand-500 bg-neutral-50 p-4">
           <Info className="mt-0.5 h-4 w-4 flex-shrink-0 text-brand-600 dark:text-brand-400" />
@@ -249,35 +235,18 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, pro
         ) : (
           <p className="text-sm leading-relaxed text-neutral-500">{COPY.reveal.noCompsBody(colonia)}</p>
         )}
-      </div>
+      </SlideCard>
 
       {/* 03 -- the gap between rango and precio de salida, then exactly what
           the full document adds. This is the section that keeps "the range
           is all I needed" from being the exit thought: it quantifies what
           the range can't answer and names the deliverable that does. */}
-      <div className="space-y-4 rounded-card-lg border border-neutral-200/70 bg-parchment-card/80 p-6 backdrop-blur-md md:p-8">
-        <SectionChip label={COPY.reveal.acm.chip} />
-        <h3 className="text-base font-bold text-neutral-900">{COPY.reveal.acm.title}</h3>
-        <p className="text-sm leading-relaxed text-neutral-600">{COPY.reveal.acm.gapIntro(rangeWidth)}</p>
-        <p className="text-sm font-medium leading-relaxed text-neutral-800">{COPY.reveal.acm.marketTruth}</p>
-
-        <ul className="space-y-4 border-t border-neutral-200/70 pt-4">
-          {COPY.reveal.acm.checklist.map(({ title, detail }, i) => {
-            const Icon = ACM_CHECKLIST_ICONS[i];
-            return (
-              <li key={title} className="flex items-start gap-3">
-                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-brand-500/10 text-brand-600 dark:text-brand-400">
-                  <Icon className="h-4 w-4" />
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-neutral-900">{title}</p>
-                  <p className="mt-0.5 text-sm leading-relaxed text-neutral-500">{detail}</p>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+      <SlideCard chip={COPY.reveal.acm.chip} title={COPY.reveal.acm.title} subtitle={COPY.reveal.acm.gapIntro(rangeWidth)}>
+        <SlideBullets items={COPY.reveal.acm.checklist.map((c, i) => ({ ...c, icon: ACM_CHECKLIST_ICONS[i] }))} />
+        <p className="rounded-r-xl border-l-4 border-brand-500 bg-neutral-50 p-4 text-sm font-medium leading-relaxed text-neutral-800 md:text-base">
+          {COPY.reveal.acm.marketTruth}
+        </p>
+      </SlideCard>
 
       <MethodologySection />
 

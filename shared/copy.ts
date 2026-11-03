@@ -74,6 +74,7 @@ export const COPY = {
   methodology: {
     eyebrow: '¿Cómo lo hacemos?',
     title: 'Metodología',
+    subtitle: 'Cuatro pasos para llegar a un número que sí se defiende.',
     steps: [
       {
         title: 'Homologamos tu propiedad',
@@ -362,6 +363,7 @@ export const COPY = {
     pulse: {
       chip: '01 Pulso del Mercado',
       title: 'Lo que el mercado ya nos dice',
+      subtitle: 'Datos reales de nuestro portafolio en tu zona.',
       m2Label: 'Referencia por m²',
       m2SublineColonia: (colonia: string) => `Con base en listados reales de ${colonia}.`,
       m2SublineZona: 'Promedio de Zona Esmeralda mientras afinamos tu fraccionamiento.',
@@ -373,6 +375,7 @@ export const COPY = {
     },
     mercadoChip: '02 Referencias del Mercado',
     mercadoTitle: 'Análisis del mercado',
+    mercadoSubtitle: 'Lo que se publica hoy en tu zona.',
     // Shown when real comparables render below: the same "oferta pública"
     // caveat the full ACM opens its comparables chapter with.
     notaOfertaTag: 'Nota sobre estas referencias',
