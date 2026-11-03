@@ -37,7 +37,7 @@ function MapFallback({ colonia, researchCount }: Pick<Props, 'colonia' | 'resear
       ))}
       <div className="relative z-10 rounded-lg bg-parchment-card/85 px-3 py-2 shadow-sm backdrop-blur-sm">
         <p className="text-xs font-medium text-neutral-700">{researchCount} referencias en investigación</p>
-        <p className="mt-0.5 text-[10px] text-neutral-500">Alrededor de {colonia}</p>
+        <p className="mt-0.5 text-[10px] md:text-xs text-neutral-500">Alrededor de {colonia}</p>
       </div>
     </div>
   );
@@ -134,7 +134,7 @@ export function ComparablesMap({ listings, colonia, researchCount = 0 }: Props) 
         <div className="flex h-full items-center justify-center text-xs text-neutral-400">Cargando mapa...</div>
       )}
       {isLoaded && researchCount > 0 && listings.length === 0 && (
-        <p className="absolute bottom-2 left-2 rounded bg-parchment-card/90 px-2 py-1 text-[10px] font-medium text-neutral-600 shadow-sm backdrop-blur-sm">
+        <p className="absolute bottom-2 left-2 rounded bg-parchment-card/90 px-2 py-1 text-[10px] md:text-xs font-medium text-neutral-600 shadow-sm backdrop-blur-sm">
           Referencias por validar
         </p>
       )}

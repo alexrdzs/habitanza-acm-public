@@ -163,7 +163,7 @@ export function WizardLocationStep(props: Props) {
               browsing the secondary list has clearly skipped these, so keep
               them from adding scroll. */}
           {!showMore && (
-            <div className="animate-in fade-in flex flex-col gap-2 duration-200">
+            <div className="animate-in fade-in grid gap-2 duration-200 md:grid-cols-2">
               {ZONA_ESMERALDA_COLONIAS.map((c) => (
                 <ColoniaRow
                   key={c}
@@ -221,7 +221,7 @@ export function WizardLocationStep(props: Props) {
         {showMore && (
           <div className="animate-in fade-in slide-in-from-top-2 flex flex-col gap-3 rounded-2xl border border-neutral-200/70 bg-parchment-card/80 p-4 backdrop-blur-md duration-300">
             <p className={labelClass}>{COPY.location.expandedPanelLabel}</p>
-            <div className="flex flex-col gap-2">
+            <div className="grid gap-2 md:grid-cols-2">
               {ZONA_ESMERALDA_COLONIAS_EXTENDED.map((c) => (
                 <ColoniaRow
                   key={c}

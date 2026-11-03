@@ -115,7 +115,7 @@ export function PropertySummaryCard({ profile, tipoPropiedad, colonia, estimate 
         // sutil que facilita la lectura" treatment the Pulse tiles and the
         // Mercado nota use.
         <div className="space-y-2 rounded-xl border border-neutral-100 bg-neutral-50 p-4">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-500">{c.analysisTitle}</p>
+          <p className="text-[11px] md:text-xs font-bold uppercase tracking-wider text-neutral-500">{c.analysisTitle}</p>
           <p className="text-sm leading-relaxed text-neutral-600">
             {analysisSegs.map((seg, i) =>
               seg.tone ? (
@@ -146,7 +146,7 @@ export function PropertySummaryCard({ profile, tipoPropiedad, colonia, estimate 
       <dl className="grid grid-cols-3 gap-x-3 gap-y-4">
         {cells.map(({ label, value, direction }) => (
           <div key={label} className="min-w-0">
-            <dt className="text-[10px] font-bold uppercase text-neutral-400">{label}</dt>
+            <dt className="text-[10px] md:text-xs font-bold uppercase text-neutral-400">{label}</dt>
             <dd className="mt-0.5 flex items-center gap-1 text-sm font-semibold leading-snug text-neutral-900">
               <span>{value}</span>
               {/* Diagonal arrows read as trend: up-right (green) = growth,
@@ -179,8 +179,8 @@ export function PropertySummaryCard({ profile, tipoPropiedad, colonia, estimate 
       {perM2 !== null && perM2Base && (
         <div className="flex items-baseline justify-between gap-3 border-t border-neutral-200/70 pt-4">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">{c.perM2Label}</p>
-            <p className="mt-0.5 text-[11px] leading-snug text-neutral-500">{c.perM2Subline(perM2Base, isTerreno)}</p>
+            <p className="text-[10px] md:text-xs font-bold uppercase tracking-wider text-neutral-400">{c.perM2Label}</p>
+            <p className="mt-0.5 text-[11px] md:text-xs leading-snug text-neutral-500">{c.perM2Subline(perM2Base, isTerreno)}</p>
           </div>
           <p className="whitespace-nowrap text-lg font-bold tabular-nums text-neutral-900">{formatCurrency(perM2)}</p>
         </div>

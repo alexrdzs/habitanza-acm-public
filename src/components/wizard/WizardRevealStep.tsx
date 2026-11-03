@@ -35,9 +35,9 @@ const ACM_CHECKLIST_ICONS = [FileSearch, Target, Route];
 function PulseTile({ label, value, subline, className = '' }: { label: string; value: string; subline: string; className?: string }) {
   return (
     <div className={`flex flex-col gap-1 rounded-xl border border-neutral-100 bg-neutral-50 p-4 ${className}`}>
-      <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">{label}</p>
+      <p className="text-[10px] md:text-xs font-bold uppercase tracking-wider text-neutral-400">{label}</p>
       <p className="text-lg font-bold tabular-nums text-neutral-900">{value}</p>
-      <p className="text-[11px] leading-snug text-neutral-500">{subline}</p>
+      <p className="text-[11px] md:text-xs leading-snug text-neutral-500">{subline}</p>
     </div>
   );
 }
@@ -114,7 +114,7 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, pro
         <div className="pointer-events-none absolute -top-28 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-brand-500/15 blur-3xl animate-glow-pulse" />
 
         <div className="relative p-7 text-center md:p-10">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-brand-400">{COPY.reveal.panelChip}</p>
+          <p className="text-[11px] md:text-xs font-bold uppercase tracking-wider text-brand-400">{COPY.reveal.panelChip}</p>
           <p className="mt-3 text-[13px] font-medium text-white/70">{COPY.reveal.headlinePrefix}</p>
           {/* Without the "Entre" prefix the "{low} a {high}" range is short
               enough to sit a notch larger and still stay on one line at 390px
@@ -168,7 +168,7 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, pro
               {hasPendingComps && !hasComps ? COPY.reveal.researchCaption(colonia) : COPY.reveal.caption(colonia)}
             </p>
             <div className="mt-4 flex flex-col items-center gap-0.5">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">
+              <p className="text-[10px] md:text-xs font-bold uppercase tracking-wider text-neutral-500">
                 {COPY.reveal.panelScrollCue}
               </p>
               <ChevronDown className="h-3.5 w-3.5 text-neutral-500" />

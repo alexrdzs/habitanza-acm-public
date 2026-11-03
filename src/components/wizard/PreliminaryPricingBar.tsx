@@ -98,7 +98,7 @@ export function PreliminaryPricingBar({ estimate }: Props) {
         >
           <div className="mx-auto h-2.5 w-0.5 rounded-full bg-white/40" />
           <div className="mt-1.5 flex flex-col items-center whitespace-nowrap">
-            <span className="text-[11px] font-bold tabular-nums text-white">{formatCurrency(estimate.low)}</span>
+            <span className="text-[11px] md:text-xs font-bold tabular-nums text-white">{formatCurrency(estimate.low)}</span>
             <span className="text-[9px] font-bold uppercase tracking-wider text-neutral-400">
               {COPY.reveal.bar.minLabel}
             </span>
@@ -110,7 +110,7 @@ export function PreliminaryPricingBar({ estimate }: Props) {
         >
           <div className="mx-auto h-2.5 w-0.5 rounded-full bg-white/40" />
           <div className="mt-1.5 flex flex-col items-center whitespace-nowrap">
-            <span className="text-[11px] font-bold tabular-nums text-white">{formatCurrency(estimate.high)}</span>
+            <span className="text-[11px] md:text-xs font-bold tabular-nums text-white">{formatCurrency(estimate.high)}</span>
             <span className="text-[9px] font-bold uppercase tracking-wider text-neutral-400">
               {COPY.reveal.bar.maxLabel}
             </span>
@@ -124,7 +124,7 @@ export function PreliminaryPricingBar({ estimate }: Props) {
           className="animate-in fade-in fill-mode-both absolute left-1/2 -translate-x-1/2 duration-400 delay-700"
           style={{ top: '56px' }}
         >
-          <span className="flex items-center gap-1.5 whitespace-nowrap text-[10px] font-medium text-neutral-400">
+          <span className="flex items-center gap-1.5 whitespace-nowrap text-[10px] md:text-xs font-medium text-neutral-400">
             <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-red-500" />
             {COPY.reveal.bar.outOfMarketNote}
           </span>

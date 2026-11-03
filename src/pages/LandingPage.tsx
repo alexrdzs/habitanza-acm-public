@@ -166,14 +166,14 @@ export function LandingPage() {
           flash a loading state. No-op without a key. */}
       {colonia && mapsApiKey && <MapPreloader apiKey={mapsApiKey} />}
       <header className="sticky top-0 z-30 border-b border-neutral-200 bg-white dark:bg-parchment-card/85 dark:backdrop-blur-md">
-        <div className="mx-auto flex max-w-md items-center px-4 py-4 md:max-w-xl lg:max-w-2xl">
+        <div className="mx-auto flex max-w-md items-center px-4 py-4 md:max-w-2xl lg:max-w-4xl">
           {/* Extra left padding lines the wordmark up with the card content
               (title/fields) below, which sit inset by the card's own padding,
               rather than with the card's outer edge. */}
           <Logo className="h-7 pl-6 text-neutral-900 md:pl-8" />
         </div>
       </header>
-      <main className="mx-auto max-w-md px-4 pt-4 pb-20 md:max-w-xl lg:max-w-2xl">
+      <main className="mx-auto max-w-md px-4 pt-4 pb-20 md:max-w-2xl lg:max-w-4xl">
         {step === 'hero' && <WizardHero onStart={() => setStep('location')} />}
 
         {step === 'location' && (

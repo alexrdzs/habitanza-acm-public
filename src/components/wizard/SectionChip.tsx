@@ -19,7 +19,7 @@ export function SectionChip({ label, variant = 'brand', center = false }: Props)
   return (
     <div className={`flex items-center gap-3 ${center ? 'justify-center' : ''}`}>
       <span
-        className={`whitespace-nowrap rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider ${chipClass}`}
+        className={`whitespace-nowrap rounded-full px-3 py-1 text-[11px] md:text-xs font-bold uppercase tracking-wider ${chipClass}`}
       >
         {label}
       </span>

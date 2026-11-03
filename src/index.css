@@ -83,6 +83,18 @@
     color-scheme: light;
   }
 
+  /* Tablet / kiosk behavior: no double-tap-zoom delay, no grey tap flash, and
+     no pull-to-refresh or rubber-band bounce that could wipe a client's
+     half-finished valuation mid-demo. */
+  html {
+    overscroll-behavior-y: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button, a, select, label, [role="button"] {
+    touch-action: manipulation;
+  }
+
   body {
     @apply text-neutral-800 antialiased;
     /* Very subtle -- a faint top-to-bottom shift within the same gray, not

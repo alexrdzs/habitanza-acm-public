@@ -55,7 +55,7 @@ export function WizardShell({
                 {onBack && (
                   <button
                     onClick={onBack}
-                    className="flex items-center gap-2 px-4 py-2 font-medium text-neutral-500 transition-colors hover:text-neutral-800"
+                    className="flex items-center gap-2 px-4 py-2 font-medium md:py-3 text-neutral-500 transition-colors hover:text-neutral-800"
                   >
                     <ArrowLeft className="h-4 w-4" /> Atrás
                   </button>

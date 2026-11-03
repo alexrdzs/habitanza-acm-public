@@ -236,12 +236,12 @@ export function WizardBasicsStep(props: Props) {
             <Sparkles className="h-5 w-5 text-brand-500" />
             {COPY.basics.sectionLabels.adicionales}
           </h3>
-          {/* Two columns at every breakpoint -- never four (too busy) and never
-              one (too tall). Labels wrap to a second line rather than truncate.
+          {/* Two columns (three on tablet landscape) -- never four (too busy) and
+              never one (too tall). Labels wrap to a second line rather than truncate.
               Keyed on the type so the pills fade/slide in when it changes. */}
           <div
             key={props.tipoPropiedad}
-            className="grid animate-in grid-cols-2 gap-2.5 duration-300 fade-in slide-in-from-bottom-2"
+            className="grid animate-in grid-cols-2 gap-2.5 lg:grid-cols-3 duration-300 fade-in slide-in-from-bottom-2"
           >
             {features.map(({ value }) => {
               const active = props.amenidades.includes(value);

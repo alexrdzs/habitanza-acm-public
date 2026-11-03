@@ -80,7 +80,7 @@ export function WizardHero({ onStart }: Props) {
                   <Icon className="h-4 w-4 text-emerald-deep" />
                 </div>
                 <p className="text-[13px] font-bold leading-snug text-neutral-900">{title}</p>
-                <p className="text-[11.5px] leading-relaxed text-neutral-500">{detail}</p>
+                <p className="text-[11.5px] md:text-xs leading-relaxed text-neutral-500">{detail}</p>
               </div>
             );
           })}
