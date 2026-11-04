@@ -14,7 +14,12 @@
 // icon, so the picker keeps working while the artwork is produced one
 // fraccionamiento at a time.
 export const NEIGHBORHOOD_IMAGES: Record<string, string | undefined> = {
-  'Condado de Sayavedra': '/neighborhoods/condado-sayavedra.png',
+  'Condado de Sayavedra': '/neighborhoods/condado-sayavedra.webp',
+  'Hacienda de Valle Escondido': '/neighborhoods/hacienda-valle-escondido.webp',
+  'Bosque Real': '/neighborhoods/bosque-real.webp',
+  'Club de Golf Chiluca': '/neighborhoods/club-golf-chiluca.webp',
+  'Prado Largo': '/neighborhoods/prado-largo.webp',
+  'Rancho San Juan': '/neighborhoods/rancho-san-juan.webp',
   // 'Bosque Esmeralda': '/neighborhoods/bosque-esmeralda.png',
   // 'Residencial Lago Esmeralda': '/neighborhoods/lago-esmeralda.png',
   // 'Lomas de Valle Escondido': '/neighborhoods/lomas-valle-escondido.png',

@@ -7,26 +7,37 @@ interface Props {
   className?: string;
 }
 
-// Contained pill-group toggle — same pattern the authenticated ACM tool
-// uses for its Venta/Renta operation-type switch.
+// Pill-group toggle. The active option is a single green pill (soft top-to-
+// bottom gradient) that slides from one option to the next. Options share the
+// width equally, so the pill is positioned with plain percentages, no measuring.
 export function SegmentedControl({ options, value, onChange, className }: Props) {
+  const index = options.indexOf(value);
   return (
-    <div className={cn('inline-flex flex-wrap gap-1 rounded-xl bg-neutral-100 p-1', className)}>
-      {options.map((opt) => (
-        <button
-          key={opt}
-          type="button"
-          onClick={() => onChange(opt)}
+    <div className={cn('rounded-full bg-neutral-100 p-1', className)}>
+      <div className="relative grid" style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}>
+        <span
+          aria-hidden
           className={cn(
-            'flex-1 rounded-lg px-4 py-2.5 text-sm md:py-3 md:text-base font-semibold transition-all',
-            value === opt
-              ? 'bg-white text-brand-600 shadow-sm ring-1 ring-neutral-200 dark:bg-white/10 dark:text-brand-400'
-              : 'text-neutral-500 hover:text-neutral-700'
+            'pointer-events-none absolute inset-y-0 left-0 rounded-full bg-gradient-to-b from-brand-400 to-brand-500 shadow-[0_2px_8px_-2px_rgba(22,163,74,0.55),inset_0_1px_0_rgba(255,255,255,0.35)] transition-[transform,opacity] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]',
+            index < 0 && 'opacity-0'
           )}
-        >
-          {opt}
-        </button>
-      ))}
+          style={{ width: `${100 / options.length}%`, transform: `translateX(${Math.max(index, 0) * 100}%)` }}
+        />
+        {options.map((opt) => (
+          <button
+            key={opt}
+            type="button"
+            aria-pressed={value === opt}
+            onClick={() => onChange(opt)}
+            className={cn(
+              'relative z-10 min-h-12 rounded-full px-4 py-3 text-base font-semibold transition-colors duration-300 md:min-h-14 md:text-lg',
+              value === opt ? 'text-white' : 'text-neutral-500 hover:text-neutral-700'
+            )}
+          >
+            {opt}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

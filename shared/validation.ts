@@ -8,9 +8,9 @@ export const ZONA_ESMERALDA_COLONIAS = [
   'Condado de Sayavedra',
   'Hacienda de Valle Escondido',
   'Bosque Real',
-  'Residencial Lago Esmeralda',
   'Club de Golf Chiluca',
-
+  'Prado Largo',
+  'Rancho San Juan',
 ] as const;
 
 // Additional real colonias shown behind the location step's "Ver más"
@@ -21,18 +21,13 @@ export const ZONA_ESMERALDA_COLONIAS = [
 // not guessed -- they have real coordinates but no active listings yet, so
 // they get the default price/m² fallback and no "Mercado de la zona" comps.
 export const ZONA_ESMERALDA_COLONIAS_EXTENDED = [
+  'Residencial Lago Esmeralda',
+  'Lomas de Valle Escondido',
   'Bosque Esmeralda',
   'Club de Golf Valle Escondido',
   'Fincas de Sayavedra',
   'Interlomas y Hda. de las Palmas',
-  
-  'Lomas de Valle Escondido',
   'La Estadía',
-  'Prado Largo',
-  // Temporary campaign coverage. These zones use the generic preliminary
-  // baseline until their local comparable data is added.
-  'Rancho San Juan',
-  
 ] as const;
 
 // Sentinel value for "my colonia isn't in the list" — paired with the
@@ -113,6 +108,7 @@ export const REFERRAL_SOURCES = [
   { value: 'publicidad', label: 'Publicidad' },
   { value: 'redes_sociales', label: 'Redes Sociales' },
   { value: 'recomendacion', label: 'Recomendación' },
+  { value: 'evento', label: 'Evento' },
   { value: 'otro', label: 'Otro' },
 ] as const;
 export type ReferralSource = (typeof REFERRAL_SOURCES)[number]['value'];

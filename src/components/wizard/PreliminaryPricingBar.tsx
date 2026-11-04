@@ -68,7 +68,7 @@ export function PreliminaryPricingBar({ estimate }: Props) {
             behind the pin (z-10) and ticks (z-0) by DOM order and never
             obscures a label. */}
         <div
-          className="animate-in fade-in fill-mode-both absolute rounded-full border border-white/45 bg-white/15 shadow-[0_0_0_2px_rgba(37,211,102,0.15)] backdrop-blur-[2px] duration-500 delay-300"
+          className="animate-in fade-in fill-mode-both absolute rounded-full border border-white/45 bg-white/15 shadow-[0_0_0_2px_rgba(39,200,64,0.15)] backdrop-blur-[2px] duration-500 delay-300"
           style={{ left: `${pillLeft}%`, width: `${pillWidth}%`, top: '-9px', height: '28px' }}
         />
 

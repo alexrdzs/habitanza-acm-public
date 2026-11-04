@@ -23,7 +23,7 @@ interface Props {
 
 // Selecting a card advances automatically -- this is the pause that lets the
 // checkmark register before the screen changes, not a network wait.
-const AUTO_ADVANCE_DELAY_MS = 400;
+const AUTO_ADVANCE_DELAY_MS = 250;
 
 // A small cluster of themed icons on the expand trigger -- a "there's more"
 // teaser that speaks the same icon language as the rows. Derived from the
@@ -46,6 +46,8 @@ interface ColoniaRowProps {
   // same soft styling as the primary tiles. Ignored when a row shows a real
   // illustration.
   brandIcon?: boolean;
+  // Primary batch: taller, easier to tap from a distance.
+  tall?: boolean;
 }
 
 // A compact row: a visual on the left with the name beside it, so almost all
@@ -55,7 +57,7 @@ interface ColoniaRowProps {
 // artwork lands it falls back to a themed lucide icon that at least hints at
 // the neighborhood (a lake, a golf flag, woods, hills). Both are assigned in
 // one place each, so they're easy to customize.
-function ColoniaRow({ label, active, disabled, onSelect, icon, dashed, brandIcon }: ColoniaRowProps) {
+function ColoniaRow({ label, active, disabled, onSelect, icon, dashed, brandIcon, tall }: ColoniaRowProps) {
   const Icon = icon ?? neighborhoodIcon(label);
   const image = dashed ? undefined : neighborhoodImage(label);
   const [imgFailed, setImgFailed] = useState(false);
@@ -68,8 +70,9 @@ function ColoniaRow({ label, active, disabled, onSelect, icon, dashed, brandIcon
       disabled={disabled}
       className={cn(
         'flex w-full items-center gap-3 rounded-2xl border p-2.5 text-left transition-all disabled:opacity-40',
+        tall && 'min-h-[50px] gap-3 p-1.5',
         active
-          ? 'border-brand-500 bg-brand-500/5'
+          ? 'border-brand-500 bg-selected-gradient'
           : dashed
             ? 'border-dashed border-neutral-300 hover:border-brand-400 hover:bg-brand-500/5'
             : 'border-neutral-200 bg-parchment-card hover:border-brand-500 hover:bg-brand-500/5'
@@ -78,6 +81,7 @@ function ColoniaRow({ label, active, disabled, onSelect, icon, dashed, brandIcon
       <div
         className={cn(
           'relative flex h-14 w-14 flex-shrink-0 items-center justify-center overflow-hidden rounded-2xl transition-colors',
+          tall && 'h-[40px] w-[40px]',
           // The tile also backs a transparent-background illustration, so it
           // keeps a soft surface even in the image case.
           active
@@ -107,6 +111,7 @@ function ColoniaRow({ label, active, disabled, onSelect, icon, dashed, brandIcon
       <span
         className={cn(
           'min-w-0 flex-1 text-sm font-semibold leading-tight',
+          tall && 'text-[15px]',
           dashed && !active ? 'text-neutral-500' : 'text-neutral-800'
         )}
       >
@@ -150,63 +155,36 @@ export function WizardLocationStep(props: Props) {
 
   const canContinueOtra = props.coloniaOtra.trim().length > 0;
 
-  return (
-    <WizardShell
-      title={COPY.location.title}
-      description={COPY.location.description}
-      step={{ current: 1, total: 3 }}
-      onBack={props.onBack}
-    >
-      <div className="flex flex-col gap-4">
-        <div>
-          {/* Collapse the primary batch once "ver más" is open: the visitor
-              browsing the secondary list has clearly skipped these, so keep
-              them from adding scroll. */}
-          {!showMore && (
-            <div className="animate-in fade-in grid gap-2 duration-200 md:grid-cols-2">
-              {ZONA_ESMERALDA_COLONIAS.map((c) => (
-                <ColoniaRow
-                  key={c}
-                  label={c}
-                  active={props.colonia === c}
-                  disabled={isAdvancing && props.colonia !== c}
-                  onSelect={() => handleSelect(c)}
-                />
-              ))}
-            </div>
-          )}
-
+  const moreButton = (
           <button
             type="button"
             onClick={() => setShowMore((v) => !v)}
             className={cn(
-              'flex w-full items-center gap-3 rounded-2xl border p-3 text-left transition-all',
-              !showMore && 'mt-3',
+              'flex w-full items-center gap-4 rounded-2xl border p-3 text-left transition-all',
+              !showMore && 'min-h-[50px] px-3',
               showMore || isExtendedSelection
-                ? 'border-brand-500 bg-brand-500/5'
+                ? 'border-brand-500 bg-selected-gradient'
                 : 'border-neutral-200 bg-parchment-card hover:border-brand-500 hover:bg-brand-500/5'
             )}
           >
             {/* A little cluster of themed icons -- a "there's more" teaser in
                 the same icon language as the rows, not a plain dashed button. */}
-            <div className="flex flex-shrink-0 items-center">
+            <div className="relative ml-3 h-8 w-12 flex-shrink-0">
               {TEASER_ICONS.map((Icon, i) => (
                 <div
                   key={i}
-                  className={cn(
-                    'flex h-9 w-9 items-center justify-center rounded-lg border-2 border-parchment-card bg-neutral-100 text-emerald-deep shadow-sm',
-                    i > 0 && '-ml-3'
-                  )}
+                  style={{ transform: `translateX(${(i - 1) * 12}px) rotate(${(i - 1) * 18}deg)`, zIndex: i === 1 ? 2 : 1 }}
+                  className="absolute bottom-0 left-1/2 -ml-3.5 flex h-7 w-7 origin-bottom items-center justify-center rounded-md border border-neutral-200 bg-white text-emerald-deep shadow-sm"
                 >
-                  <Icon className="h-4 w-4" strokeWidth={1.75} />
+                  <Icon className="h-3.5 w-3.5" strokeWidth={1.75} />
                 </div>
               ))}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-bold leading-tight text-neutral-900">
+              <p className="text-[15px] font-bold leading-tight text-neutral-900">
                 {!showMore && isExtendedSelection ? mapLabel || COPY.location.moreOptionsTitle : COPY.location.moreOptionsTitle}
               </p>
-              <p className="text-xs text-neutral-500">
+              <p className="mt-0.5 text-[13px] text-neutral-500">
                 {COPY.location.moreOptionsSubtitle(ZONA_ESMERALDA_COLONIAS_EXTENDED.length)}
               </p>
             </div>
@@ -216,6 +194,35 @@ export function WizardLocationStep(props: Props) {
               <ChevronDown className="h-4 w-4 flex-shrink-0 text-neutral-400" />
             )}
           </button>
+  );
+
+  return (
+    <WizardShell
+      title={COPY.location.title}
+      onBack={props.onBack}
+    >
+      <div className="flex flex-col gap-4">
+        <div>
+          {/* Collapse the primary batch once "ver más" is open: the visitor
+              browsing the secondary list has clearly skipped these, so keep
+              them from adding scroll. */}
+          {!showMore && (
+            <div className="animate-in fade-in grid gap-1.5 duration-200">
+              {ZONA_ESMERALDA_COLONIAS.map((c) => (
+                <ColoniaRow
+                  key={c}
+                  label={c}
+                  active={props.colonia === c}
+                  disabled={isAdvancing && props.colonia !== c}
+                  tall
+                  onSelect={() => handleSelect(c)}
+                />
+              ))}
+              {moreButton}
+            </div>
+          )}
+
+          {showMore && moreButton}
         </div>
 
         {showMore && (
@@ -258,7 +265,7 @@ export function WizardLocationStep(props: Props) {
                   type="button"
                   onClick={() => props.onContinue()}
                   disabled={!canContinueOtra}
-                  className="rounded-pill bg-brand-500 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-brand-600 dark:bg-brand-600 dark:hover:bg-brand-700"
+                  className="rounded-pill bg-brand-500 bg-brand-gradient px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-brand-600 dark:bg-brand-600 dark:hover:bg-brand-700"
                 >
                   {COPY.location.continueLabel}
                 </button>

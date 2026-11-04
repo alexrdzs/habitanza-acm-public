@@ -42,7 +42,7 @@ export function AdvisorCTA({ advisor, nombre, tipoPropiedad, colonia, precio, vi
           target="_blank"
           rel="noreferrer"
           tabIndex={visible ? 0 : -1}
-          className="flex flex-shrink-0 items-center gap-1 rounded-pill bg-brand-500 px-3 py-2.5 text-sm font-semibold md:px-5 md:py-3 text-white shadow-sm transition-transform active:scale-95 hover:bg-brand-600 dark:bg-brand-600 dark:hover:bg-brand-700"
+          className="flex flex-shrink-0 items-center gap-1 rounded-pill bg-brand-500 bg-brand-gradient px-3 py-2.5 text-sm font-semibold md:px-5 md:py-3 text-white transition-transform active:scale-95 "
         >
           <MessageCircle className="h-4 w-4" />
           {COPY.advisorCta.ctaLabel}

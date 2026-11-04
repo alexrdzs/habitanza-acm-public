@@ -76,7 +76,7 @@ export function AnalyzingMap({ colonia, narrow }: Props) {
             icon: {
               path: google.maps.SymbolPath.CIRCLE,
               scale: 7,
-              fillColor: '#25D366',
+              fillColor: '#27C840',
               fillOpacity: 1,
               strokeColor: '#ffffff',
               strokeWeight: 2,

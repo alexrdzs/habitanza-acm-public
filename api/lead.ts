@@ -30,6 +30,7 @@ const ZONA_ESMERALDA_COLONIAS_EXTENDED = [
   // Keep temporary campaign areas in sync with shared/validation.ts.
   'Bosque Real',
   'Interlomas',
+  'Interlomas y Hda. de las Palmas',
 ] as const;
 const OTHER_COLONIA_VALUE = 'otra';
 const PUBLIC_PROPERTY_TYPES = ['Casa', 'Departamento', 'Terreno'] as const;
@@ -58,7 +59,7 @@ const FEATURE_VALUES = [
   'Con pendiente',
 ] as const;
 // Keep in sync with REFERRAL_SOURCES in shared/validation.ts.
-const REFERRAL_SOURCES = ['publicidad', 'redes_sociales', 'recomendacion', 'otro'] as const;
+const REFERRAL_SOURCES = ['publicidad', 'redes_sociales', 'recomendacion', 'evento', 'otro'] as const;
 
 function normalizePhone(raw: string): string | null {
   const digits = raw.replace(/\D/g, '');

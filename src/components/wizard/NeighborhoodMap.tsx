@@ -25,7 +25,7 @@ export const MAP_STYLES = [
 // index.css) rather than a generic Google night theme: the base geometry
 // matches the dark card surfaces, water reads as a deep blue-grey, parks a
 // muted forest green, and labels are a light grey-green with a near-black
-// stroke so they stay legible. The brand-green (#25D366) markers layered on
+// stroke so they stay legible. The brand-green (#27C840) markers layered on
 // top pop against it. Mirrors MAP_STYLES feature-for-feature so the two are
 // easy to keep in sync.
 export const MAP_STYLES_DARK = [

@@ -1,6 +1,7 @@
+import { IS_EVENT_MODE } from '../../lib/eventMode';
 import { useEffect, useRef, useState } from 'react';
-import { ArrowLeftRight, Building2, ChevronDown, FileSearch, Info, LineChart, MessageCircle, Route, Target } from 'lucide-react';
-import { PreliminaryPricingBar } from './PreliminaryPricingBar';
+import { ArrowLeftRight, Building2, FileSearch, Info, LineChart, Route, Target } from 'lucide-react';
+import { RevealPricePanel } from './RevealPricePanel';
 import { PropertySummaryCard, type PropertyProfile } from './PropertySummaryCard';
 import { ComparablesMap } from './ComparablesMap';
 import { ComparableListingCards } from './ComparableListingCards';
@@ -9,8 +10,7 @@ import { SlideBullets, SlideCard } from './SlideCard';
 import { TestimonialsCarousel } from './TestimonialsCarousel';
 import { AdvisorCTA } from './AdvisorCTA';
 import { AdvisorClosingSection } from './AdvisorClosingSection';
-import { AdvisorAvatar } from './AdvisorAvatar';
-import { whatsappLink, buildWhatsAppMessage, type Advisor } from '@shared/advisors';
+import type { Advisor } from '@shared/advisors';
 import { pendingComparableListings, readyComparableListings, totalReadyListingsCount } from '@shared/comparableListings';
 import { COPY } from '@shared/copy';
 import { referencePerM2, type PreliminaryEstimate } from '@shared/pricing';
@@ -25,14 +25,15 @@ interface Props {
   // Chosen upstream (at submit) so the CRM webhook, the firma, and the
   // WhatsApp CTA all reference the same assigned broker.
   advisor: Advisor;
+  // Two-panel layout: the price panel is rendered by the page, not here.
+  wide?: boolean;
 }
 
 // Order-matched with COPY.reveal.acm.checklist.
 const ACM_CHECKLIST_ICONS = [FileSearch, Target, Route];
 
-export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, profile, advisor }: Props) {
+export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, profile, advisor, wide = false }: Props) {
   const firstName = nombre.trim().split(' ')[0] || 'gracias';
-  const advisorFirstName = advisor.name.split(' ')[0];
   const comps = readyComparableListings(colonia);
   const pendingComps = pendingComparableListings(colonia);
   const hasComps = comps.length > 0;
@@ -40,7 +41,6 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, pro
   // The estimate result, exactly as shown in the price panel, pre-filled into
   // every WhatsApp CTA on the screen.
   const precioResultado = `${formatCurrency(estimate.low)} a ${formatCurrency(estimate.high)}`;
-  const message = buildWhatsAppMessage(advisor, nombre, tipoPropiedad, colonia, precioResultado);
   const zoneReference = referencePerM2(colonia, tipoPropiedad);
   const rangeWidth = formatCurrency(estimate.high - estimate.low);
 
@@ -75,95 +75,32 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, pro
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 space-y-3 pb-20 duration-700 md:space-y-5">
-      {/* Plain page text, not a card -- the greeting shouldn't be the thing
-          that makes the first card feel heavy. Centered on mobile (where it
-          reads as the screen's title), left-aligned once there's enough
-          width for it to sit naturally beside the card below. */}
-      <div className="pb-2 text-center md:text-left">
-        <h2 className="text-lg font-medium leading-snug text-neutral-900 md:text-xl">{COPY.reveal.greeting(firstName)}</h2>
-        <p className="mt-1 text-sm text-neutral-500">{COPY.reveal.subtext}</p>
-      </div>
-
-      {/* The price moment borrows the full ACM's dark panel (its hero and
-          "Precio Sugerido de Salida" card are the same near-black surface),
-          so the preliminary range visibly foreshadows the document the
-          advisor delivers. The "Rango preliminar" chip is doing expectation
-          work: it names this as the junior version of a number that exists.
-          Deliberately slim -- just the price moment plus a "continues below"
-          cue -- so the 01 Pulso card peeks above the fold on a phone. The
-          advisor firma and CTA live in section 03, after the value has been
-          delivered; the range must not read as the end of the screen. */}
-      <div
-        ref={heroCardRef}
-        className="relative overflow-hidden rounded-card-lg bg-ink text-white shadow-[0_1px_2px_rgba(12,10,9,0.08),0_16px_36px_-16px_rgba(12,10,9,0.45)] dark:ring-1 dark:ring-white/10"
-      >
-        {/* Ambient glow, deliberately slow and low-opacity: alive, not
-            loading (see index.css glow-pulse). */}
-        <div className="pointer-events-none absolute -top-28 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-brand-500/15 blur-3xl animate-glow-pulse" />
-
-        <div className="relative p-7 text-center md:p-10">
-          <p className="text-[11px] md:text-xs font-bold uppercase tracking-wider text-brand-400">{COPY.reveal.panelChip}</p>
-          <p className="mt-3 text-[13px] font-medium text-white/70">{COPY.reveal.headlinePrefix}</p>
-          {/* Without the "Entre" prefix the "{low} a {high}" range is short
-              enough to sit a notch larger and still stay on one line at 390px
-              for the 7-8 figure values typical of this zone; leading-tight
-              lets an unusually large value wrap gracefully. Scales to the full
-              display size on desktop. */}
-          <h3 className="mt-1.5 text-xl font-bold leading-tight tracking-tight tabular-nums text-white md:text-4xl">
-            <span className="animate-in fade-in slide-in-from-bottom-1 fill-mode-both duration-500 delay-100">
-              {formatCurrency(estimate.low)}
-            </span>{' '}
-            {COPY.reveal.headlineJoiner}{' '}
-            <span className="animate-in fade-in slide-in-from-bottom-1 fill-mode-both duration-500 delay-200">
-              {formatCurrency(estimate.high)}
-            </span>
-          </h3>
-          <PreliminaryPricingBar estimate={estimate} />
-
-          {/* Advisor profile card: face on top, note below. A real person
-              running the analysis, stated above the fold so bot suspicion
-              never forms, and the sticky bottom bar's advisor is already
-              familiar. Identity only -- the ask (paragraph + CTA) lives in
-              the closing card at the very bottom. */}
-          <div className="mx-auto mt-6 flex max-w-xs flex-col items-center gap-3 border-t border-white/10 pt-6 text-center">
-            <AdvisorAvatar
-              advisor={advisor}
-              className="h-16 w-16 flex-shrink-0 border-2 border-brand-500/70 bg-white/10"
-              iconClassName="h-6 w-6 text-white/50"
-            />
-            <p className="text-[13px] leading-relaxed text-white/70">
-              <span className="font-semibold text-white">{advisorFirstName}</span>
-              {COPY.reveal.panelAdvisorNote.middle(advisor.roleLabel)}
-              <span className="font-semibold text-white">{colonia}</span>
-              {COPY.reveal.panelAdvisorNote.suffix}
-            </p>
-            <a
-              href={whatsappLink(advisor, message)}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-5 flex w-full items-center justify-center gap-2 rounded-pill bg-brand-500 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-transform active:scale-95 hover:bg-brand-600 dark:bg-brand-600 dark:hover:bg-brand-700"
-            >
-              <MessageCircle className="h-4 w-4" />
-              {COPY.reveal.panelCtaLabel}
-            </a>
+      {!wide && (
+        <>
+          {/* Plain page text, not a card -- centered on mobile (where it
+              reads as the screen's title), left-aligned on tablet. On wide
+              screens the greeting and price panel live in the left column
+              (see RevealPricePanel). */}
+          <div className="pb-2 text-center md:text-left">
+            <h2 className="text-lg font-medium leading-snug text-neutral-900 md:text-xl">{COPY.reveal.greeting(firstName)}</h2>
+            <p className="mt-1 text-sm text-neutral-500">{IS_EVENT_MODE ? COPY.event.revealSubtext : COPY.reveal.subtext}</p>
           </div>
+          <RevealPricePanel
+            estimate={estimate}
+            nombre={nombre}
+            tipoPropiedad={tipoPropiedad}
+            colonia={colonia}
+            advisor={advisor}
+            panelRef={heroCardRef}
+          />
+        </>
+      )}
 
-          {/* Bottom of the card: the range disclaimer as fine print (kept
-              out of the price->person flow above), then the "continues
-              below" cue as the final affordance. */}
-          <div className="mt-6 border-t border-white/10 pt-4">
-            <p className="mx-auto max-w-lg text-center text-[10px] leading-snug text-neutral-500 md:text-xs">
-              {hasPendingComps && !hasComps ? COPY.reveal.researchCaption(colonia) : COPY.reveal.caption(colonia)}
-            </p>
-            <div className="mt-4 flex flex-col items-center gap-0.5">
-              <p className="text-[10px] md:text-xs font-bold uppercase tracking-wider text-neutral-500">
-                {COPY.reveal.panelScrollCue}
-              </p>
-              <ChevronDown className="h-3.5 w-3.5 text-neutral-500" />
-            </div>
-          </div>
-        </div>
-      </div>
+      {wide && (
+        <p className="text-xs leading-snug text-neutral-500">
+          {hasPendingComps && !hasComps ? COPY.reveal.researchCaption(colonia) : COPY.reveal.caption(colonia)}
+        </p>
+      )}
 
       {/* "Tu propiedad" -- bridges the zone-average price panel to the
           numbered market chapters by echoing the visitor's own inputs as the
@@ -268,14 +205,17 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, pro
         ctaRef={inlineCtaRef}
       />
 
-      <AdvisorCTA
-        advisor={advisor}
-        nombre={nombre}
-        tipoPropiedad={tipoPropiedad}
-        colonia={colonia}
-        precio={precioResultado}
-        visible={isStickyBarVisible}
-      />
+      {/* On wide screens the price panel (with its CTA) is always on screen. */}
+      {!wide && (
+        <AdvisorCTA
+          advisor={advisor}
+          nombre={nombre}
+          tipoPropiedad={tipoPropiedad}
+          colonia={colonia}
+          precio={precioResultado}
+          visible={isStickyBarVisible}
+        />
+      )}
     </div>
   );
 }
