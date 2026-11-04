@@ -39,6 +39,29 @@ export const COPY = {
     ],
   },
 
+  // Home for the in-person event mode (?modo=evento): read from a meter away.
+  heroEvent: {
+    headline: '¿Cuánto vale tu propiedad?',
+    tagline: 'Tu estimado en 2 minutos',
+    body: 'Lo llenamos juntos con tu asesor y ves el resultado aquí mismo.',
+    ctaLabel: 'Empezar',
+    // Order-matched with TRUST_MARK_ICONS in WizardHero.tsx.
+    bullets: ['Sin costo', 'Asesores locales de la zona', 'Con datos reales del mercado'],
+  },
+
+  // Event mode: the advisor is standing next to the visitor, so copy talks
+  // about "now / here" instead of "soon / they'll contact you".
+  event: {
+    contactDescription: 'Tu asesor está contigo. Déjanos tus datos para darte seguimiento después del evento.',
+    revealSubtext: 'Este es un primer rango aproximado. Tu asesor lo revisa contigo ahora.',
+    advisorParagraph: (advisorFirstName: string, colonia: string) =>
+      `${advisorFirstName} está contigo hoy y conoce muy bien ${colonia}. Después del evento te escribe por WhatsApp ` +
+      'para armar la estrategia ideal para vender tu propiedad.',
+    panelAdvisorSuffix: ', y está aquí para revisarlo contigo ahora.',
+    panelCtaLabel: 'Seguir por WhatsApp',
+    submittedBody: 'Tu asesor te da seguimiento por WhatsApp después del evento.',
+  },
+
   team: {
     eyebrow: 'Tu equipo en la zona',
     title: 'Tu equipo de profesionales',
@@ -74,6 +97,7 @@ export const COPY = {
   methodology: {
     eyebrow: '¿Cómo lo hacemos?',
     title: 'Metodología',
+    subtitle: 'Cuatro pasos para llegar a un número que sí se defiende.',
     steps: [
       {
         title: 'Homologamos tu propiedad',
@@ -99,6 +123,21 @@ export const COPY = {
     title: 'Testimonios de quienes ya trabajaron con nosotros',
   },
 
+  // Left panel of the tablet-landscape / desktop layout (see WizardSidebar).
+  sidebar: {
+    title: 'Conoce el valor de tu propiedad',
+    subtitle: 'Te ayudamos a tomar una mejor decisión.',
+    summaryLabel: 'Tu propiedad',
+    fraccionamiento: 'Fraccionamiento',
+    tipo: 'Tipo',
+    construccion: 'Construcción',
+    terreno: 'Terreno',
+    recamaras: 'Recámaras',
+    banos: 'Baños',
+    estacionamientos: 'Estacionamientos',
+    antiguedad: 'Antigüedad',
+  },
+
   location: {
     title: '¿Dónde está tu propiedad?',
     description: 'Sabemos que cada zona es diferente, por eso ajustamos el cálculo según dónde esté tu propiedad.',
@@ -111,11 +150,8 @@ export const COPY = {
   },
 
   basics: {
-    title: 'Cuéntanos de tu propiedad',
-    description: 'Así podemos compararla con otras similares.',
     sectionLabels: {
       tamanoEspacios: 'Tamaño y espacios',
-      adicionales: 'Características',
     },
     fieldLabels: {
       tipoPropiedad: 'Tipo de propiedad *',
@@ -124,7 +160,52 @@ export const COPY = {
       recamaras: 'Recámaras',
       banos: 'Baños',
       estacionamientos: 'Estacionamientos',
+      antiguedad: 'Antigüedad (opcional)',
     },
+  },
+
+  // The property "Datos" are four short screens so none needs scrolling.
+  property: {
+    title: 'Tu propiedad',
+    description: 'Elige el tipo, escribe los metros cuadrados y la antigüedad.',
+  },
+  spaces: {
+    title: '¿Cuántos espacios tiene?',
+    description: 'Recámaras, baños y estacionamientos.',
+  },
+  age: {
+    label: 'Antigüedad (opcional)',
+    // Short display text per stored value (the values themselves are what the
+    // server validates, so they stay as they are).
+    short: {
+      'A estrenar': 'A estrenar',
+      'Menos de 5 años': 'Menos 5 años',
+      'Entre 5 y 10 años': '5 a 10 años',
+      'Entre 10 y 20 años': '10 a 20 años',
+      'Más de 20 años': '+20 años',
+    } as Record<string, string>,
+  },
+
+  // Top bar: progress line + step label, and the event-mode restart button.
+  progress: {
+    stepOf: (current: number, total: number) => `Paso ${current} de ${total}`,
+    labels: {
+      location: 'Ubicación',
+      property: 'Tu propiedad',
+      spaces: 'Espacios',
+      age: 'Antigüedad',
+      extras: 'Extras',
+      contact: 'Contacto',
+    },
+    analyzing: 'Analizando',
+    result: 'Tu estimado',
+    restart: 'Volver a empezar',
+    restartConfirm: 'Toca otra vez para borrar',
+  },
+
+  extras: {
+    title: '¿Qué la hace especial?',
+    description: 'Toca todo lo que aplique. Es opcional.',
   },
 
   contact: {
@@ -362,6 +443,7 @@ export const COPY = {
     pulse: {
       chip: '01 Pulso del Mercado',
       title: 'Lo que el mercado ya nos dice',
+      subtitle: 'Datos reales de nuestro portafolio en tu zona.',
       m2Label: 'Referencia por m²',
       m2SublineColonia: (colonia: string) => `Con base en listados reales de ${colonia}.`,
       m2SublineZona: 'Promedio de Zona Esmeralda mientras afinamos tu fraccionamiento.',
@@ -373,6 +455,7 @@ export const COPY = {
     },
     mercadoChip: '02 Referencias del Mercado',
     mercadoTitle: 'Análisis del mercado',
+    mercadoSubtitle: 'Lo que se publica hoy en tu zona.',
     // Shown when real comparables render below: the same "oferta pública"
     // caveat the full ACM opens its comparables chapter with.
     notaOfertaTag: 'Nota sobre estas referencias',

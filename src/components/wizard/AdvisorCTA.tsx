@@ -31,18 +31,18 @@ export function AdvisorCTA({ advisor, nombre, tipoPropiedad, colonia, precio, vi
         visible ? 'translate-y-0' : 'translate-y-full pointer-events-none'
       )}
     >
-      <div className="mx-auto flex max-w-md items-center gap-2 px-4 py-3">
+      <div className="mx-auto flex max-w-md items-center gap-2 px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:max-w-2xl md:gap-3 lg:max-w-4xl">
         <AdvisorAvatar advisor={advisor} className="h-9 w-9 flex-shrink-0 border border-neutral-200" iconClassName="h-4 w-4" />
         <div className="min-w-0 flex-1">
           <p className="truncate text-xs font-bold text-neutral-900">{advisor.name}</p>
-          <p className="truncate text-[10.5px] text-neutral-500">{advisor.roleLabel}</p>
+          <p className="truncate text-[10.5px] md:text-xs text-neutral-500">{advisor.roleLabel}</p>
         </div>
         <a
           href={whatsappLink(advisor, message)}
           target="_blank"
           rel="noreferrer"
           tabIndex={visible ? 0 : -1}
-          className="flex flex-shrink-0 items-center gap-1 rounded-pill bg-brand-500 px-3 py-2.5 text-sm font-semibold text-white shadow-sm transition-transform active:scale-95 hover:bg-brand-600 dark:bg-brand-600 dark:hover:bg-brand-700"
+          className="flex flex-shrink-0 items-center gap-1 rounded-pill bg-brand-500 bg-brand-gradient px-3 py-2.5 text-sm font-semibold md:px-5 md:py-3 text-white transition-transform active:scale-95 "
         >
           <MessageCircle className="h-4 w-4" />
           {COPY.advisorCta.ctaLabel}

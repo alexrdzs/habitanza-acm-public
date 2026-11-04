@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { REFERRAL_SOURCES } from '@shared/validation';
 import { COPY } from '@shared/copy';
+import { IS_EVENT_MODE } from '../../lib/eventMode';
 import { WizardShell } from './WizardShell';
 import { PrivacyNoticeContent } from '../PrivacyNoticeContent';
 import { inputClass, labelClass } from './formStyles';
@@ -49,8 +50,7 @@ export function WizardContactStep(props: Props) {
   return (
     <WizardShell
       title={COPY.contact.title}
-      description={COPY.contact.description}
-      step={{ current: 3, total: 3 }}
+      description={IS_EVENT_MODE ? COPY.event.contactDescription : COPY.contact.description}
       onBack={props.onBack}
       nextLabel={COPY.contact.nextLabel}
       isNextLoading={props.isSubmitting}

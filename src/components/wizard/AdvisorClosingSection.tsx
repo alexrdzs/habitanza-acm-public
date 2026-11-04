@@ -1,3 +1,4 @@
+import { IS_EVENT_MODE } from '../../lib/eventMode';
 import type { RefObject } from 'react';
 import { MessageCircle } from 'lucide-react';
 import { AdvisorAvatar } from './AdvisorAvatar';
@@ -42,16 +43,18 @@ export function AdvisorClosingSection({ advisor, nombre, tipoPropiedad, colonia,
             className="h-20 w-20 flex-shrink-0 border-2 border-brand-500/70 bg-white/10"
             iconClassName="h-8 w-8 text-white/50"
           />
-          <p className="mt-4 text-[10px] font-bold uppercase tracking-wider text-brand-400">{advisor.roleLabel}</p>
+          <p className="mt-4 text-[10px] md:text-xs font-bold uppercase tracking-wider text-brand-400">{advisor.roleLabel}</p>
           <p className="mt-0.5 text-base font-bold text-white">{advisor.name}</p>
           <p className="mt-3 text-sm leading-relaxed text-white/70">
-            {COPY.reveal.advisorParagraph(advisorFirstName, advisor.gender, colonia)}
+            {IS_EVENT_MODE
+              ? COPY.event.advisorParagraph(advisorFirstName, colonia)
+              : COPY.reveal.advisorParagraph(advisorFirstName, advisor.gender, colonia)}
           </p>
           <a
             href={whatsappLink(advisor, message)}
             target="_blank"
             rel="noreferrer"
-            className="mt-5 flex w-full items-center justify-center gap-2 rounded-pill bg-brand-500 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-transform active:scale-95 hover:bg-brand-600 dark:bg-brand-600 dark:hover:bg-brand-700"
+            className="mt-5 flex w-full items-center justify-center gap-2 rounded-pill bg-brand-500 bg-brand-gradient px-4 py-3 text-sm font-semibold text-white transition-transform active:scale-95 "
           >
             <MessageCircle className="h-4 w-4" />
             {COPY.reveal.acm.ctaLabel(advisorFirstName)}
@@ -60,7 +63,7 @@ export function AdvisorClosingSection({ advisor, nombre, tipoPropiedad, colonia,
 
         {otherMembers.length > 0 && (
           <div className="mt-8 border-t border-white/10 pt-6">
-            <p className="text-center text-[11px] font-bold uppercase tracking-wider text-neutral-400">
+            <p className="text-center text-[11px] md:text-xs font-bold uppercase tracking-wider text-neutral-400">
               {COPY.reveal.closing.teamLabel}
             </p>
             {/* One tight row, not a centered wrap -- five faces read as a
@@ -74,7 +77,7 @@ export function AdvisorClosingSection({ advisor, nombre, tipoPropiedad, colonia,
                     className="h-12 w-12 border-2 border-white/15 bg-white/10"
                     iconClassName="h-4 w-4 text-white/50"
                   />
-                  <p className="text-[10px] font-semibold leading-tight text-white/70">{member.firstName}</p>
+                  <p className="text-[10px] md:text-xs font-semibold leading-tight text-white/70">{member.firstName}</p>
                 </div>
               ))}
             </div>

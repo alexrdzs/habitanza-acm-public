@@ -17,13 +17,13 @@
 @theme {
   --font-sans: "Figtree", ui-sans-serif, system-ui, sans-serif;
 
-  /* Brand — the literal Habitanza logo/CTA green. Unchanged. */
+  /* Brand — the literal Habitanza logo/CTA green. Now #27C840. */
   --color-brand-50: #f0fdf4;
   --color-brand-100: #dcfce7;
   --color-brand-200: #bbf7d0;
   --color-brand-300: #86efac;
   --color-brand-400: #4ade80;
-  --color-brand-500: #25D366;
+  --color-brand-500: #27C840;
   --color-brand-600: #16a34a;
   --color-brand-700: #15803d;
   --color-brand-800: #166534;
@@ -33,7 +33,7 @@
   /* Emerald — a deeper, jewel-toned green reserved for dark panels, rings
      and facet accents. Gives the palette tonal range instead of leaning on
      one flat brand hex everywhere. Named for the zone itself. */
-  --color-emerald-deep: #146C48;
+  --color-emerald-deep: #15803d;
   --color-emerald-glow: #4ADE80;
 
   /* Ink — the dark ground for the appraisal/reveal panels. Matches the
@@ -48,26 +48,26 @@
   /* Parchment — the page ground. Kept the name for minimal diff, but the
      value is now a cool, very light neutral gray rather than the earlier
      warm beige. Cards keep a near-white tone so they still lift off it. */
-  --color-parchment: #F5F6F6;
-  --color-parchment-card: #FDFCF8;
+  --color-parchment: #F3F5F8;
+  --color-parchment-card: #FBFCFE;
 
   /* Brass — a muted gold hairline accent for seal/ledger-style trim. */
   --color-brass: #A9814F;
   --color-brass-soft: #CDB07C;
 
-  /* Neutral scale — a green-grey ramp (chosen, not the default stone/slate
+  /* Neutral scale — a cool blue-grey ramp (chosen, not the default stone/slate
      mix) so every existing neutral-* usage inherits the same undertone. */
-  --color-neutral-50: #F7F9F6;
-  --color-neutral-100: #EFF2ED;
-  --color-neutral-200: #E1E6DE;
-  --color-neutral-300: #C7CFC3;
-  --color-neutral-400: #9CA89C;
-  --color-neutral-500: #6E7C74;
-  --color-neutral-600: #56635C;
-  --color-neutral-700: #414D46;
-  --color-neutral-800: #2B342F;
-  --color-neutral-900: #1A211C;
-  --color-neutral-950: #10201A;
+  --color-neutral-50: #F6F8FA;
+  --color-neutral-100: #EEF1F5;
+  --color-neutral-200: #E0E5EB;
+  --color-neutral-300: #C6CED7;
+  --color-neutral-400: #9AA5B2;
+  --color-neutral-500: #697685;
+  --color-neutral-600: #535F6D;
+  --color-neutral-700: #3E4852;
+  --color-neutral-800: #29313A;
+  --color-neutral-900: #19202A;
+  --color-neutral-950: #0F1822;
 
   --radius-card: 1.25rem;
   --radius-card-lg: 2rem;
@@ -83,12 +83,24 @@
     color-scheme: light;
   }
 
+  /* Tablet / kiosk behavior: no double-tap-zoom delay, no grey tap flash, and
+     no pull-to-refresh or rubber-band bounce that could wipe a client's
+     half-finished valuation mid-demo. */
+  html {
+    overscroll-behavior-y: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button, a, select, label, [role="button"] {
+    touch-action: manipulation;
+  }
+
   body {
     @apply text-neutral-800 antialiased;
     /* Very subtle -- a faint top-to-bottom shift within the same gray, not
        a visible band. Mostly there so the glass cards have something to
        pick up as they blur the page behind them while scrolling. */
-    background: linear-gradient(180deg, #F9FAFA 0%, var(--color-parchment) 45%, #EEF0EF 100%);
+    background: linear-gradient(180deg, #F9FAFC 0%, var(--color-parchment) 45%, #ECEFF3 100%);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
@@ -133,7 +145,7 @@
     /* The jewel-green emerald accent brightens so icons/text that were a deep
        green on light cards stay legible on dark ones (and the analyzing
        completion circle reads as a vivid confirmation, not a muddy patch). */
-    --color-emerald-deep: #34D399;
+    --color-emerald-deep: #4ade80;
 
     /* Carbon-grey neutral ramp, lightness-inverted (a hair cool, no green
        cast). Surface/border shades (50-300) go dark; text shades (400-950)
@@ -156,6 +168,23 @@
        range, so glass cards still have depth to pick up. */
     background: linear-gradient(180deg, #171719 0%, var(--color-parchment) 45%, #0e0e10 100%);
   }
+}
+
+/* Brand surfaces, same recipe as the sliding pill in SegmentedControl: a soft
+   top-to-bottom green gradient, a faint top highlight and a green-tinted shadow.
+   `bg-brand-gradient` is for solid actions (buttons); `bg-selected-gradient`
+   is the quiet version for a chosen tile or row. */
+@utility bg-brand-gradient {
+  background-image: linear-gradient(to bottom, var(--color-brand-400), var(--color-brand-500));
+  box-shadow: 0 2px 8px -2px rgba(22, 163, 74, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  &:hover:not(:disabled) {
+    filter: brightness(0.96);
+  }
+}
+
+@utility bg-selected-gradient {
+  background-image: linear-gradient(to bottom, rgba(39, 200, 64, 0.12), rgba(39, 200, 64, 0.03));
+  box-shadow: 0 1px 3px -1px rgba(22, 163, 74, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 @layer components {
@@ -238,4 +267,9 @@
     animation: none !important;
     transform: none !important;
   }
+}
+
+@keyframes hero-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(40px, 30px, 0) scale(1.08); }
 }

@@ -12,8 +12,8 @@ function MiniCard({ listing, index }: { listing: ComparableListing; index: numbe
         <div className="flex aspect-[4/3] items-center justify-center rounded-lg bg-parchment-card">
           <Search className="h-5 w-5 text-amber-500" />
         </div>
-        <p className="mt-2 text-[11px] font-semibold text-neutral-700">Referencia {index + 1}</p>
-        <p className="mt-0.5 text-[10px] leading-snug text-neutral-500">En investigación</p>
+        <p className="mt-2 text-[11px] md:text-xs font-semibold text-neutral-700">Referencia {index + 1}</p>
+        <p className="mt-0.5 text-[10px] md:text-xs leading-snug text-neutral-500">En investigación</p>
       </div>
     );
   }
@@ -38,10 +38,10 @@ function MiniCard({ listing, index }: { listing: ComparableListing; index: numbe
         )}
       </div>
       <div className="space-y-0.5 p-2">
-        <p className="truncate text-[11px] font-bold tabular-nums text-neutral-900">
+        <p className="truncate text-[11px] md:text-xs font-bold tabular-nums text-neutral-900">
           {formatCurrency(listing.precio)}
         </p>
-        <p className="flex items-center gap-1 text-[10px] text-neutral-500">
+        <p className="flex items-center gap-1 text-[10px] md:text-xs text-neutral-500">
           <Maximize className="h-2.5 w-2.5" />
           {listing.m2}m²
         </p>
