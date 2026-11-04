@@ -14,6 +14,10 @@ For a screen-by-screen breakdown of what each step is trying to accomplish and w
 
 The per-colonia baselines and the `ZONA_ESMERALDA_COLONIAS` list are derived from real, currently-published listings in Habitanza's own portfolio (sampled 2026-07-10 via the internal inventory search), not guessed — but most colonias only had one or two comps available, so they're directional, not precise. Re-derive periodically as more sales close; see the comments in `shared/pricing.ts`.
 
+## Comparables base
+
+`shared/comparableListings.ts` holds 5 to 10 verified comparables for each of the six main colonias. Each entry carries `source` (`Habitanza` or the portal name) and, for portal listings, `sourceUrl`. Habitanza entries come from the internal inventory with exact coordinates. Portal entries were checked on the listing page itself (Firecrawl, 2026-11-04). Their map pin is the portal's own, often the colonia centroid, and they have no photo on purpose (we do not hotlink other agencies' photos). Re-check prices before each refresh: listings go offline.
+
 ## Reveal screen — a preview of the real ACM
 
 The reveal step is structured to read as a preview of the authenticated Análisis Comparativo de Mercado a broker delivers later, not a standalone widget: the dark price panel up top, then a per-property **"Análisis de tu propiedad"** card, then three numbered chapters that mirror the real report — **01 Pulso del Mercado**, **02 Referencias del Mercado**, **03 Tu ACM Completo**.
