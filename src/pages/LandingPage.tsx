@@ -12,10 +12,11 @@ import { WizardContactStep } from '../components/wizard/WizardContactStep';
 import { WizardRevealStep } from '../components/wizard/WizardRevealStep';
 import { MapPreloader } from '../components/wizard/NeighborhoodMap';
 import { WizardSidebar } from '../components/wizard/WizardSidebar';
-import { RevealPricePanel } from '../components/wizard/RevealPricePanel';
 import { useIsWide } from '../lib/useIsWide';
 import { OTHER_COLONIA_VALUE, normalizePhone, type PropertyAge, type Amenity } from '@shared/validation';
 import { pickAdvisor, type Advisor } from '@shared/advisors';
+import { BrokerPicker } from '../components/wizard/BrokerPicker';
+import { getStoredBroker, storeBroker } from '../lib/broker';
 import { estimatePreliminaryRange, type PreliminaryEstimate } from '@shared/pricing';
 import { COPY } from '@shared/copy';
 
@@ -65,6 +66,8 @@ export function LandingPage() {
   const [consentimiento, setConsentimiento] = useState(false);
   const [empresa, setEmpresa] = useState('');
 
+  // Event mode: the broker working this tablet, remembered across visits.
+  const [eventBroker, setEventBroker] = useState<Advisor | null>(() => (isEventMode ? getStoredBroker() : null));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   // The broker assigned to this lead. Chosen once at submit so the CRM
@@ -97,6 +100,17 @@ export function LandingPage() {
   useEffect(() => {
     window.scrollTo(0, 0);
     panelRef.current?.scrollTo(0, 0);
+  }, [step]);
+
+  // The reveal is always light (no dark blocks, no dark mode): this flag turns
+  // off the dark token remap in index.css.
+  useEffect(() => {
+    const root = document.documentElement;
+    if (step === 'reveal') root.dataset.forceLight = '';
+    else delete root.dataset.forceLight;
+    return () => {
+      delete root.dataset.forceLight;
+    };
   }, [step]);
 
   // Bumped on every restart so a lead submission still in flight can't push
@@ -145,7 +159,7 @@ export function LandingPage() {
     setIsSubmitting(true);
     // Assign the broker now, before the webhook fires, so the CRM is told who
     // owns the lead and the reveal screen shows that same person.
-    const advisor = pickAdvisor(resolvedColonia);
+    const advisor = (isEventMode && eventBroker) || pickAdvisor(resolvedColonia);
     setAssignedAdvisor(advisor);
     try {
       const res = await fetch('/api/lead', {
@@ -257,7 +271,16 @@ export function LandingPage() {
   const steps = (
     <>
       {step === 'hero' && (
-        <div className={`flex flex-1 flex-col transition-opacity duration-[120ms] ease-out ${leavingHero ? 'opacity-0' : ''}`}>
+        <div className={`relative flex flex-1 flex-col transition-opacity duration-[120ms] ease-out ${leavingHero ? 'opacity-0' : ''}`}>
+          {isEventMode && (
+            <BrokerPicker
+              value={eventBroker}
+              onChange={(b) => {
+                storeBroker(b.name);
+                setEventBroker(b);
+              }}
+            />
+          )}
           <WizardHero onStart={startWizard} eventMode={isEventMode} wide={wide} />
         </div>
       )}
@@ -356,7 +379,7 @@ export function LandingPage() {
       {step === 'reveal' &&
         (estimate && assignedAdvisor ? (
           <WizardRevealStep
-            wide={wide}
+            wide={false}
             estimate={estimate}
             nombre={nombre}
             tipoPropiedad={tipoPropiedad}
@@ -386,7 +409,6 @@ export function LandingPage() {
   // Tablet landscape / desktop: an iPad-app style frame. Left, a dark panel
   // (progress + live summary, or the price once revealed); right, the step.
   if (wide) {
-    const showPriceInSidebar = step === 'reveal' && estimate && assignedAdvisor;
     return (
       <div className={isEventMode ? 'h-dvh p-2' : 'h-dvh'}>
         {preloader}
@@ -401,57 +423,43 @@ export function LandingPage() {
               {topBar}
               <div ref={panelRef} className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden">
                 <main
-                  className={`mx-auto flex min-h-full flex-col px-[var(--gutter)] pt-8 [--gutter:2rem] xl:[--gutter:2.5rem] ${
-                    flowIndex >= 0 ? 'max-w-3xl pb-0' : 'max-w-5xl pb-8 xl:pb-10'
+                  className={`mx-auto flex min-h-full flex-col px-[var(--gutter)] [--gutter:2rem] xl:[--gutter:2.5rem] ${
+                    flowIndex >= 0 ? 'max-w-3xl pb-0 pt-2' : step === 'reveal' ? 'max-w-5xl pb-8 pt-2' : 'max-w-5xl pb-8 pt-8 xl:pb-10'
                   }`}
                 >
                   {steps}
                 </main>
               </div>
             </div>
-            {(step !== 'hero' || isEventMode) && (
+            {(step !== 'hero' || isEventMode) && step !== 'reveal' && (
               <aside className="w-[440px] shrink-0 animate-in overflow-hidden duration-500 fade-in slide-in-from-right-6 xl:w-[480px]">
                 <div className="h-full overflow-y-auto">
-                  {showPriceInSidebar ? (
-                    <div className="flex flex-col gap-6 px-3 py-6">
-                      <Logo className="h-8 px-2 text-neutral-900" />
-                      <RevealPricePanel
-                        wide
-                        estimate={estimate}
-                        nombre={nombre}
-                        tipoPropiedad={tipoPropiedad}
-                        colonia={resolvedColonia}
-                        advisor={assignedAdvisor}
-                      />
-                    </div>
-                  ) : (
-                    <div className="relative h-full">
-                      <WizardSidebar
-                        intro={step === 'hero'}
-                        pinCount={pinCount}
-                        colonia={resolvedColonia}
-                        tipoPropiedad={tipoPropiedad}
-                        m2Construccion={m2Construccion}
-                        m2Terreno={m2Terreno}
-                        recamaras={recamaras}
-                        banos={banos}
-                        estacionamientos={estacionamientos}
-                        antiguedad={antiguedad}
-                        amenidades={amenidades}
-                      />
-                      {/* Home cards sit on top of the (already loaded) map and fade
-                          away on the first step, so the map never pops in. */}
-                      {isEventMode && (
-                        <div
-                          className={`absolute inset-0 transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                            step === 'hero' ? '' : 'pointer-events-none translate-x-4 opacity-0'
-                          }`}
-                        >
-                          <TestimonialsGrid />
-                        </div>
-                      )}
-                    </div>
-                  )}
+                  <div className="relative h-full">
+                    <WizardSidebar
+                      intro={step === 'hero'}
+                      pinCount={pinCount}
+                      colonia={resolvedColonia}
+                      tipoPropiedad={tipoPropiedad}
+                      m2Construccion={m2Construccion}
+                      m2Terreno={m2Terreno}
+                      recamaras={recamaras}
+                      banos={banos}
+                      estacionamientos={estacionamientos}
+                      antiguedad={antiguedad}
+                      amenidades={amenidades}
+                    />
+                    {/* Home cards sit on top of the (already loaded) map and fade
+                        away on the first step, so the map never pops in. */}
+                    {isEventMode && (
+                      <div
+                        className={`absolute inset-0 transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                          step === 'hero' ? '' : 'pointer-events-none translate-x-4 opacity-0'
+                        }`}
+                      >
+                        <TestimonialsGrid />
+                      </div>
+                    )}
+                  </div>
                 </div>
               </aside>
             )}
