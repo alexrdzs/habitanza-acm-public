@@ -3,7 +3,7 @@ import { useLoadScript, GoogleMap } from '@react-google-maps/api';
 import { MapPin } from 'lucide-react';
 import type { ComparableListing } from '@shared/comparableListings';
 import { NEIGHBORHOOD_COORDINATES } from '@shared/neighborhoods';
-import { useMapStyles } from './NeighborhoodMap';
+import { MAP_STYLES } from './NeighborhoodMap';
 
 interface Props {
   listings: ComparableListing[];
@@ -22,7 +22,7 @@ const FALLBACK_DOT_POSITIONS = [
 function MapFallback({ colonia, researchCount }: Pick<Props, 'colonia' | 'researchCount'>) {
   if (!researchCount) {
     return (
-      <div className="flex h-40 flex-col items-center justify-center gap-1.5 rounded-xl bg-neutral-50 text-center">
+      <div className="flex h-40 lg:h-full lg:min-h-80 flex-col items-center justify-center gap-1.5 rounded-xl bg-neutral-50 text-center">
         <MapPin className="h-5 w-5 text-brand-500" />
         <p className="px-4 text-xs text-neutral-500">Aún no hay referencias para mostrar en el mapa</p>
       </div>
@@ -30,7 +30,7 @@ function MapFallback({ colonia, researchCount }: Pick<Props, 'colonia' | 'resear
   }
 
   return (
-    <div className="relative flex h-40 items-center justify-center overflow-hidden rounded-xl bg-neutral-50 text-center">
+    <div className="relative flex h-40 lg:h-full lg:min-h-80 items-center justify-center overflow-hidden rounded-xl bg-neutral-50 text-center">
       <div className="absolute inset-0 opacity-70 [background-image:linear-gradient(to_right,rgba(214,211,209,0.35)_1px,transparent_1px),linear-gradient(to_bottom,rgba(214,211,209,0.35)_1px,transparent_1px)] [background-size:28px_28px]" />
       {FALLBACK_DOT_POSITIONS.slice(0, researchCount).map((position) => (
         <span key={position} className={`absolute h-2.5 w-2.5 rounded-full bg-amber-400 ring-2 ring-white ${position}`} />
@@ -51,10 +51,26 @@ const RESEARCH_DOT_OFFSETS = [
   { lat: 0.0017, lng: 0.0004 },
 ];
 
+// Portal pins are often the colonia centroid, so several listings can share one
+// point. Spread exact duplicates on a tiny circle (~60 m) so every number shows.
+// The map says the location is approximate.
+function spreadPins(listings: Props['listings']) {
+  const seen = new Map<string, number>();
+  return listings.map((l) => {
+    const key = `${l.lat.toFixed(5)},${l.lng.toFixed(5)}`;
+    const n = seen.get(key) ?? 0;
+    seen.set(key, n + 1);
+    if (n === 0) return { lat: l.lat, lng: l.lng };
+    const angle = (n * 2 * Math.PI) / 6;
+    return { lat: l.lat + 0.0005 * Math.sin(angle), lng: l.lng + 0.0005 * Math.cos(angle) };
+  });
+}
+
 export function ComparablesMap({ listings, colonia, researchCount = 0 }: Props) {
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string | undefined;
   const { isLoaded } = useLoadScript({ googleMapsApiKey: apiKey || '' });
-  const mapStyles = useMapStyles();
+  // The reveal is always light, so this map never takes the dark style.
+  const mapStyles = MAP_STYLES;
   const markersRef = useRef<google.maps.Marker[]>([]);
   // A single neighborhood center is enough for temporary dots. It is not a
   // property address and avoids asking Google for geocoding permission.
@@ -67,16 +83,18 @@ export function ComparablesMap({ listings, colonia, researchCount = 0 }: Props) 
 
       if (listings.length > 0) {
         const bounds = new google.maps.LatLngBounds();
-        listings.forEach((listing) => {
-          const position = { lat: listing.lat, lng: listing.lng };
+        const positions = spreadPins(listings);
+        listings.forEach((_listing, i) => {
+          const position = positions[i];
           bounds.extend(position);
           markersRef.current.push(
             new google.maps.Marker({
               position,
               map,
+              label: { text: String(i + 1), color: '#ffffff', fontSize: '11px', fontWeight: '700' },
               icon: {
                 path: google.maps.SymbolPath.CIRCLE,
-                scale: 7,
+                scale: 11,
                 fillColor: '#27C840',
                 fillOpacity: 1,
                 strokeColor: '#ffffff',
@@ -121,7 +139,7 @@ export function ComparablesMap({ listings, colonia, researchCount = 0 }: Props) 
   if (!apiKey || !center) return <MapFallback colonia={colonia} researchCount={researchCount} />;
 
   return (
-    <div className="relative h-40 overflow-hidden rounded-xl border border-neutral-200 shadow-inner">
+    <div className="relative h-40 lg:h-full lg:min-h-80 overflow-hidden rounded-xl border border-neutral-200 shadow-inner">
       {isLoaded ? (
         <GoogleMap
           mapContainerStyle={{ width: '100%', height: '100%' }}

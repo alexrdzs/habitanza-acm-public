@@ -41,23 +41,16 @@ interface ColoniaRowProps {
   // Dashed treatment for the "otra" entry, to read as an escape hatch rather
   // than a first-class option.
   dashed?: boolean;
-  // Give the icon tile a faint emerald->brand-green tint (used for the second
-  // batch, whose rows stay plain white). Kept very subtle so it reads as the
-  // same soft styling as the primary tiles. Ignored when a row shows a real
-  // illustration.
-  brandIcon?: boolean;
-  // Primary batch: taller, easier to tap from a distance.
-  tall?: boolean;
 }
 
-// A compact row: a visual on the left with the name beside it, so almost all
-// fraccionamientos fit on screen at a glance. The visual is a rich per-zone
+// A square tile: the visual (icon or illustration) is the main element, the
+// fraccionamiento name sits under it. Same look as the property type tiles. The visual is a rich per-zone
 // illustration when one exists (shared/neighborhoodImages.ts -- e.g. an
 // Airbnb-style 3D icon), which gives the list real character; until that
 // artwork lands it falls back to a themed lucide icon that at least hints at
 // the neighborhood (a lake, a golf flag, woods, hills). Both are assigned in
 // one place each, so they're easy to customize.
-function ColoniaRow({ label, active, disabled, onSelect, icon, dashed, brandIcon, tall }: ColoniaRowProps) {
+function ColoniaRow({ label, active, disabled, onSelect, icon, dashed }: ColoniaRowProps) {
   const Icon = icon ?? neighborhoodIcon(label);
   const image = dashed ? undefined : neighborhoodImage(label);
   const [imgFailed, setImgFailed] = useState(false);
@@ -68,29 +61,24 @@ function ColoniaRow({ label, active, disabled, onSelect, icon, dashed, brandIcon
       type="button"
       onClick={onSelect}
       disabled={disabled}
+      aria-pressed={active}
       className={cn(
-        'flex w-full items-center gap-3 rounded-2xl border p-2.5 text-left transition-all disabled:opacity-40',
-        tall && 'min-h-[50px] gap-3 p-1.5',
+        'relative flex min-h-[150px] flex-col items-center justify-center gap-3 rounded-2xl border-2 px-2 py-5 lg:min-h-[190px] lg:gap-4 text-center transition-all active:scale-[0.97] disabled:opacity-40',
         active
           ? 'border-brand-500 bg-selected-gradient'
           : dashed
-            ? 'border-dashed border-neutral-300 hover:border-brand-400 hover:bg-brand-500/5'
-            : 'border-neutral-200 bg-parchment-card hover:border-brand-500 hover:bg-brand-500/5'
+            ? 'border-dashed border-neutral-300 bg-parchment-card hover:border-brand-400'
+            : 'border-neutral-200 bg-parchment-card hover:border-neutral-300'
       )}
     >
       <div
         className={cn(
-          'relative flex h-14 w-14 flex-shrink-0 items-center justify-center overflow-hidden rounded-2xl transition-colors',
-          tall && 'h-[40px] w-[40px]',
-          // The tile also backs a transparent-background illustration, so it
-          // keeps a soft surface even in the image case.
+          'relative flex h-20 w-20 flex-shrink-0 lg:h-24 lg:w-24 items-center justify-center overflow-hidden rounded-2xl transition-colors',
           active
             ? 'bg-gradient-to-br from-brand-400 to-brand-500 text-white'
             : dashed
               ? 'bg-transparent text-neutral-400'
-              : brandIcon
-                ? 'bg-gradient-to-br from-emerald-deep/10 to-brand-500/15 text-emerald-deep'
-                : 'bg-gradient-to-br from-neutral-100 to-neutral-200 text-emerald-deep'
+              : 'bg-gradient-to-br from-neutral-100 to-neutral-200 text-emerald-deep'
         )}
       >
         {showImage ? (
@@ -104,24 +92,18 @@ function ColoniaRow({ label, active, disabled, onSelect, icon, dashed, brandIcon
             onError={() => setImgFailed(true)}
           />
         ) : (
-          <Icon className="h-6 w-6" strokeWidth={1.75} />
+          <Icon className="h-8 w-8" strokeWidth={1.75} />
         )}
       </div>
 
-      <span
-        className={cn(
-          'min-w-0 flex-1 text-sm font-semibold leading-tight',
-          tall && 'text-[15px]',
-          dashed && !active ? 'text-neutral-500' : 'text-neutral-800'
-        )}
-      >
+      <span className={cn('text-sm font-semibold leading-tight lg:text-base', dashed && !active ? 'text-neutral-500' : 'text-neutral-800')}>
         {label}
       </span>
 
       {active && (
-        <div className="flex h-6 w-6 flex-shrink-0 animate-in items-center justify-center rounded-full bg-brand-500 shadow-sm zoom-in-50 duration-200">
-          <Check className="h-3.5 w-3.5 text-white" strokeWidth={3} />
-        </div>
+        <span className="absolute right-2 top-2 flex h-5 w-5 animate-in items-center justify-center rounded-full bg-brand-500 shadow-sm zoom-in-50 duration-200">
+          <Check className="h-3 w-3 text-white" strokeWidth={3} />
+        </span>
       )}
     </button>
   );
@@ -207,18 +189,17 @@ export function WizardLocationStep(props: Props) {
               browsing the secondary list has clearly skipped these, so keep
               them from adding scroll. */}
           {!showMore && (
-            <div className="animate-in fade-in grid gap-1.5 duration-200">
+            <div className="animate-in fade-in grid grid-cols-3 gap-3 duration-200">
               {ZONA_ESMERALDA_COLONIAS.map((c) => (
                 <ColoniaRow
                   key={c}
                   label={c}
                   active={props.colonia === c}
                   disabled={isAdvancing && props.colonia !== c}
-                  tall
                   onSelect={() => handleSelect(c)}
                 />
               ))}
-              {moreButton}
+              <div className="col-span-3">{moreButton}</div>
             </div>
           )}
 
@@ -228,14 +209,13 @@ export function WizardLocationStep(props: Props) {
         {showMore && (
           <div className="animate-in fade-in slide-in-from-top-2 flex flex-col gap-3 rounded-2xl border border-neutral-200/70 bg-parchment-card/80 p-4 backdrop-blur-md duration-300">
             <p className={labelClass}>{COPY.location.expandedPanelLabel}</p>
-            <div className="grid gap-2 md:grid-cols-2">
+            <div className="grid grid-cols-3 gap-2">
               {ZONA_ESMERALDA_COLONIAS_EXTENDED.map((c) => (
                 <ColoniaRow
                   key={c}
                   label={c}
                   active={props.colonia === c}
                   disabled={isAdvancing && props.colonia !== c}
-                  brandIcon
                   onSelect={() => handleSelect(c)}
                 />
               ))}

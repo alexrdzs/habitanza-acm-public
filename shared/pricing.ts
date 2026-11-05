@@ -118,6 +118,16 @@ function roundPreliminaryEstimate(value: number): number {
   return Math.round(value / 10000) * 10000;
 }
 
+// The "lo que sí tiene sentido" band: the central half of the market range.
+// Below `low` the owner would be giving the property away; above `high` it is
+// out of market; this inner band is where an asking price makes sense.
+export function idealBand(low: number, high: number): { low: number; high: number } {
+  return {
+    low: roundPreliminaryEstimate(low + 0.2 * (high - low)),
+    high: roundPreliminaryEstimate(low + 0.8 * (high - low)),
+  };
+}
+
 export function estimatePreliminaryRange(params: {
   tipoPropiedad: PublicPropertyType | string;
   colonia: string;
@@ -136,8 +146,8 @@ export function estimatePreliminaryRange(params: {
     // irregular shape drag it) move the aprox within the band, same as a home.
     const perM2 = PRICE_PER_M2_TERRENO[colonia] ?? DEFAULT_PRICE_PER_M2_TERRENO;
     const base = m2Terreno * perM2;
-    const low = base * 0.8;
-    const high = base * 1.2;
+    const low = base * 0.75;
+    const high = base * 1.25;
     const mid = low + estimateRangePosition({ amenidades, antiguedad: undefined }) * (high - low);
     return {
       low: roundPreliminaryEstimate(low),
@@ -150,11 +160,11 @@ export function estimatePreliminaryRange(params: {
   const perM2 = PRICE_PER_M2_CONSTRUCCION[colonia] ?? DEFAULT_PRICE_PER_M2_CONSTRUCCION;
   const typeFactor = PROPERTY_TYPE_FACTOR[tipoPropiedad as PublicPropertyType] ?? 1;
   // `base` is the zone-anchored center of the band; low/high are the fixed
-  // ±12% comparable range. The aprox then floats within [low, high] by the
+  // ±15% comparable range. The aprox then floats within [low, high] by the
   // property's own signals instead of always landing at the midpoint.
   const base = m2Construccion * perM2 * typeFactor;
-  const low = base * 0.88;
-  const high = base * 1.12;
+  const low = base * 0.85;
+  const high = base * 1.15;
   const mid = low + estimateRangePosition({ amenidades, antiguedad }) * (high - low);
   return {
     low: roundPreliminaryEstimate(low),

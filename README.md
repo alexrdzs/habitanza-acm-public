@@ -14,6 +14,10 @@ For a screen-by-screen breakdown of what each step is trying to accomplish and w
 
 The per-colonia baselines and the `ZONA_ESMERALDA_COLONIAS` list are derived from real, currently-published listings in Habitanza's own portfolio (sampled 2026-07-10 via the internal inventory search), not guessed — but most colonias only had one or two comps available, so they're directional, not precise. Re-derive periodically as more sales close; see the comments in `shared/pricing.ts`.
 
+## Comparables base
+
+`shared/comparableListings.ts` holds 5 to 10 verified comparables for each of the six main colonias. Every one comes from another agency, never from Habitanza's own Pulppo inventory. Each entry carries `source` (portal name) and `sourceUrl`. Portal entries were read on the listing page itself (Firecrawl, 2026-11-05). An entry is kept only when the m² on the card and on the page agree. The map pin is the portal's own, often the colonia centroid. Each entry shows the main photo of its listing (another agency's), loaded through the image resizer. EasyBroker entries passed a photo quality check (resolution, size, sharpness); the Lamudi entries did not. If an agency asks, remove its photo. Rancho San Juan terrenos come from the Colección `TRSJ5K4A` (EasyBroker, other agencies). Listings go offline: re-check prices before each refresh.
+
 ## Reveal screen — a preview of the real ACM
 
 The reveal step is structured to read as a preview of the authenticated Análisis Comparativo de Mercado a broker delivers later, not a standalone widget: the dark price panel up top, then a per-property **"Análisis de tu propiedad"** card, then three numbered chapters that mirror the real report — **01 Pulso del Mercado**, **02 Referencias del Mercado**, **03 Tu ACM Completo**.
@@ -47,6 +51,18 @@ npm run dev      # local dev server
 npm run build    # production build
 npm run lint      # tsc --noEmit
 ```
+
+## Seguir en local con los comparables
+
+```bash
+git fetch origin && git checkout ccr-ee57610a-t28wxt
+npm install        # el rediseño agrega html-to-image
+npm run dev
+```
+
+- Ver el resultado sin llenar el flujo: `http://localhost:5173/?preview=reveal&colonia=Rancho%20San%20Juan` (solo en dev, acepta cualquier fraccionamiento).
+- Sin `VITE_GOOGLE_MAPS_API_KEY` el mapa se degrada. Con una llave que no permite `localhost`, Google Maps muestra "Oops! Something went wrong" y lanza un error en consola. No viene del código del sitio.
+- Los comparables se editan en `shared/comparableListings.ts`. Los textos de zona, en `COPY.reveal.zona.profiles` (`shared/copy.ts`).
 
 ## Environment variables
 

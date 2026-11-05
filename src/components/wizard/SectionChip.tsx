@@ -6,7 +6,7 @@
 // mirroring how the report renders its own non-accent chip.
 interface Props {
   label: string;
-  variant?: 'brand' | 'neutral';
+  variant?: 'brand' | 'neutral' | 'amber';
   center?: boolean;
 }
 
@@ -14,7 +14,9 @@ export function SectionChip({ label, variant = 'brand', center = false }: Props)
   const chipClass =
     variant === 'brand'
       ? 'bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400'
-      : 'bg-neutral-100 text-neutral-500';
+      : variant === 'amber'
+        ? 'bg-amber-50 text-amber-700'
+        : 'bg-neutral-100 text-neutral-500';
 
   return (
     <div className={`flex items-center gap-3 ${center ? 'justify-center' : ''}`}>
