@@ -5,6 +5,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// Ball-park format for ranges: 9,510,000 -> "$9.6M" (rounds UP to 0.1M).
+export function formatMillions(value: number) {
+  return `$${(Math.ceil(value / 100000) / 10).toFixed(1)}M`;
+}
+
 export function formatCurrency(value: number) {
   return new Intl.NumberFormat('es-MX', {
     style: 'currency',

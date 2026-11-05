@@ -52,9 +52,34 @@ export interface SlideBullet {
   value?: string;
 }
 
-export function SlideBullets({ items, compact = false }: { items: SlideBullet[]; compact?: boolean }) {
+export function SlideBullets({
+  items,
+  compact = false,
+  stacked = false,
+  className,
+}: {
+  items: SlideBullet[];
+  compact?: boolean;
+  // Plain data points: bare icon on top, hairline between points, no icon tile.
+  stacked?: boolean;
+  className?: string;
+}) {
+  if (stacked) {
+    return (
+      <ul className={cn('divide-y divide-neutral-200/70 lg:grid lg:grid-flow-col lg:auto-cols-fr lg:divide-x lg:divide-y-0', className)}>
+        {items.map(({ icon: Icon, title, detail, value }) => (
+          <li key={title} className="py-4 first:pt-0 last:pb-0 lg:px-8 lg:py-0 lg:first:pl-0 lg:last:pr-0">
+            <Icon className="h-5 w-5 text-brand-600" strokeWidth={1.75} />
+            {value && <p className="mt-3 text-2xl font-extrabold tabular-nums text-neutral-900">{value}</p>}
+            <p className={cn('text-sm font-bold text-neutral-900 md:text-base', value ? 'mt-1' : 'mt-3')}>{title}</p>
+            <p className="mt-0.5 text-xs leading-relaxed text-neutral-500 md:text-sm">{detail}</p>
+          </li>
+        ))}
+      </ul>
+    );
+  }
   return (
-    <ul className={cn('space-y-5 md:space-y-6', compact && 'space-y-4 md:space-y-4')}>
+    <ul className={cn('space-y-5 md:space-y-6', compact && 'space-y-4 md:space-y-4', className)}>
       {items.map(({ icon: Icon, title, detail, value }) => (
         <li key={title} className={cn('flex items-start gap-4', compact && 'gap-3')}>
           <div

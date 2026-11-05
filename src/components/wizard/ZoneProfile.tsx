@@ -16,14 +16,16 @@ export function ZoneProfile({ colonia }: { colonia: string }) {
   if (precios) rows.push({ label: z.preciosLabel, text: precios });
 
   return (
-    <div className="space-y-3 rounded-xl bg-neutral-50 p-4">
+    <div className="space-y-3 rounded-xl bg-neutral-50 p-4 lg:p-5">
       <p className="text-sm font-semibold text-neutral-900">{z.title(colonia)}</p>
+      <div className="space-y-3 lg:grid lg:grid-cols-3 lg:gap-8 lg:space-y-0">
       {rows.map((r) => (
         <div key={r.label}>
           <p className="text-xs font-medium text-neutral-500">{r.label}</p>
           <p className="mt-0.5 text-sm leading-relaxed text-neutral-700">{r.text}</p>
         </div>
       ))}
+      </div>
     </div>
   );
 }

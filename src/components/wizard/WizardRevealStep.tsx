@@ -1,10 +1,8 @@
 import { IS_EVENT_MODE } from '../../lib/eventMode';
 import { useEffect, useRef, useState } from 'react';
-import { ArrowLeftRight, Building2, FileSearch, LineChart, MapPin, MessageCircle, Route, Ruler, Home, CalendarClock, Target, Share2 } from 'lucide-react';
+import { Users, Building2, FileSearch, LineChart, MapPin, MessageCircle, Route, Ruler, Home, CalendarClock, Target, Share2 } from 'lucide-react';
 import { ValuationShareSheet } from './ValuationShareSheet';
 import { RevealPricePanel } from './RevealPricePanel';
-import { ReadingList } from './ReadingList';
-import { readProperty } from '../../lib/propertyReading';
 import type { PropertyProfile } from './PropertySummaryCard';
 import { ComparablesMap } from './ComparablesMap';
 import { ComparableListingCards } from './ComparableListingCards';
@@ -13,10 +11,10 @@ import { SlideBullets, SlideCard } from './SlideCard';
 import { AdvisorAvatar } from './AdvisorAvatar';
 import { AdvisorCTA } from './AdvisorCTA';
 import { whatsappLink, buildWhatsAppMessage, type Advisor } from '@shared/advisors';
-import { pendingComparableListings, readyComparableListings, totalReadyListingsCount } from '@shared/comparableListings';
+import { competitionLevel, pendingComparableListings, readyComparableListings, totalReadyListingsCount } from '@shared/comparableListings';
 import { COPY } from '@shared/copy';
 import { referencePerM2, type PreliminaryEstimate } from '@shared/pricing';
-import { formatCurrency, formatPhone } from '../../lib/utils';
+import { formatCurrency, formatMillions, formatPhone } from '../../lib/utils';
 
 interface Props {
   estimate: PreliminaryEstimate;
@@ -40,15 +38,14 @@ const MEETING_ICONS = [FileSearch, Target, Route];
 export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, profile, advisor, wide = false }: Props) {
   const firstName = nombre.trim().split(' ')[0] || 'gracias';
   const advisorFirstName = advisor.name.split(' ')[0];
-  const { pros, cons } = readProperty(profile, tipoPropiedad, colonia);
   const comps = readyComparableListings(colonia);
   const pendingComps = pendingComparableListings(colonia);
   const hasComps = comps.length > 0;
   const hasPendingComps = pendingComps.length > 0;
-  const precioResultado = `${formatCurrency(estimate.low)} a ${formatCurrency(estimate.high)}`;
+  const precioResultado = `${formatMillions(estimate.low)} - ${formatMillions(estimate.high)}`;
   const message = buildWhatsAppMessage(advisor, nombre, tipoPropiedad, colonia, precioResultado);
   const zoneReference = referencePerM2(colonia, tipoPropiedad);
-  const rangeWidth = formatCurrency(estimate.high - estimate.low);
+  const competition = competitionLevel(colonia);
 
   const [shareOpen, setShareOpen] = useState(false);
   const F = COPY.share.features;
@@ -108,30 +105,18 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, pro
         </>
       )}
 
-      {/* 01 -- the property read against the zone: what helps, what to watch. */}
-      {(pros.length > 0 || cons.length > 0) && (
-        <div className="lg:col-span-2">
-          <SlideCard compact chip={COPY.reveal.reading.chip} title={COPY.reveal.reading.title}>
-            <div className="grid gap-3 md:gap-5 lg:grid-cols-2">
-              {pros.length > 0 && <ReadingList title={COPY.reveal.reading.prosTitle} items={pros} tone="green" />}
-              {cons.length > 0 && <ReadingList title={COPY.reveal.reading.consTitle} items={cons} tone="red" />}
-            </div>
-          </SlideCard>
-        </div>
-      )}
-
       {/* 01 -- what the market says: ONE card, two clear columns from lg
           (zone numbers | the references behind the range). */}
       <div className="lg:col-span-2">
         <SlideCard compact chip={COPY.reveal.market.chip} title={COPY.reveal.pulse.title(colonia)}>
-          <div className="space-y-6 lg:grid lg:grid-cols-2 lg:space-y-0 lg:divide-x lg:divide-neutral-200/70">
-            <div className="space-y-4 lg:flex lg:flex-col lg:pr-8">
+          <div className="space-y-6 lg:space-y-8">
+            {/* Row 1: the analysis. Zone profile right under the title, then the market data. */}
+            <ZoneProfile colonia={colonia} />
+            <div className="space-y-4">
               <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-500 md:text-xs">{COPY.reveal.market.statsLabel}</p>
-              {/* From lg the three rows spread over the column height, so the
-                  left side matches the map column instead of leaving a gap. */}
-              <div>
               <SlideBullets
                 compact
+                stacked
                 items={[
                   {
                     icon: LineChart,
@@ -147,27 +132,31 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, pro
                     detail: COPY.reveal.pulse.listingsSubline,
                     value: COPY.reveal.pulse.listingsValue(totalReadyListingsCount()),
                   },
-                  {
-                    icon: ArrowLeftRight,
-                    title: COPY.reveal.pulse.rangeWidthLabel,
-                    detail: COPY.reveal.pulse.rangeWidthSubline,
-                    value: rangeWidth,
-                  },
+                  ...(competition
+                    ? [
+                        {
+                          icon: Users,
+                          title: COPY.reveal.pulse.competitionLabel,
+                          detail: COPY.reveal.pulse.competitionSubline(competition.count, colonia),
+                          value: COPY.reveal.pulse.competitionLevels[competition.level],
+                        },
+                      ]
+                    : []),
                 ]}
               />
-              </div>
-              <ZoneProfile colonia={colonia} />
             </div>
-            <div className="space-y-3 lg:pl-8">
+            {/* Row 2: map on the left, listings on the right. */}
+            <div className="space-y-3 lg:space-y-5 border-t border-neutral-200/70 pt-6 lg:pt-8">
               <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-500 md:text-xs">{COPY.reveal.mercadoSubtitle}</p>
               {hasComps || hasPendingComps ? (
-                <div className="space-y-3 md:flex md:gap-3 md:space-y-0 lg:block lg:space-y-3">
-                  <div className="md:w-1/2 lg:w-full">
+                <div className="space-y-3 md:flex md:gap-3 md:space-y-0 lg:grid lg:grid-cols-2 lg:gap-10">
+                  <div className="md:w-1/2 lg:h-full lg:w-full">
                     <ComparablesMap listings={comps} colonia={colonia} researchCount={pendingComps.length} />
                   </div>
                   <div className="md:w-1/2 lg:w-full">
                     <ComparableListingCards
                       listings={hasComps ? comps : pendingComps}
+                      reference={{ perM2: zoneReference.perM2, tipo: tipoPropiedad }}
                       researchLabel={hasPendingComps ? COPY.reveal.researchCardsLabel(pendingComps.length) : undefined}
                     />
                   </div>

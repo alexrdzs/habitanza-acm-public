@@ -1,7 +1,7 @@
 import { ChevronDown } from 'lucide-react';
 import { COPY } from '@shared/copy';
 import { idealBand, type PreliminaryEstimate } from '@shared/pricing';
-import { formatCurrency } from '../../lib/utils';
+import { formatMillions } from '../../lib/utils';
 
 // A red-yellow-green-yellow-red bar that shows a RANGE, never a single price.
 // Mín and Máx sit exactly where the solid red ends, so past them is visibly
@@ -26,7 +26,7 @@ function Limit({ side, value, label, delay }: { side: 'left' | 'right'; value: n
       style={{ top: '12px', ...(left ? { left: `${RANGE_MIN}%` } : { right: `${100 - RANGE_MAX}%` }) }}
     >
       <div className={`h-2.5 w-0.5 rounded-full bg-neutral-400 ${left ? '' : 'ml-auto'}`} />
-      <p className="mt-1.5 whitespace-nowrap text-sm font-extrabold tabular-nums text-neutral-900 md:text-lg lg:text-2xl">{formatCurrency(value)}</p>
+      <p className="mt-1.5 whitespace-nowrap text-sm font-extrabold tabular-nums text-neutral-900 md:text-lg lg:text-2xl">{formatMillions(value)}</p>
       <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">{label}</p>
     </div>
   );
@@ -58,9 +58,9 @@ export function PreliminaryPricingBar({ estimate }: Props) {
           className="animate-in fade-in fill-mode-both absolute left-1/2 flex -translate-x-1/2 flex-col items-center duration-500 delay-500"
           style={{ bottom: '10px' }}
         >
-          <p className="whitespace-nowrap text-xs font-extrabold text-neutral-900 md:text-sm">{COPY.reveal.bar.idealLabel}</p>
+          <p className="whitespace-nowrap text-xs font-medium text-neutral-600 md:text-sm">{COPY.reveal.bar.idealLabel}</p>
           <p className="whitespace-nowrap text-sm font-extrabold tabular-nums text-neutral-900 md:text-lg">
-            {formatCurrency(ideal.low)} <span className="font-light text-neutral-400">{COPY.reveal.headlineJoiner}</span> {formatCurrency(ideal.high)}
+            {formatMillions(ideal.low)} <span className="font-light text-neutral-400">-</span> {formatMillions(ideal.high)}
           </p>
           <ChevronDown className="-mb-0.5 mt-0.5 h-5 w-5 text-brand-600" strokeWidth={3} />
         </div>

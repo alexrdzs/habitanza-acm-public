@@ -7,7 +7,7 @@ import type { PropertyProfile } from './PropertySummaryCard';
 import { pendingComparableListings, readyComparableListings } from '@shared/comparableListings';
 import { COPY } from '@shared/copy';
 import type { PreliminaryEstimate } from '@shared/pricing';
-import { formatCurrency } from '../../lib/utils';
+import { formatMillions } from '../../lib/utils';
 
 interface Props {
   estimate: PreliminaryEstimate;
@@ -70,11 +70,11 @@ export function RevealPricePanel({ estimate, nombre, tipoPropiedad, colonia, pro
             <p className="mt-3 text-[13px] font-medium text-neutral-500">{COPY.reveal.headlinePrefix}</p>
             <h3 className="mt-1.5 text-xl font-bold leading-tight tracking-tight tabular-nums text-neutral-900 md:text-4xl">
               <span className="animate-in fade-in slide-in-from-bottom-1 fill-mode-both duration-500 delay-100">
-                {formatCurrency(estimate.low)}
+                {formatMillions(estimate.low)}
               </span>{' '}
-              <span className="font-light text-neutral-400">{COPY.reveal.headlineJoiner}</span>{' '}
+              <span className="font-light text-neutral-400">-</span>{' '}
               <span className="animate-in fade-in slide-in-from-bottom-1 fill-mode-both duration-500 delay-200">
-                {formatCurrency(estimate.high)}
+                {formatMillions(estimate.high)}
               </span>
             </h3>
           </div>

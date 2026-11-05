@@ -351,7 +351,7 @@ export const COPY = {
       maxLabel: 'Máximo',
       // Sits over the glass band in the middle: says WHERE the ideal price is
       // without naming a number.
-      idealLabel: 'Tu precio ideal está en el rango:',
+      idealLabel: 'Tu precio ideal',
     },
     // "Tu propiedad" -- the bridge between the zone-average price panel above
     // and the numbered market chapters below. Every value here is the
@@ -508,12 +508,14 @@ export const COPY = {
       title: (colonia: string) => `Análisis del mercado en ${colonia}`,
       m2Label: 'Referencia por m²',
       m2SublineColonia: (colonia: string) => `Con base en listados reales de ${colonia}.`,
-      m2SublineZona: 'Promedio de Zona Esmeralda mientras afinamos tu fraccionamiento.',
+      m2SublineZona: 'Promedio general de la zona',
       listingsLabel: 'Referencias activas',
       listingsValue: (count: number) => `${count}`,
       listingsSubline: 'Propiedades publicadas hoy en portales de la zona.',
-      rangeWidthLabel: 'Amplitud de tu rango',
-      rangeWidthSubline: 'Tu ACM lo reduce a un precio exacto de salida.',
+      competitionLabel: 'Nivel de competencia',
+      competitionLevels: { bajo: 'Bajo', medio: 'Medio', alto: 'Alto' },
+      competitionSubline: (count: number, colonia: string) =>
+        `${count} ${count === 1 ? 'propiedad publicada' : 'propiedades publicadas'} en ${colonia} frente al resto de la zona.`,
     },
     // Per-fraccionamiento read of the market. `precios` is a client-supplied
     // range, used only when the colonia has no comparables to derive one from.
@@ -576,8 +578,8 @@ export const COPY = {
     },
     // One card, two columns: the zone's numbers and the references behind them.
     market: {
-      chip: '02 Qué dice el mercado',
-      statsLabel: 'Cifras de tu zona',
+      chip: '01 Qué dice el mercado',
+      statsLabel: 'Datos del mercado',
     },
     mercadoChip: '02 Referencias del Mercado',
     mercadoTitle: 'Análisis del mercado',
@@ -586,7 +588,7 @@ export const COPY = {
     // caveat the full ACM opens its comparables chapter with.
     notaOfertaTag: 'Nota sobre estas referencias',
     notaOfertaBody:
-      'Son precios de oferta pública, no de cierre. El precio final suele negociarse entre 5 y 10% por debajo de ' +
+      'Ubicación aproximada. Son precios de oferta pública, no de cierre. El precio final suele negociarse entre 5 y 10% por debajo de ' +
       'estos valores, y tu estrategia debe contemplarlo.',
     notaPlaceholderTag: 'Nota sobre la zona',
     notaPlaceholderBody: (colonia: string) =>
@@ -627,7 +629,7 @@ export const COPY = {
     // Last card: the whole point of this screen. The range is a first
     // approach; the meeting turns it into an exact exit price.
     meeting: {
-      chip: '03 Siguiente paso',
+      chip: '02 Siguiente paso',
       title: 'Agenda una reunión',
       subtitle: 'Este es un primer acercamiento. En una reunión armamos tu ACM completo.',
       ctaLabel: (advisorFirstName: string) => `Agendar reunión con ${advisorFirstName}`,

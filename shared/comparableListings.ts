@@ -100,6 +100,17 @@ export function pendingComparableListings(colonia: string): ComparableListing[] 
   return (COMPARABLE_LISTINGS[colonia] ?? []).filter((listing) => listing.isPlaceholder);
 }
 
+// Competition level for a colonia: how many real listings it has compared with
+// the other colonias that have any (lower third = bajo, upper third = alto).
+export function competitionLevel(colonia: string): { level: 'bajo' | 'medio' | 'alto'; count: number } | undefined {
+  const counts = Object.keys(COMPARABLE_LISTINGS).map((c) => readyComparableListings(c).length).filter((n) => n > 0).sort((a, b) => a - b);
+  const count = readyComparableListings(colonia).length;
+  if (count === 0 || counts.length === 0) return undefined;
+  const low = counts[Math.floor((counts.length - 1) / 3)];
+  const high = counts[Math.ceil(((counts.length - 1) * 2) / 3)];
+  return { level: count <= low ? 'bajo' : count >= high ? 'alto' : 'medio', count };
+}
+
 // Zone-wide count of real (non-placeholder) listings, for the reveal
 // screen's "Referencias activas" tile. Derived so it never goes stale as
 // listings are added or researched.

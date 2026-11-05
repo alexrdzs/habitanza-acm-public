@@ -3,7 +3,7 @@ import { ChevronDown } from 'lucide-react';
 import { Logo } from '../Logo';
 import { COPY } from '@shared/copy';
 import { idealBand } from '@shared/pricing';
-import { formatCurrency } from '../../lib/utils';
+import { formatMillions } from '../../lib/utils';
 
 interface Props {
   nombre: string;
@@ -54,9 +54,9 @@ export const ValuationShareCard = forwardRef<HTMLDivElement, Props>(function Val
         <p className="text-center text-[11px] font-bold uppercase tracking-wider text-[#15803D]">{COPY.share.chip}</p>
         <div className="mt-3 flex flex-col items-center">
           <div className="rounded-full border border-[#86EFAC] bg-white px-4 py-1.5 text-center">
-            <p className="whitespace-nowrap text-xs font-extrabold">{COPY.reveal.bar.idealLabel}</p>
+            <p className="whitespace-nowrap text-xs font-medium text-neutral-600">{COPY.reveal.bar.idealLabel}</p>
             <p className="whitespace-nowrap text-sm font-extrabold tabular-nums">
-              {formatCurrency(ideal.low)} <span className="font-light text-neutral-400">{COPY.reveal.headlineJoiner}</span> {formatCurrency(ideal.high)}
+              {formatMillions(ideal.low)} <span className="font-light text-neutral-400">-</span> {formatMillions(ideal.high)}
             </p>
           </div>
           <ChevronDown className="mt-0.5 h-5 w-5 text-[#16A34A]" strokeWidth={3} />
@@ -65,11 +65,11 @@ export const ValuationShareCard = forwardRef<HTMLDivElement, Props>(function Val
         <div className="mt-3 flex justify-between gap-3">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">{COPY.share.low}</p>
-            <p className="text-lg font-extrabold tabular-nums">{formatCurrency(low)}</p>
+            <p className="text-lg font-extrabold tabular-nums">{formatMillions(low)}</p>
           </div>
           <div className="text-right">
             <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">{COPY.share.high}</p>
-            <p className="text-lg font-extrabold tabular-nums">{formatCurrency(high)}</p>
+            <p className="text-lg font-extrabold tabular-nums">{formatMillions(high)}</p>
           </div>
         </div>
       </div>
