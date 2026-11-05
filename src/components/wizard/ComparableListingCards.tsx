@@ -64,14 +64,18 @@ function MiniCard({ listing, index, reference }: { listing: ComparableListing; i
           <Maximize className="h-2.5 w-2.5" />
           {listing.m2}m²
         </p>
-        <p className="text-[10px] tabular-nums text-neutral-400 lg:text-xs">≈ {formatCurrency(Math.round(listing.precio / listing.m2))}/m²</p>
-        {dev !== undefined && (
-          <p className="flex items-center gap-1 text-[10px] font-medium text-amber-600 lg:text-xs">
-            {dev > 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
-            {dev > 0 ? '+' : ''}
-            {Math.round(dev * 100)}% vs referencia
-          </p>
-        )}
+        <p className="flex items-center gap-1 text-[10px] tabular-nums text-neutral-400 lg:text-xs">
+          ≈ {formatCurrency(Math.round(listing.precio / listing.m2))}/m²
+          {dev !== undefined && (
+            <span
+              className="inline-flex items-center text-amber-500"
+              title={`${dev > 0 ? '+' : ''}${Math.round(dev * 100)}% vs referencia`}
+              aria-label={`${dev > 0 ? 'Arriba' : 'Abajo'} de la referencia por m²`}
+            >
+              {dev > 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+            </span>
+          )}
+        </p>
       </div>
     </div>
   );
