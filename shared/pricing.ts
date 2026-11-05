@@ -118,6 +118,16 @@ function roundPreliminaryEstimate(value: number): number {
   return Math.round(value / 10000) * 10000;
 }
 
+// The "lo que sí tiene sentido" band: the central half of the market range.
+// Below `low` the owner would be giving the property away; above `high` it is
+// out of market; this inner band is where an asking price makes sense.
+export function idealBand(low: number, high: number): { low: number; high: number } {
+  return {
+    low: roundPreliminaryEstimate(low + 0.25 * (high - low)),
+    high: roundPreliminaryEstimate(low + 0.75 * (high - low)),
+  };
+}
+
 export function estimatePreliminaryRange(params: {
   tipoPropiedad: PublicPropertyType | string;
   colonia: string;

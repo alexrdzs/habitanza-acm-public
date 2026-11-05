@@ -153,7 +153,7 @@ export function WizardPropertyStep(props: PropertyProps) {
                     i === 0 && 'col-span-2 md:col-span-1',
                     props.antiguedad === age
                       ? 'border-brand-500 bg-selected-gradient text-neutral-900'
-                      : 'border-neutral-200 bg-white text-neutral-600 hover:border-neutral-300 hover:bg-neutral-50'
+                      : 'border-neutral-200 bg-parchment-card text-neutral-600 hover:border-neutral-300'
                   )}
                 >
                   {COPY.age.short[age] ?? age}

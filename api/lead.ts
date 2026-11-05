@@ -52,6 +52,8 @@ const FEATURE_VALUES = [
   'Alberca o Jacuzzi',
   'Vistas panorámicas',
   'Una sola planta',
+  'Bodega propia',
+  'Cuarto de servicio',
   'Terraza o balcón',
   'Servicios completos',
   'En privada con seguridad',

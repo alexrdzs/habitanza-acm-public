@@ -54,9 +54,44 @@ export const COPY = {
 
   // Event mode: the advisor is standing next to the visitor, so copy talks
   // about "now / here" instead of "soon / they'll contact you".
+  share: {
+    button: 'Compartir mi valuación',
+    sheetTitle: 'Tu valuación',
+    chip: 'Rango preliminar',
+    // The text that travels with the image in the share sheet.
+    message: (firstName: string) =>
+      `Hola ${firstName}, tu propiedad está en este rango. Platiquemos uno a uno para llegar a un precio adecuado y que puedas tomar la mejor decisión.`,
+    features: {
+      construction: (n: number) => `${n} m² de construcción`,
+      land: (n: number) => `${n} m² de terreno`,
+      bedrooms: (n: number) => `${n} ${n === 1 ? 'recámara' : 'recámaras'}`,
+      baths: (n: number) => `${n} ${n === 1 ? 'baño' : 'baños'}`,
+      parking: (n: number) => `${n} ${n === 1 ? 'auto' : 'autos'}`,
+    },
+    low: 'Mínimo',
+    high: 'Máximo',
+    disclaimer: 'Estimación preliminar, no es el ACM final.',
+    attended: 'Tu asesor',
+    download: 'Descargar',
+    share: 'Compartir',
+    close: 'Cerrar',
+    fileName: 'Valuacion.png',
+    shareTitle: 'Mi valuación con Habitanza',
+    error: 'No se pudo generar la imagen. Intenta de nuevo.',
+  },
   event: {
+    shareFab: 'Compartir estimado',
     contactDescription: 'Tu asesor está contigo. Déjanos tus datos para darte seguimiento después del evento.',
-    revealSubtext: 'Este es un primer rango aproximado. Tu asesor lo revisa contigo ahora.',
+    revealSubtext: 'Este es un primer rango aproximado. Lo revisamos juntos ahora.',
+    // Final card, spoken as "we" with the visitor sitting right there: no
+    // named broker, no button, just the invitation to pick a day together.
+    meeting: {
+      title: 'Agendemos una reunión',
+      subtitle: 'Este es un primer acercamiento. Elijamos juntos un día para armar tu ACM completo.',
+      checklistFirstDetail:
+        'Elegimos caso por caso las propiedades que sí compiten con la tuya, ajustadas por tamaño, condición y ubicación.',
+    },
+    broker: { label: 'Broker:', placeholder: 'Elige tu nombre' },
     advisorParagraph: (advisorFirstName: string, colonia: string) =>
       `${advisorFirstName} está contigo hoy y conoce muy bien ${colonia}. Después del evento te escribe por WhatsApp ` +
       'para armar la estrategia ideal para vender tu propiedad.',
@@ -137,8 +172,10 @@ export const COPY = {
     terreno: 'Terreno',
     recamaras: 'Recámaras',
     banos: 'Baños',
-    estacionamientos: 'Estacionamientos',
+    estacionamientos: 'Autos',
     antiguedad: 'Antigüedad',
+    destacado: 'Destacado',
+    seguridad: 'Seguridad privada',
   },
 
   location: {
@@ -257,6 +294,28 @@ export const COPY = {
     greeting: (firstName: string) => `Muchas gracias, ${firstName}.`,
     subtext: 'Con esta información podemos darte un rango aproximado.',
     panelChip: 'Rango preliminar',
+    // Bullets in the first card. Each exists only when real data backs it
+    // (see src/lib/propertyReading.ts).
+    reading: {
+      chip: '01 Tu propiedad en la zona',
+      title: 'Fortalezas y retos de tu propiedad',
+      prosTitle: 'Lo que juega a tu favor',
+      consTitle: 'Retos en tu zona',
+      conUp: 'Más m² de construcción que el promedio de la zona',
+      conDown: 'Menos m² de construcción que el promedio de la zona',
+      terUp: 'Terreno más amplio que el promedio de la zona',
+      terDown: 'Terreno más pequeño que el promedio, lo que puede acotar su valor total',
+      recUp: 'Más recámaras que el promedio, ayuda a destacar',
+      recDown: 'Menos recámaras que el promedio, es más complejo destacar',
+      banUp: 'Más baños que los comparables',
+      banDown: 'Menos baños que los comparables',
+      ageNew: 'Propiedad nueva o casi nueva',
+      ageOld: 'Más de 20 años de antigüedad, algunos compradores esperan actualizaciones',
+      feature: (name: string) => `Suma valor: ${name}`,
+      challenge: (name: string) => `A considerar: ${name}`,
+      competition: (count: number, colonia: string) =>
+        `${count} ${count === 1 ? 'propiedad similar publicada' : 'propiedades similares publicadas'} hoy en ${colonia}, compiten por el mismo comprador`,
+    },
     headlinePrefix: 'Tu propiedad podría estar en un rango de:',
     headlineJoiner: 'a',
     caption: (colonia: string) => `Esto es un promedio de ${colonia} basado en datos históricos y nuestra experiencia en la zona.`,
@@ -288,10 +347,11 @@ export const COPY = {
     // red margins at both ends fall outside it, summarized by the note below
     // the bar.
     bar: {
-      estimateLabel: 'Precio aprox',
-      minLabel: 'Mín',
-      maxLabel: 'Máx',
-      outOfMarketNote: 'Los extremos en rojo quedan fuera de mercado.',
+      minLabel: 'Mínimo',
+      maxLabel: 'Máximo',
+      // Sits over the glass band in the middle: says WHERE the ideal price is
+      // without naming a number.
+      idealLabel: 'Tu precio ideal está en el rango:',
     },
     // "Tu propiedad" -- the bridge between the zone-average price panel above
     // and the numbered market chapters below. Every value here is the
@@ -445,8 +505,7 @@ export const COPY = {
     // real document, not a standalone widget.
     pulse: {
       chip: '01 Pulso del Mercado',
-      title: 'Lo que el mercado ya nos dice',
-      subtitle: 'Datos reales del mercado en tu zona.',
+      title: (colonia: string) => `Análisis del mercado en ${colonia}`,
       m2Label: 'Referencia por m²',
       m2SublineColonia: (colonia: string) => `Con base en listados reales de ${colonia}.`,
       m2SublineZona: 'Promedio de Zona Esmeralda mientras afinamos tu fraccionamiento.',
@@ -515,6 +574,11 @@ export const COPY = {
         },
       } as Record<string, { perfil: string; mercado: string; precios?: string }>,
     },
+    // One card, two columns: the zone's numbers and the references behind them.
+    market: {
+      chip: '02 Qué dice el mercado',
+      statsLabel: 'Cifras de tu zona',
+    },
     mercadoChip: '02 Referencias del Mercado',
     mercadoTitle: 'Análisis del mercado',
     mercadoSubtitle: 'Lo que se publica hoy en tu zona.',
@@ -560,14 +624,13 @@ export const COPY = {
       // intro copy right above the button.
       ctaLabel: (advisorFirstName: string) => `Completar mi ACM con ${advisorFirstName}`,
     },
-    // Closing card at the very bottom: the assigned advisor gets a full
-    // profile + CTA here (the only inline CTA on the screen now that
-    // section 03 is value-only), followed by the rest of the team so the
-    // "a real team is behind this" claim lands right before the visitor
-    // decides whether to reach out.
-    closing: {
-      chip: 'Tu asesor asignado',
-      teamLabel: 'Y el resto del equipo que te respalda',
+    // Last card: the whole point of this screen. The range is a first
+    // approach; the meeting turns it into an exact exit price.
+    meeting: {
+      chip: '03 Siguiente paso',
+      title: 'Agenda una reunión',
+      subtitle: 'Este es un primer acercamiento. En una reunión armamos tu ACM completo.',
+      ctaLabel: (advisorFirstName: string) => `Agendar reunión con ${advisorFirstName}`,
     },
   },
 

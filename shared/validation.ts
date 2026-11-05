@@ -68,6 +68,8 @@ export const PROPERTY_FEATURES: Record<PublicPropertyType, readonly PropertyFeat
     { value: 'Alberca o Jacuzzi', effect: 'up' },
     { value: 'Vistas panorámicas', effect: 'up' },
     { value: 'Una sola planta', effect: 'neutral' },
+    { value: 'Bodega propia', effect: 'up' },
+    { value: 'Cuarto de servicio', effect: 'up' },
   ],
   Departamento: [
     { value: 'Terraza o balcón', effect: 'up' },
@@ -76,6 +78,8 @@ export const PROPERTY_FEATURES: Record<PublicPropertyType, readonly PropertyFeat
     { value: 'Calefacción integrada', effect: 'up' },
     { value: 'Alberca o Jacuzzi', effect: 'up' },
     { value: 'Salón de juegos', effect: 'up' },
+    { value: 'Bodega propia', effect: 'up' },
+    { value: 'Cuarto de servicio', effect: 'up' },
   ],
   Terreno: [
     { value: 'Vistas panorámicas', effect: 'up' },

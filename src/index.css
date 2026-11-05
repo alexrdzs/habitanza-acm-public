@@ -132,7 +132,7 @@
 
    This is unlayered on purpose so it outranks the @layer base body rule. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-force-light]) {
     color-scheme: dark;
 
     /* Page ground + card surfaces. A neutral carbon tone (not green): the
@@ -163,7 +163,7 @@
     --color-neutral-950: #f8f8fb;
   }
 
-  body {
+  :root:not([data-force-light]) body {
     /* Same "very subtle vertical shift" idea as light mode, in a dark carbon
        range, so glass cards still have depth to pick up. */
     background: linear-gradient(180deg, #171719 0%, var(--color-parchment) 45%, #0e0e10 100%);
