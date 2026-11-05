@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { Home, Maximize, Search } from 'lucide-react';
 import { formatCurrency } from '../../lib/utils';
-import { listingPhoto, optimizedPhotoUrl, type ComparableListing } from '@shared/comparableListings';
+import { optimizedPhotoUrl, type ComparableListing } from '@shared/comparableListings';
 
 function MiniCard({ listing, index }: { listing: ComparableListing; index: number }) {
   const [imgFailed, setImgFailed] = useState(false);
-  const photo = listingPhoto(listing);
 
   if (listing.isPlaceholder) {
     return (
@@ -22,13 +21,13 @@ function MiniCard({ listing, index }: { listing: ComparableListing; index: numbe
   return (
     <div className="w-[124px] flex-shrink-0 snap-center overflow-hidden rounded-xl border border-neutral-200 bg-white dark:bg-neutral-100">
       <div className="relative aspect-[4/3] overflow-hidden bg-neutral-100">
-        {imgFailed || !photo ? (
+        {imgFailed || !listing.photo ? (
           <div className="flex h-full w-full items-center justify-center">
             <Home className="h-5 w-5 text-neutral-300" />
           </div>
         ) : (
           <img
-            src={optimizedPhotoUrl(photo, 160)}
+            src={optimizedPhotoUrl(listing.photo, 160)}
             alt={listing.tipo}
             loading="lazy"
             decoding="async"

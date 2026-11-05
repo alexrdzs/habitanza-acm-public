@@ -19,10 +19,9 @@ export interface ComparableListing {
   m2: number;
   recamaras?: number;
   banos?: number;
-  // Real photo from the source listing. Another agency owns it, so it shows in
-  // development only. Production shows `photoAi` (a generated look-alike).
+  // Main photo of the source listing (another agency's). Kept only for listings
+  // that passed the photo quality check.
   photo?: string;
-  photoAi?: string;
   lat: number;
   lng: number;
   // Research templates remain in this source of truth but must never appear
@@ -91,10 +90,6 @@ export const COMPARABLE_LISTINGS: Record<string, ComparableListing[]> = {
 // The primary listing photo for a given colonia, if it has one. The
 // canonical way to look up a single photo -- components should call this
 // instead of reaching into COMPARABLE_LISTINGS directly.
-export function listingPhoto(listing: ComparableListing): string | undefined {
-  return import.meta.env.DEV ? (listing.photoAi ?? listing.photo) : listing.photoAi;
-}
-
 export function readyComparableListings(colonia: string): ComparableListing[] {
   return (COMPARABLE_LISTINGS[colonia] ?? []).filter((listing) => !listing.isPlaceholder);
 }

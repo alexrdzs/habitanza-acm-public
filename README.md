@@ -16,7 +16,7 @@ The per-colonia baselines and the `ZONA_ESMERALDA_COLONIAS` list are derived fro
 
 ## Comparables base
 
-`shared/comparableListings.ts` holds 5 to 10 verified comparables for each of the six main colonias. Every one comes from another agency, never from Habitanza's own Pulppo inventory. Each entry carries `source` (portal name) and `sourceUrl`. Portal entries were read on the listing page itself (Firecrawl, 2026-11-05). An entry is kept only when the m² on the card and on the page agree. The map pin is the portal's own, often the colonia centroid. There are no photos on purpose (we do not hotlink other agencies' photos). Rancho San Juan terrenos come from the Colección `TRSJ5K4A` (EasyBroker, other agencies). Listings go offline: re-check prices before each refresh.
+`shared/comparableListings.ts` holds 5 to 10 verified comparables for each of the six main colonias. Every one comes from another agency, never from Habitanza's own Pulppo inventory. Each entry carries `source` (portal name) and `sourceUrl`. Portal entries were read on the listing page itself (Firecrawl, 2026-11-05). An entry is kept only when the m² on the card and on the page agree. The map pin is the portal's own, often the colonia centroid. Each entry shows the main photo of its listing (another agency's), loaded through the image resizer. EasyBroker entries passed a photo quality check (resolution, size, sharpness); the Lamudi entries did not. If an agency asks, remove its photo. Rancho San Juan terrenos come from the Colección `TRSJ5K4A` (EasyBroker, other agencies). Listings go offline: re-check prices before each refresh.
 
 ## Reveal screen — a preview of the real ACM
 
