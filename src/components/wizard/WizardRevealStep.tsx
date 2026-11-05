@@ -5,6 +5,7 @@ import { RevealPricePanel } from './RevealPricePanel';
 import { PropertySummaryCard, type PropertyProfile } from './PropertySummaryCard';
 import { ComparablesMap } from './ComparablesMap';
 import { ComparableListingCards } from './ComparableListingCards';
+import { ZoneProfile } from './ZoneProfile';
 import { MethodologySection } from './MethodologySection';
 import { SlideBullets, SlideCard } from './SlideCard';
 import { TestimonialsCarousel } from './TestimonialsCarousel';
@@ -144,6 +145,7 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, pro
           caveat; while a colonia is still being researched it explains that
           instead. */}
       <SlideCard chip={COPY.reveal.mercadoChip} title={COPY.reveal.mercadoTitle} subtitle={COPY.reveal.mercadoSubtitle}>
+        <ZoneProfile colonia={colonia} />
 
         <div className="flex gap-3 rounded-r-xl border-l-4 border-brand-500 bg-neutral-50 p-4">
           <Info className="mt-0.5 h-4 w-4 flex-shrink-0 text-brand-600 dark:text-brand-400" />

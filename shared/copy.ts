@@ -11,6 +11,9 @@
 // second place to keep in sync. Testimonials live in shared/testimonials.ts
 // for the same reason.
 
+// Millions with one decimal at most: 8200000 -> $8.2, 12000000 -> $12.
+const mdp = (n: number) => `$${Math.round(n / 1e5) / 10}`;
+
 export const COPY = {
   hero: {
     headline: '¿Cuánto vale mi propiedad?',
@@ -443,15 +446,74 @@ export const COPY = {
     pulse: {
       chip: '01 Pulso del Mercado',
       title: 'Lo que el mercado ya nos dice',
-      subtitle: 'Datos reales de nuestro portafolio en tu zona.',
+      subtitle: 'Datos reales del mercado en tu zona.',
       m2Label: 'Referencia por m²',
       m2SublineColonia: (colonia: string) => `Con base en listados reales de ${colonia}.`,
       m2SublineZona: 'Promedio de Zona Esmeralda mientras afinamos tu fraccionamiento.',
       listingsLabel: 'Referencias activas',
       listingsValue: (count: number) => `${count}`,
-      listingsSubline: 'Propiedades publicadas hoy en nuestro portafolio de la zona.',
+      listingsSubline: 'Propiedades publicadas hoy en portales de la zona.',
       rangeWidthLabel: 'Amplitud de tu rango',
       rangeWidthSubline: 'Tu ACM lo reduce a un precio exacto de salida.',
+    },
+    // Per-fraccionamiento read of the market. `precios` is a client-supplied
+    // range, used only when the colonia has no comparables to derive one from.
+    // A colonia without an entry shows no profile (never invented).
+    zona: {
+      title: (colonia: string) => `Perfil de ${colonia}`,
+      perfilLabel: 'Perfil',
+      mercadoLabel: 'Mercado',
+      preciosLabel: 'Precios de referencia',
+      // Derived from the comparables on screen, so it always matches them.
+      preciosDerivados: (parts: string[]) => `En las referencias de abajo: ${parts.join(', ')}.`,
+      rango: (label: string, min: number, max: number) => `${label} de ${mdp(min)} a ${mdp(max)} MDP`,
+      tipos: { Casa: 'casas', Terreno: 'terrenos', Departamento: 'departamentos' } as const,
+      profiles: {
+        'Rancho San Juan': {
+          perfil:
+            'Uno de los desarrollos más exclusivos y recientes de la zona. Tiene terrenos muy amplios y un entorno boscoso, con vocación hípica.',
+          mercado:
+            'Muchos lotes superan los 1,000 m², así que es una opción frecuente para casas de autor hechas a la medida. ' +
+            'Hay pocos lotes planos o con vistas privilegiadas, y esos se cotizan más alto.',
+        },
+        'Condado de Sayavedra': {
+          perfil:
+            'El fraccionamiento clásico de Zona Esmeralda. Tiene mucha vegetación de encinos, arquitectura tradicional de influencia inglesa, tradición hípica y un ambiente muy natural.',
+          mercado:
+            'El mercado de reventa es muy activo. Conviven casas con más de 20 años que piden remodelación y residencias totalmente nuevas. La comunidad está muy consolidada.',
+        },
+        'Hacienda de Valle Escondido': {
+          perfil:
+            'Fraccionamiento hermano de Lomas de Valle Escondido. Tiene alta seguridad, control de acceso estricto, calles bien cuidadas y terrenos muy amplios.',
+          mercado:
+            'Es un mercado maduro y de baja rotación: quien compra suele quedarse a largo plazo. Abundan los terrenos planos, y eso mantiene estable el valor por m².',
+        },
+        'Lomas de Valle Escondido': {
+          perfil:
+            'Fraccionamiento hermano de Hacienda de Valle Escondido. Tiene alta seguridad, control de acceso estricto, calles bien cuidadas y terrenos muy amplios.',
+          mercado: 'Es un mercado maduro y de baja rotación: quien compra suele quedarse a largo plazo.',
+        },
+        'Bosque Esmeralda': {
+          perfil:
+            'Subzona de planeación más moderna. Combina cerradas de casas medianas y grandes con el centro comercial y de servicios de la zona: colegios, plazas y oficinas.',
+          mercado:
+            'Concentra buena parte de la oferta de entrega inmediata y de vivienda vertical premium. La buscan familias jóvenes que quieren la seguridad de Zona Esmeralda, con metrajes más eficientes y cerca de las salidas principales.',
+          precios: 'Casas de $8.5 a $16 MDP y departamentos de lujo de $5 a $9 MDP.',
+        },
+        'Prado Largo': {
+          perfil:
+            'Subzona de planeación más moderna. Combina cerradas de casas medianas y grandes con el centro comercial y de servicios de la zona: colegios, plazas y oficinas.',
+          mercado:
+            'Concentra buena parte de la oferta de entrega inmediata. La buscan familias jóvenes que quieren la seguridad de Zona Esmeralda y cercanía a las salidas principales.',
+        },
+        'Residencial Lago Esmeralda': {
+          perfil:
+            'La zona de acceso y expansión más reciente de Zona Esmeralda. Tiene vivienda vertical y casas en clústeres compactos, con vista a la presa Madín.',
+          mercado:
+            'Es la zona con más transacciones de clase media alta y la más influida por la oferta de departamentos. Es una buena puerta de entrada a la región. Su precio se mueve más, porque depende de la vialidad y del suministro de agua.',
+          precios: 'Departamentos y casas en condominio de $3.5 a $6.5 MDP.',
+        },
+      } as Record<string, { perfil: string; mercado: string; precios?: string }>,
     },
     mercadoChip: '02 Referencias del Mercado',
     mercadoTitle: 'Análisis del mercado',
