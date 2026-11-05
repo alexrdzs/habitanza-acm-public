@@ -246,6 +246,7 @@ export const COPY = {
   extras: {
     title: '¿Qué la hace especial?',
     description: 'Toca todo lo que aplique. Es opcional.',
+    premiumTitle: 'Amenidades premium',
   },
 
   contact: {

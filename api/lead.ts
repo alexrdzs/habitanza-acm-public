@@ -59,6 +59,15 @@ const FEATURE_VALUES = [
   'En privada con seguridad',
   'Terreno irregular',
   'Con pendiente',
+  'Gimnasio',
+  'Cine en casa',
+  'Cava de vinos',
+  'Elevador',
+  'Sauna o vapor',
+  'Cancha deportiva',
+  'Asador y terraza',
+  'Roof garden',
+  'Estudio u oficina',
 ] as const;
 // Keep in sync with REFERRAL_SOURCES in shared/validation.ts.
 const REFERRAL_SOURCES = ['publicidad', 'redes_sociales', 'recomendacion', 'evento', 'otro'] as const;

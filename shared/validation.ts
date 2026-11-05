@@ -90,18 +90,32 @@ export const PROPERTY_FEATURES: Record<PublicPropertyType, readonly PropertyFeat
   ],
 };
 
+// "Amenidades premium": a second 3 x 3 grid on the extras step, for homes and
+// apartments only. Context for the broker: 'neutral', so they never move the
+// aprox. Keep the value list in sync (inlined) in api/lead.ts.
+export const PREMIUM_AMENITIES: readonly PropertyFeature[] = [
+  { value: 'Gimnasio', effect: 'neutral' },
+  { value: 'Cine en casa', effect: 'neutral' },
+  { value: 'Cava de vinos', effect: 'neutral' },
+  { value: 'Elevador', effect: 'neutral' },
+  { value: 'Sauna o vapor', effect: 'neutral' },
+  { value: 'Cancha deportiva', effect: 'neutral' },
+  { value: 'Asador y terraza', effect: 'neutral' },
+  { value: 'Roof garden', effect: 'neutral' },
+  { value: 'Estudio u oficina', effect: 'neutral' },
+];
+export const PREMIUM_AMENITY_TYPES: readonly string[] = ['Casa', 'Departamento'];
+
 // Every feature value that can appear in a submission, for server-side
 // validation regardless of type.
 export const ALL_FEATURE_VALUES = Array.from(
-  new Set(Object.values(PROPERTY_FEATURES).flat().map((f) => f.value))
+  new Set([...Object.values(PROPERTY_FEATURES).flat(), ...PREMIUM_AMENITIES].map((f) => f.value))
 );
 
 // Effect lookup by value, for the pricing position model. A value keeps the
 // same effect across types, so the flat map is unambiguous.
 export const FEATURE_EFFECTS: Record<string, FeatureEffect> = Object.fromEntries(
-  Object.values(PROPERTY_FEATURES)
-    .flat()
-    .map((f) => [f.value, f.effect])
+  [...Object.values(PROPERTY_FEATURES).flat(), ...PREMIUM_AMENITIES].map((f) => [f.value, f.effect])
 );
 
 // A selected feature is just its string value; kept named `Amenity` so the

@@ -1,10 +1,19 @@
-import { PROPERTY_FEATURES } from '@shared/validation';
+import { PREMIUM_AMENITIES, PREMIUM_AMENITY_TYPES, PROPERTY_FEATURES } from '@shared/validation';
 import type { Amenity, PublicPropertyType } from '@shared/validation';
 import { COPY } from '@shared/copy';
 import { WizardShell } from './WizardShell';
 import { OptionTile } from './OptionTile';
 import {
   Bot,
+  Bath,
+  Clapperboard,
+  Dumbbell,
+  Laptop,
+  MoveVertical,
+  Sprout,
+  UtensilsCrossed,
+  Volleyball,
+  Wine,
   BedSingle,
   Warehouse,
   Eye,
@@ -40,6 +49,15 @@ export const FEATURE_ICONS: Record<string, LucideIcon> = {
   'Con pendiente': Mountain,
   'Bodega propia': Warehouse,
   'Cuarto de servicio': BedSingle,
+  Gimnasio: Dumbbell,
+  'Cine en casa': Clapperboard,
+  'Cava de vinos': Wine,
+  Elevador: MoveVertical,
+  'Sauna o vapor': Bath,
+  'Cancha deportiva': Volleyball,
+  'Asador y terraza': UtensilsCrossed,
+  'Roof garden': Sprout,
+  'Estudio u oficina': Laptop,
 };
 
 interface Props {
@@ -82,6 +100,23 @@ export function WizardExtrasStep({ tipoPropiedad, amenidades, setAmenidades, onB
             />
           ))}
         </div>
+        {PREMIUM_AMENITY_TYPES.includes(tipoPropiedad) && (
+          <div className="mt-8">
+            <p className="mb-3 text-[11px] font-bold uppercase tracking-wider text-neutral-500 md:text-xs">{COPY.extras.premiumTitle}</p>
+            <div className="grid grid-cols-3 gap-2 md:gap-3">
+              {PREMIUM_AMENITIES.map(({ value }) => (
+                <OptionTile
+                  key={value}
+                  label={value}
+                  icon={FEATURE_ICONS[value]}
+                  active={amenidades.includes(value)}
+                  onClick={() => toggle(value)}
+                  className="min-h-[84px] px-2 py-3 text-xs md:min-h-[92px] md:text-sm"
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </WizardShell>
   );
