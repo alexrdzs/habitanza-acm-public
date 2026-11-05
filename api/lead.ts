@@ -185,7 +185,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Which broker the client-side router assigned this lead to. Forwarded to
   // the CRM so it knows the owner; sanitized like any other free-text field.
   const asesorAsignado = sanitizeText(body.asesorAsignado, 120) || undefined;
-  const asesorTelefono = sanitizeText(body.asesorTelefono, 20) || undefined;
+  // Normalized to 10 digits so Make can always build the WhatsApp ID as "52" + number.
+  const asesorTelefono = normalizePhone(sanitizeText(body.asesorTelefono, 20)) ?? undefined;
   const consentimiento = body.consentimiento === true;
 
   const isKnownColonia =

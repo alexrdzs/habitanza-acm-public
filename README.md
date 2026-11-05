@@ -55,7 +55,7 @@ See `env.example`. At minimum, set `MAKE_WEBHOOK_URL` in Vercel before this can 
 ## Before going live
 
 - [ ] Set `MAKE_WEBHOOK_URL` (and optionally `MAKE_WEBHOOK_SECRET`) in Vercel
-- [ ] Point the Make.com scenario at wherever leads should land (V1 has no Pulppo integration by design) and confirm the team WhatsApp notification fires
+- [ ] Make scenario "Landing Valuación Zona Esmeralda → Sheet + WhatsApp" (team 1523) is built: it saves each lead to the "Leads · Valuación Zona Esmeralda" Google Sheet, sends the visitor a WhatsApp confirmation, and alerts the assigned advisor, both via Whapi. Set `MAKE_WEBHOOK_URL` to its webhook, activate the scenario, and send one test lead with your own phone
 - [ ] Set `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` for durable rate limiting before a real public launch
 - [ ] Legal review of `src/pages/PrivacyNoticePage.tsx` — the aviso de privacidad shipped here is a starting draft (not reviewed by counsel) and has a placeholder contact email
 - [ ] Add more/refresh `shared/testimonials.ts` if Habitanza wants to rotate in newer client quotes
