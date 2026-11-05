@@ -61,7 +61,8 @@ export function LandingPage() {
 
   // Contact
   const [nombre, setNombre] = useState(() => (isRevealPreview ? 'Cliente' : ''));
-  const [telefono, setTelefono] = useState('');
+  // Dev only: ?tel=5530494822 pre-fills the phone for testing the share.
+  const [telefono, setTelefono] = useState(import.meta.env.DEV ? (previewParams.get('tel') ?? '') : '');
   const [comoNosConociste, setComoNosConociste] = useState(isEventMode ? 'evento' : '');
   const [comoNosConocisteOtro, setComoNosConocisteOtro] = useState('');
   const [consentimiento, setConsentimiento] = useState(false);
@@ -383,6 +384,7 @@ export function LandingPage() {
             wide={false}
             estimate={estimate}
             nombre={nombre}
+            telefono={telefono}
             tipoPropiedad={tipoPropiedad}
             colonia={resolvedColonia}
             advisor={assignedAdvisor}

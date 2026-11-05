@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { normalizePhone } from '@shared/validation';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -8,6 +9,12 @@ export function cn(...inputs: ClassValue[]) {
 // Ball-park format for ranges: 9,510,000 -> "$9.6M" (rounds UP to 0.1M).
 export function formatMillions(value: number) {
   return `$${(Math.ceil(value / 100000) / 10).toFixed(1)}M`;
+}
+
+// Client phone -> wa.me number ("55 3049 4822" -> "525530494822"). '' if invalid.
+export function waNumber(raw: string) {
+  const n = normalizePhone(raw);
+  return n ? `52${n}` : '';
 }
 
 export function formatCurrency(value: number) {

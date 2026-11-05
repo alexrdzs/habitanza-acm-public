@@ -19,6 +19,8 @@ import { formatCurrency, formatMillions, formatPhone } from '../../lib/utils';
 interface Props {
   estimate: PreliminaryEstimate;
   nombre: string;
+  // As typed in the contact step; the share opens this number's WhatsApp.
+  telefono: string;
   tipoPropiedad: string;
   colonia: string;
   profile: PropertyProfile;
@@ -35,7 +37,7 @@ const MEETING_ICONS = [FileSearch, Target, Route];
 // The reveal is a mini, market-first presentation whose only job is to get a
 // meeting: the range, what the zone is doing, the references behind it, and
 // the next step. The visitor's own property shows up only as header chips.
-export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, profile, advisor, wide = false }: Props) {
+export function WizardRevealStep({ estimate, nombre, telefono, tipoPropiedad, colonia, profile, advisor, wide = false }: Props) {
   const firstName = nombre.trim().split(' ')[0] || 'gracias';
   const advisorFirstName = advisor.name.split(' ')[0];
   const comps = readyComparableListings(colonia);
@@ -47,16 +49,8 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, pro
   const zoneReference = referencePerM2(colonia, tipoPropiedad);
   const competition = competitionLevel(colonia);
 
+  const str = (n?: number) => (n ? String(n) : '');
   const [shareOpen, setShareOpen] = useState(false);
-  const F = COPY.share.features;
-  const shareFeatures = [
-    profile.m2Construccion && F.construction(profile.m2Construccion),
-    profile.m2Terreno && F.land(profile.m2Terreno),
-    profile.recamaras && F.bedrooms(profile.recamaras),
-    profile.banos && F.baths(profile.banos),
-    profile.estacionamientos && F.parking(profile.estacionamientos),
-  ].filter((x): x is string => Boolean(x));
-
   // The sticky bottom CTA appears once the range panel has scrolled away and
   // yields while the closing card's own CTA is on screen, so two green
   // WhatsApp buttons never stack.
@@ -250,17 +244,22 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, pro
       {shareOpen && (
         <ValuationShareSheet
           onClose={() => setShareOpen(false)}
-          nombre={nombre}
+          firstName={firstName}
+          clientPhone={telefono}
           tipoPropiedad={tipoPropiedad}
           colonia={colonia}
           low={estimate.low}
           high={estimate.high}
-          features={shareFeatures}
+          market={[
+            { title: COPY.reveal.pulse.m2Label, value: formatCurrency(zoneReference.perM2) },
+            { title: COPY.reveal.pulse.listingsLabel, value: COPY.reveal.pulse.listingsValue(totalReadyListingsCount()) },
+            ...(competition
+              ? [{ title: COPY.reveal.pulse.competitionLabel, value: COPY.reveal.pulse.competitionLevels[competition.level] }]
+              : []),
+          ]}
           brokerName={advisor.name}
-          brokerRole={advisor.roleLabel}
           brokerPhone={formatPhone(advisor.phone)}
           brokerPhotoUrl={advisor.imageUrl}
-          firstName={firstName}
         />
       )}
 
