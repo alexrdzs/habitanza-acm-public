@@ -52,6 +52,18 @@ npm run build    # production build
 npm run lint      # tsc --noEmit
 ```
 
+## Seguir en local con los comparables
+
+```bash
+git fetch origin && git checkout ccr-ee57610a-t28wxt
+npm install        # el rediseño agrega html-to-image
+npm run dev
+```
+
+- Ver el resultado sin llenar el flujo: `http://localhost:5173/?preview=reveal&colonia=Rancho%20San%20Juan` (solo en dev, acepta cualquier fraccionamiento).
+- Sin `VITE_GOOGLE_MAPS_API_KEY` el mapa se degrada. Con una llave que no permite `localhost`, Google Maps muestra "Oops! Something went wrong" y lanza un error en consola. No viene del código del sitio.
+- Los comparables se editan en `shared/comparableListings.ts`. Los textos de zona, en `COPY.reveal.zona.profiles` (`shared/copy.ts`).
+
 ## Environment variables
 
 See `env.example`. At minimum, set `MAKE_WEBHOOK_URL` in Vercel before this can accept real submissions — without it `/api/lead` returns a 500 and logs the drop server-side rather than silently discarding leads.
