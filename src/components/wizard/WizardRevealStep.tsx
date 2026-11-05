@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 import { ArrowLeftRight, Building2, FileSearch, LineChart, MapPin, MessageCircle, Route, Ruler, Home, CalendarClock, Target, Share2 } from 'lucide-react';
 import { ValuationShareSheet } from './ValuationShareSheet';
 import { RevealPricePanel } from './RevealPricePanel';
+import { ReadingList } from './ReadingList';
+import { readProperty } from '../../lib/propertyReading';
 import type { PropertyProfile } from './PropertySummaryCard';
 import { ComparablesMap } from './ComparablesMap';
 import { ComparableListingCards } from './ComparableListingCards';
@@ -37,6 +39,7 @@ const MEETING_ICONS = [FileSearch, Target, Route];
 export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, profile, advisor, wide = false }: Props) {
   const firstName = nombre.trim().split(' ')[0] || 'gracias';
   const advisorFirstName = advisor.name.split(' ')[0];
+  const { pros, cons } = readProperty(profile, tipoPropiedad, colonia);
   const comps = readyComparableListings(colonia);
   const pendingComps = pendingComparableListings(colonia);
   const hasComps = comps.length > 0;
@@ -104,13 +107,25 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, pro
         </>
       )}
 
+      {/* 01 -- the property read against the zone: what helps, what to watch. */}
+      {(pros.length > 0 || cons.length > 0) && (
+        <div className="lg:col-span-2">
+          <SlideCard compact chip={COPY.reveal.reading.chip} title={COPY.reveal.reading.title}>
+            <div className="grid gap-3 md:gap-5 lg:grid-cols-2">
+              {pros.length > 0 && <ReadingList title={COPY.reveal.reading.prosTitle} items={pros} tone="green" />}
+              {cons.length > 0 && <ReadingList title={COPY.reveal.reading.consTitle} items={cons} tone="red" />}
+            </div>
+          </SlideCard>
+        </div>
+      )}
+
       {/* 01 -- what the market says: ONE card, two clear columns from lg
           (zone numbers | the references behind the range). */}
       <div className="lg:col-span-2">
-        <SlideCard compact chip={COPY.reveal.market.chip} title={COPY.reveal.pulse.title} subtitle={COPY.reveal.pulse.subtitle}>
+        <SlideCard compact chip={COPY.reveal.market.chip} title={COPY.reveal.pulse.title(colonia)}>
           <div className="space-y-6 lg:grid lg:grid-cols-2 lg:space-y-0 lg:divide-x lg:divide-neutral-200/70">
             <div className="space-y-4 lg:flex lg:flex-col lg:pr-8">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-500">{COPY.reveal.market.statsLabel}</p>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-500 md:text-xs">{COPY.reveal.market.statsLabel}</p>
               {/* From lg the three rows spread over the column height, so the
                   left side matches the map column instead of leaving a gap. */}
               <div>
@@ -142,7 +157,7 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, pro
               </div>
             </div>
             <div className="space-y-3 lg:pl-8">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-500">{COPY.reveal.mercadoSubtitle}</p>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-500 md:text-xs">{COPY.reveal.mercadoSubtitle}</p>
               {hasComps || hasPendingComps ? (
                 <div className="space-y-3 md:flex md:gap-3 md:space-y-0 lg:block lg:space-y-3">
                   <div className="md:w-1/2 lg:w-full">

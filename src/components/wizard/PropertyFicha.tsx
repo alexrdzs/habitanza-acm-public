@@ -12,6 +12,8 @@ export interface PropertyFichaProps {
   estacionamientos: string;
   antiguedad: string;
   amenidades: string[];
+  // Reveal card: bigger numbers, since it spans the whole card.
+  large?: boolean;
 }
 
 const TYPE_ICONS: Record<string, LucideIcon> = { Casa: House, Departamento: Building2, Terreno: LandPlot };
@@ -68,11 +70,11 @@ export function PropertyFicha(p: PropertyFichaProps) {
             <dl key={r} className="grid animate-in grid-cols-3 gap-x-3 border-t border-neutral-200/70 pt-3 duration-300 fade-in">
               {row.map(({ Icon, label, value }) => (
                 <div key={label} className="min-w-0">
-                  <dt className="flex items-center gap-1.5 text-[11px] text-neutral-500">
-                    <Icon className="h-3.5 w-3.5 shrink-0 text-brand-600" strokeWidth={2} />
+                  <dt className={`flex items-center gap-1.5 text-neutral-500 ${p.large ? 'text-xs md:text-sm' : 'text-[11px]'}`}>
+                    <Icon className={`shrink-0 text-brand-600 ${p.large ? 'h-4 w-4' : 'h-3.5 w-3.5'}`} strokeWidth={2} />
                     <span className="truncate">{label}</span>
                   </dt>
-                  <dd className="mt-0.5 truncate text-[15px] font-semibold text-neutral-900">{value}</dd>
+                  <dd className={`font-semibold text-neutral-900 ${p.large ? 'mt-1 break-words text-lg font-bold leading-tight tracking-tight md:text-2xl' : 'mt-0.5 truncate text-[15px]'}`}>{value}</dd>
                 </div>
               ))}
             </dl>
@@ -81,25 +83,30 @@ export function PropertyFicha(p: PropertyFichaProps) {
 
       {/* "Destacado": the security mark is always there by default; it is
           skipped when the visitor already picked the equivalent feature, so
-          the same shield never shows twice. */}
-      <div className="animate-in border-t border-neutral-200/70 pt-3 duration-300 fade-in">
-        <p className="text-[11px] text-neutral-500">{S.destacado}</p>
-        <ul className="mt-1.5 flex flex-wrap gap-3">
-          {!p.amenidades.includes(SECURITY_AMENITY) && (
-            <li title={S.seguridad}>
-              <ShieldCheck className="h-[18px] w-[18px] text-brand-600" strokeWidth={1.75} aria-label={S.seguridad} />
-            </li>
-          )}
-          {p.amenidades.map((a) => {
-            const Icon = FEATURE_ICONS[a] ?? Sparkles;
-            return (
-              <li key={a} title={a}>
-                <Icon className="h-[18px] w-[18px] text-brand-600" strokeWidth={1.75} aria-label={a} />
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+          the same shield never shows twice. In the big reveal version each
+          feature also carries a mini label. */}
+      {(() => {
+        const items: { Icon: LucideIcon; label: string }[] = [
+          ...(p.amenidades.includes(SECURITY_AMENITY) ? [] : [{ Icon: ShieldCheck, label: S.seguridad }]),
+          ...p.amenidades.map((a) => ({ Icon: FEATURE_ICONS[a] ?? Sparkles, label: a })),
+        ];
+        return (
+          <div className="animate-in border-t border-neutral-200/70 pt-3 duration-300 fade-in">
+            <p className={`flex items-center gap-1.5 text-neutral-500 ${p.large ? 'text-xs md:text-sm' : 'text-[11px]'}`}>
+              <Sparkles className={`shrink-0 text-brand-600 ${p.large ? 'h-4 w-4' : 'h-3.5 w-3.5'}`} strokeWidth={2} />
+              {S.destacado}
+            </p>
+            <ul className={`flex flex-wrap ${p.large ? 'mt-2.5 gap-x-6 gap-y-2' : 'mt-1.5 gap-3'}`}>
+              {items.map(({ Icon, label }) => (
+                <li key={label} title={label} className="flex items-center gap-2 text-sm font-medium text-neutral-700">
+                  <Icon className="h-[18px] w-[18px] shrink-0 text-brand-600" strokeWidth={1.75} aria-label={label} />
+                  {p.large && label}
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      })()}
     </div>
   );
 }

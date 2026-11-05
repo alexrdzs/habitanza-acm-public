@@ -20,7 +20,7 @@ export function SlideCard({ chip, chipVariant, title, subtitle, compact = false,
     <div
       className={cn(
         'space-y-6 rounded-card-lg border border-neutral-200/70 bg-parchment-card/80 p-6 text-left backdrop-blur-md md:space-y-8 md:p-10',
-        compact && 'space-y-4 p-5 md:space-y-5 md:p-6'
+        compact && 'space-y-4 p-5 md:space-y-5 md:p-6 lg:p-8'
       )}
     >
       <div className="space-y-3">

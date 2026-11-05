@@ -34,33 +34,35 @@ export function RevealPricePanel({ estimate, nombre, tipoPropiedad, colonia, pro
     // it to pick up, so a slow-pulsing glow sits under it.
     <div
       ref={panelRef}
-      className="relative overflow-hidden rounded-card-lg border border-white/70 bg-gradient-to-br from-brand-50/40 via-white to-emerald-50/40 shadow-[0_1px_2px_rgba(12,10,9,0.05),0_16px_36px_-20px_rgba(22,163,74,0.2)]"
+      className="relative overflow-hidden rounded-card-lg border border-neutral-200/70 bg-parchment-card/80 backdrop-blur-md"
     >
-      <div className="pointer-events-none absolute -top-24 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-brand-500/8 blur-3xl animate-glow-pulse" />
 
       <Logo className="absolute right-8 top-7 z-10 hidden h-7 text-neutral-900 lg:block" />
-      <div className="relative flex flex-col gap-6 p-6 md:p-8 lg:grid lg:grid-cols-2 lg:items-center lg:gap-10 lg:px-10 lg:pb-14 lg:pt-10">
-        <div className="order-2 lg:order-1">
-          <div className="hidden lg:mb-12 lg:block">
-            <h2 className="text-2xl font-semibold leading-snug text-neutral-900">{COPY.reveal.greeting(firstName)}</h2>
-            <p className="mt-1 text-sm text-neutral-500">{IS_EVENT_MODE ? COPY.event.revealSubtext : COPY.reveal.subtext}</p>
-          </div>
-          <div className="border-t border-neutral-200/70 pt-5 lg:border-0 lg:pt-0">
-            <PropertyFicha
-              colonia={colonia}
-              tipoPropiedad={tipoPropiedad}
-              m2Construccion={str(profile.m2Construccion)}
-              m2Terreno={str(profile.m2Terreno)}
-              recamaras={str(profile.recamaras)}
-              banos={str(profile.banos)}
-              estacionamientos={str(profile.estacionamientos)}
-              antiguedad={profile.antiguedad ?? ''}
-              amenidades={profile.amenidades}
-            />
-          </div>
+      <div className="relative flex flex-col gap-5 p-5 md:p-6 lg:p-8">
+        <div className="hidden lg:block">
+          <h2 className="text-xl font-extrabold leading-tight tracking-tight text-neutral-900 md:text-2xl">{COPY.reveal.greeting(firstName)}</h2>
+          <p className="mt-3 text-sm text-neutral-500 md:text-base">{IS_EVENT_MODE ? COPY.event.revealSubtext : COPY.reveal.subtext}</p>
+          <div className="mt-6 h-px w-16 bg-gradient-to-r from-brand-500 to-transparent" />
         </div>
 
-        <div className="order-1 text-center lg:order-2">
+        {/* The whole property sheet across the card. */}
+        <div className="order-2 border-t border-neutral-200/70 pt-5 lg:order-none lg:border-0 lg:pt-0">
+          <PropertyFicha
+            large
+            colonia={colonia}
+            tipoPropiedad={tipoPropiedad}
+            m2Construccion={str(profile.m2Construccion)}
+            m2Terreno={str(profile.m2Terreno)}
+            recamaras={str(profile.recamaras)}
+            banos={str(profile.banos)}
+            estacionamientos={str(profile.estacionamientos)}
+            antiguedad={profile.antiguedad ?? ''}
+            amenidades={profile.amenidades}
+          />
+        </div>
+
+        {/* The range, centered. First thing on phones. */}
+        <div className="order-1 mx-auto w-full max-w-3xl text-center lg:order-none lg:border-t lg:border-neutral-200/70 lg:pt-6">
           <p className="text-[11px] font-bold uppercase tracking-wider text-brand-600 md:text-xs">{COPY.reveal.panelChip}</p>
           {/* Phone/tablet: the range as text. From lg the bar's own end labels
               carry the numbers, so this is hidden. */}

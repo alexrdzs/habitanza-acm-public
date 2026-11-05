@@ -172,7 +172,7 @@ export const COPY = {
     estacionamientos: 'Autos',
     antiguedad: 'Antigüedad',
     destacado: 'Destacado',
-    seguridad: 'Seguridad',
+    seguridad: 'Seguridad privada',
   },
 
   location: {
@@ -291,6 +291,28 @@ export const COPY = {
     greeting: (firstName: string) => `Muchas gracias, ${firstName}.`,
     subtext: 'Con esta información podemos darte un rango aproximado.',
     panelChip: 'Rango preliminar',
+    // Bullets in the first card. Each exists only when real data backs it
+    // (see src/lib/propertyReading.ts).
+    reading: {
+      chip: '01 Tu propiedad en la zona',
+      title: 'Fortalezas y retos de tu propiedad',
+      prosTitle: 'Lo que juega a tu favor',
+      consTitle: 'Retos en tu zona',
+      conUp: 'Más m² de construcción que el promedio de la zona',
+      conDown: 'Menos m² de construcción que el promedio de la zona',
+      terUp: 'Terreno más amplio que el promedio de la zona',
+      terDown: 'Terreno más pequeño que el promedio, lo que puede acotar su valor total',
+      recUp: 'Más recámaras que el promedio, ayuda a destacar',
+      recDown: 'Menos recámaras que el promedio, es más complejo destacar',
+      banUp: 'Más baños que los comparables',
+      banDown: 'Menos baños que los comparables',
+      ageNew: 'Propiedad nueva o casi nueva',
+      ageOld: 'Más de 20 años de antigüedad, algunos compradores esperan actualizaciones',
+      feature: (name: string) => `Suma valor: ${name}`,
+      challenge: (name: string) => `A considerar: ${name}`,
+      competition: (count: number, colonia: string) =>
+        `${count} ${count === 1 ? 'propiedad similar publicada' : 'propiedades similares publicadas'} hoy en ${colonia}, compiten por el mismo comprador`,
+    },
     headlinePrefix: 'Tu propiedad podría estar en un rango de:',
     headlineJoiner: 'a',
     caption: (colonia: string) => `Esto es un promedio de ${colonia} basado en datos históricos y nuestra experiencia en la zona.`,
@@ -481,8 +503,7 @@ export const COPY = {
     // real document, not a standalone widget.
     pulse: {
       chip: '01 Pulso del Mercado',
-      title: 'Lo que el mercado ya nos dice',
-      subtitle: 'Datos reales de nuestro portafolio en tu zona.',
+      title: (colonia: string) => `Análisis del mercado en ${colonia}`,
       m2Label: 'Referencia por m²',
       m2SublineColonia: (colonia: string) => `Con base en listados reales de ${colonia}.`,
       m2SublineZona: 'Promedio de Zona Esmeralda mientras afinamos tu fraccionamiento.',
@@ -494,7 +515,7 @@ export const COPY = {
     },
     // One card, two columns: the zone's numbers and the references behind them.
     market: {
-      chip: '01 Qué dice el mercado',
+      chip: '02 Qué dice el mercado',
       statsLabel: 'Cifras de tu zona',
     },
     mercadoChip: '02 Referencias del Mercado',
@@ -545,7 +566,7 @@ export const COPY = {
     // Last card: the whole point of this screen. The range is a first
     // approach; the meeting turns it into an exact exit price.
     meeting: {
-      chip: '02 Siguiente paso',
+      chip: '03 Siguiente paso',
       title: 'Agenda una reunión',
       subtitle: 'Este es un primer acercamiento. En una reunión armamos tu ACM completo.',
       ctaLabel: (advisorFirstName: string) => `Agendar reunión con ${advisorFirstName}`,
