@@ -348,8 +348,7 @@ export const COPY = {
       maxLabel: 'Máximo',
       // Sits over the glass band in the middle: says WHERE the ideal price is
       // without naming a number.
-      idealLabel: 'Tu precio ideal se ubica en este rango',
-      outOfMarketNote: 'Los extremos en rojo quedan fuera de mercado.',
+      idealLabel: 'Tu precio ideal está en el rango:',
     },
     // "Tu propiedad" -- the bridge between the zone-average price panel above
     // and the numbered market chapters below. Every value here is the

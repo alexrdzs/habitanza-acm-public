@@ -2,6 +2,7 @@ import { forwardRef } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { Logo } from '../Logo';
 import { COPY } from '@shared/copy';
+import { idealBand } from '@shared/pricing';
 import { formatCurrency } from '../../lib/utils';
 
 interface Props {
@@ -26,6 +27,7 @@ export const ValuationShareCard = forwardRef<HTMLDivElement, Props>(function Val
   { nombre, tipoPropiedad, colonia, low, high, features, brokerName, brokerRole, brokerPhone, brokerPhoto },
   ref
 ) {
+  const ideal = idealBand(low, high);
   return (
     <div ref={ref} style={{ width: 360 }} className="bg-white p-6 text-neutral-900">
       <div className="flex items-start justify-between gap-4">
@@ -51,12 +53,15 @@ export const ValuationShareCard = forwardRef<HTMLDivElement, Props>(function Val
       <div className="mt-6 rounded-2xl bg-[#F0FDF4] px-4 pb-4 pt-5">
         <p className="text-center text-[11px] font-bold uppercase tracking-wider text-[#15803D]">{COPY.share.chip}</p>
         <div className="mt-3 flex flex-col items-center">
-          <p className="whitespace-nowrap rounded-full border border-[#86EFAC] bg-white px-3 py-1.5 text-xs font-extrabold">
-            {COPY.reveal.bar.idealLabel}
-          </p>
+          <div className="rounded-full border border-[#86EFAC] bg-white px-4 py-1.5 text-center">
+            <p className="whitespace-nowrap text-xs font-extrabold">{COPY.reveal.bar.idealLabel}</p>
+            <p className="whitespace-nowrap text-sm font-extrabold tabular-nums">
+              {formatCurrency(ideal.low)} <span className="font-light text-neutral-400">{COPY.reveal.headlineJoiner}</span> {formatCurrency(ideal.high)}
+            </p>
+          </div>
           <ChevronDown className="mt-0.5 h-5 w-5 text-[#16A34A]" strokeWidth={3} />
         </div>
-        <div className="h-2.5 rounded-full bg-gradient-to-r from-[#86EFAC] to-[#16A34A]" />
+        <div className="h-2.5 rounded-full" style={{ background: 'linear-gradient(90deg, #DC2626 0%, #DC2626 6%, #FBBF24 14%, #4ADE80 50%, #FBBF24 86%, #DC2626 94%, #DC2626 100%)' }} />
         <div className="mt-3 flex justify-between gap-3">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">{COPY.share.low}</p>

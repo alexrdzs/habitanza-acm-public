@@ -47,21 +47,14 @@ export function PropertyFicha(p: PropertyFichaProps) {
   return (
     <div className="space-y-3">
       {p.colonia && (
-        <div className="flex items-center justify-between gap-3">
-          <p className="flex min-w-0 items-center gap-2 text-lg font-bold leading-tight text-neutral-900">
-            <MapPin className="h-[18px] w-[18px] shrink-0 text-brand-600" strokeWidth={2} />
-            <span className="truncate">{p.colonia}</span>
-          </p>
-          {p.tipoPropiedad && (
-            <p className="flex shrink-0 items-center gap-1.5 text-sm font-semibold text-neutral-700">
-              {(() => {
-                const T = TYPE_ICONS[p.tipoPropiedad] ?? House;
-                return <T className="h-4 w-4 text-brand-600" strokeWidth={2} />;
-              })()}
-              {p.tipoPropiedad}
-            </p>
-          )}
-        </div>
+        // One title: "Casa en Prado Largo", with the type's icon.
+        <p className="flex min-w-0 items-center gap-2 text-lg font-bold leading-tight text-neutral-900">
+          {(() => {
+            const T = p.tipoPropiedad ? (TYPE_ICONS[p.tipoPropiedad] ?? House) : MapPin;
+            return <T className="h-[18px] w-[18px] shrink-0 text-brand-600" strokeWidth={2} />;
+          })()}
+          <span className="truncate">{p.tipoPropiedad ? `${p.tipoPropiedad} en ${p.colonia}` : p.colonia}</span>
+        </p>
       )}
 
       {[size, rooms].map(
