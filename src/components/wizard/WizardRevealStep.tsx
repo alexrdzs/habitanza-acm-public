@@ -2,7 +2,6 @@ import { IS_EVENT_MODE } from '../../lib/eventMode';
 import { useEffect, useRef, useState } from 'react';
 import { ArrowLeftRight, Building2, FileSearch, LineChart, MapPin, MessageCircle, Route, Ruler, Home, CalendarClock, Target, Share2 } from 'lucide-react';
 import { ValuationShareSheet } from './ValuationShareSheet';
-import { Logo } from '../Logo';
 import { RevealPricePanel } from './RevealPricePanel';
 import type { PropertyProfile } from './PropertySummaryCard';
 import { ComparablesMap } from './ComparablesMap';
@@ -88,9 +87,6 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, pro
     <div className="animate-in fade-in slide-in-from-bottom-4 grid gap-3 pb-20 duration-700 md:gap-5 lg:grid-cols-2">
       {!wide && (
         <>
-          <div className="hidden lg:col-span-2 lg:flex lg:justify-end">
-            <Logo className="h-7 text-neutral-900" />
-          </div>
           <div className="pb-2 text-center md:text-left lg:hidden">
             <h2 className="text-lg font-medium leading-snug text-neutral-900 md:text-xl">{COPY.reveal.greeting(firstName)}</h2>
             <p className="mt-1 text-sm text-neutral-500">{IS_EVENT_MODE ? COPY.event.revealSubtext : COPY.reveal.subtext}</p>

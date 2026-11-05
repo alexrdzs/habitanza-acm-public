@@ -5,6 +5,8 @@ import { WizardShell } from './WizardShell';
 import { OptionTile } from './OptionTile';
 import {
   Bot,
+  BedSingle,
+  Warehouse,
   Eye,
   Flame,
   Gamepad2,
@@ -36,6 +38,8 @@ export const FEATURE_ICONS: Record<string, LucideIcon> = {
   'En privada con seguridad': ShieldCheck,
   'Terreno irregular': Shapes,
   'Con pendiente': Mountain,
+  'Bodega propia': Warehouse,
+  'Cuarto de servicio': BedSingle,
 };
 
 interface Props {

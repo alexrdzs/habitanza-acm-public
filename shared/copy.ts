@@ -88,7 +88,7 @@ export const COPY = {
       checklistFirstDetail:
         'Elegimos caso por caso las propiedades que sí compiten con la tuya, ajustadas por tamaño, condición y ubicación.',
     },
-    broker: { label: 'Atiende:', placeholder: 'Elige tu nombre' },
+    broker: { label: 'Broker:', placeholder: 'Elige tu nombre' },
     advisorParagraph: (advisorFirstName: string, colonia: string) =>
       `${advisorFirstName} está contigo hoy y conoce muy bien ${colonia}. Después del evento te escribe por WhatsApp ` +
       'para armar la estrategia ideal para vender tu propiedad.',

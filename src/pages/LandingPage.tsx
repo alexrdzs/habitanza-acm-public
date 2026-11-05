@@ -410,12 +410,12 @@ export function LandingPage() {
   // (progress + live summary, or the price once revealed); right, the step.
   if (wide) {
     return (
-      <div className={isEventMode ? 'h-dvh p-2' : 'h-dvh'}>
+      <div className="h-dvh">
         {preloader}
-        <div className={isEventMode ? 'flex h-full rounded-[1.75rem] bg-[#0B2E16] p-2 shadow-[0_24px_60px_-20px_rgba(11,46,22,0.55)]' : 'flex h-full'}>
+        <div className="flex h-full">
           {/* One white container. The wizard sits on the left; once the visitor
               starts, the map + summary panel assembles on the right. */}
-          <div className={`relative flex min-w-0 flex-1 overflow-hidden bg-parchment-card ${isEventMode ? 'rounded-[1.25rem]' : ''}`}>
+          <div className="relative flex min-w-0 flex-1 overflow-hidden bg-parchment-card">
             <div
               key={step === 'hero' ? 'home' : 'wizard'}
               className="flex min-w-0 flex-1 animate-in flex-col duration-300 fade-in"
@@ -424,7 +424,7 @@ export function LandingPage() {
               <div ref={panelRef} className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden">
                 <main
                   className={`mx-auto flex min-h-full flex-col px-[var(--gutter)] [--gutter:2rem] xl:[--gutter:2.5rem] ${
-                    flowIndex >= 0 ? 'max-w-3xl pb-0 pt-2' : step === 'reveal' ? 'max-w-5xl pb-8 pt-2' : 'max-w-5xl pb-8 pt-8 xl:pb-10'
+                    flowIndex >= 0 ? 'max-w-3xl pb-0 pt-2' : step === 'reveal' ? 'max-w-7xl pb-8 pt-2' : 'max-w-5xl pb-8 pt-8 xl:pb-10'
                   }`}
                 >
                   {steps}

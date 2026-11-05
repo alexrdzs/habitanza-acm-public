@@ -1,3 +1,4 @@
+import { Logo } from '../Logo';
 import { IS_EVENT_MODE } from '../../lib/eventMode';
 import type { Ref } from 'react';
 import { PreliminaryPricingBar } from './PreliminaryPricingBar';
@@ -37,9 +38,10 @@ export function RevealPricePanel({ estimate, nombre, tipoPropiedad, colonia, pro
     >
       <div className="pointer-events-none absolute -top-24 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-brand-500/8 blur-3xl animate-glow-pulse" />
 
-      <div className="relative flex flex-col gap-6 p-6 md:p-8 lg:grid lg:grid-cols-2 lg:items-center lg:gap-10">
+      <Logo className="absolute right-8 top-7 z-10 hidden h-7 text-neutral-900 lg:block" />
+      <div className="relative flex flex-col gap-6 p-6 md:p-8 lg:grid lg:grid-cols-2 lg:items-center lg:gap-10 lg:px-10 lg:pb-14 lg:pt-10">
         <div className="order-2 lg:order-1">
-          <div className="hidden lg:mb-6 lg:block">
+          <div className="hidden lg:mb-12 lg:block">
             <h2 className="text-2xl font-semibold leading-snug text-neutral-900">{COPY.reveal.greeting(firstName)}</h2>
             <p className="mt-1 text-sm text-neutral-500">{IS_EVENT_MODE ? COPY.event.revealSubtext : COPY.reveal.subtext}</p>
           </div>
