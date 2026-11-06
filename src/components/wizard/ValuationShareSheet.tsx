@@ -1,18 +1,22 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Download, Loader2, Share2, X } from 'lucide-react';
+import { Download, Loader2, MessageCircle, X } from 'lucide-react';
 import { COPY } from '@shared/copy';
 import { ValuationShareCard } from './ValuationShareCard';
+import { waNumber } from '../../lib/utils';
 
 type CardProps = Omit<React.ComponentProps<typeof ValuationShareCard>, 'brokerPhoto'> & {
-  brokerPhotoUrl: string;
   firstName: string;
+  brokerPhotoUrl: string;
+  // The client's phone as typed: the share goes straight to their WhatsApp.
+  clientPhone: string;
+  // Short link to the valuation page; null when the colonia is not in the list.
+  link: string | null;
 };
 
-const CARD_W = 360;
+const CARD_W = 400;
 
-// Preview of the card plus Descargar / Compartir. The blob is built inside
-// the tap, and navigator.share is called right after, so iOS keeps the gesture.
-export function ValuationShareSheet({ onClose, brokerPhotoUrl, firstName, ...card }: CardProps & { onClose: () => void }) {
+// Preview of the card plus Descargar (image) / Enviar por WhatsApp (link).
+export function ValuationShareSheet({ onClose, brokerPhotoUrl, clientPhone, firstName, link, ...card }: CardProps & { onClose: () => void }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const boxRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
@@ -80,22 +84,23 @@ export function ValuationShareSheet({ onClose, brokerPhotoUrl, firstName, ...car
     URL.revokeObjectURL(url);
   }
 
-  async function run(action: 'download' | 'share') {
+  async function onDownload() {
     setBusy(true);
     setError(false);
     try {
-      const blob = await toBlob();
-      const file = new File([blob], COPY.share.fileName, { type: 'image/png' });
-      if (action === 'share' && navigator.canShare?.({ files: [file] })) {
-        await navigator.share({ files: [file], title: COPY.share.shareTitle, text: COPY.share.message(firstName) });
-      } else {
-        download(blob);
-      }
-    } catch (err) {
-      if ((err as Error).name !== 'AbortError') setError(true);
+      download(await toBlob());
+    } catch {
+      setError(true);
     } finally {
       setBusy(false);
     }
+  }
+
+  // Opens the client's WhatsApp chat with the message and the link ready.
+  // A link works everywhere (desktop and phone); an image cannot be attached.
+  function sendWhatsApp() {
+    const text = link ? COPY.share.message(firstName, link) : COPY.share.messageNoLink(firstName);
+    window.open(`https://wa.me/${waNumber(clientPhone)}?text=${encodeURIComponent(text)}`, '_blank');
   }
 
   return (
@@ -125,7 +130,7 @@ export function ValuationShareSheet({ onClose, brokerPhotoUrl, firstName, ...car
           <button
             type="button"
             disabled={busy || !photoSettled}
-            onClick={() => run('download')}
+            onClick={onDownload}
             className="flex items-center justify-center gap-2 rounded-pill border border-neutral-300 bg-white px-4 py-3 text-sm font-semibold text-neutral-800 disabled:opacity-60"
           >
             <Download className="h-4 w-4" />
@@ -133,11 +138,10 @@ export function ValuationShareSheet({ onClose, brokerPhotoUrl, firstName, ...car
           </button>
           <button
             type="button"
-            disabled={busy || !photoSettled}
-            onClick={() => run('share')}
+            onClick={sendWhatsApp}
             className="flex items-center justify-center gap-2 rounded-pill bg-brand-500 bg-brand-gradient px-4 py-3 text-sm font-semibold text-white disabled:opacity-60"
           >
-            {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Share2 className="h-4 w-4" />}
+            <MessageCircle className="h-4 w-4" />
             {COPY.share.share}
           </button>
         </div>

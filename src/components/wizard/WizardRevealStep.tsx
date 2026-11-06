@@ -15,10 +15,14 @@ import { competitionLevel, pendingComparableListings, readyComparableListings, t
 import { COPY } from '@shared/copy';
 import { referencePerM2, type PreliminaryEstimate } from '@shared/pricing';
 import { formatCurrency, formatMillions, formatPhone } from '../../lib/utils';
+import { shareMarket } from '../../lib/shareMarket';
+import { encodeShareLink } from '@shared/shareLink';
 
 interface Props {
   estimate: PreliminaryEstimate;
   nombre: string;
+  // As typed in the contact step; the share opens this number's WhatsApp.
+  telefono: string;
   tipoPropiedad: string;
   colonia: string;
   profile: PropertyProfile;
@@ -35,7 +39,7 @@ const MEETING_ICONS = [FileSearch, Target, Route];
 // The reveal is a mini, market-first presentation whose only job is to get a
 // meeting: the range, what the zone is doing, the references behind it, and
 // the next step. The visitor's own property shows up only as header chips.
-export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, profile, advisor, wide = false }: Props) {
+export function WizardRevealStep({ estimate, nombre, telefono, tipoPropiedad, colonia, profile, advisor, wide = false }: Props) {
   const firstName = nombre.trim().split(' ')[0] || 'gracias';
   const advisorFirstName = advisor.name.split(' ')[0];
   const comps = readyComparableListings(colonia);
@@ -46,17 +50,16 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, pro
   const message = buildWhatsAppMessage(advisor, nombre, tipoPropiedad, colonia, precioResultado);
   const zoneReference = referencePerM2(colonia, tipoPropiedad);
   const competition = competitionLevel(colonia);
+  const shareCode = encodeShareLink({
+    colonia,
+    tipoPropiedad,
+    advisorName: advisor.name,
+    m2: (tipoPropiedad === 'Terreno' ? profile.m2Terreno : profile.m2Construccion) ?? 0,
+  });
+  const link = shareCode ? `${window.location.origin}/${shareCode}` : null;
 
+  const str = (n?: number) => (n ? String(n) : '');
   const [shareOpen, setShareOpen] = useState(false);
-  const F = COPY.share.features;
-  const shareFeatures = [
-    profile.m2Construccion && F.construction(profile.m2Construccion),
-    profile.m2Terreno && F.land(profile.m2Terreno),
-    profile.recamaras && F.bedrooms(profile.recamaras),
-    profile.banos && F.baths(profile.banos),
-    profile.estacionamientos && F.parking(profile.estacionamientos),
-  ].filter((x): x is string => Boolean(x));
-
   // The sticky bottom CTA appears once the range panel has scrolled away and
   // yields while the closing card's own CTA is on screen, so two green
   // WhatsApp buttons never stack.
@@ -88,10 +91,6 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, pro
     <div className="animate-in fade-in slide-in-from-bottom-4 grid grid-cols-1 gap-3 pb-20 duration-700 md:gap-5 lg:grid-cols-2">
       {!wide && (
         <>
-          <div className="pb-2 text-center md:text-left lg:hidden">
-            <h2 className="text-lg font-medium leading-snug text-neutral-900 md:text-xl">{COPY.reveal.greeting(firstName)}</h2>
-            <p className="mt-1 text-sm text-neutral-500">{IS_EVENT_MODE ? COPY.event.revealSubtext : COPY.reveal.subtext}</p>
-          </div>
           <div className="lg:col-span-2">
             <RevealPricePanel
               estimate={estimate}
@@ -250,17 +249,17 @@ export function WizardRevealStep({ estimate, nombre, tipoPropiedad, colonia, pro
       {shareOpen && (
         <ValuationShareSheet
           onClose={() => setShareOpen(false)}
-          nombre={nombre}
+          firstName={firstName}
+          clientPhone={telefono}
           tipoPropiedad={tipoPropiedad}
           colonia={colonia}
           low={estimate.low}
           high={estimate.high}
-          features={shareFeatures}
+          market={shareMarket(colonia, tipoPropiedad)}
+          link={link}
           brokerName={advisor.name}
-          brokerRole={advisor.roleLabel}
           brokerPhone={formatPhone(advisor.phone)}
           brokerPhotoUrl={advisor.imageUrl}
-          firstName={firstName}
         />
       )}
 
