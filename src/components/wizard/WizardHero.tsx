@@ -1,4 +1,4 @@
-import { ArrowRight, Search, ListChecks, Sparkles, UserCheck, ShieldCheck, Award, Database, MapPin, LineChart, MessageCircle, Building2 } from 'lucide-react';
+import { ArrowRight, Check, ShieldCheck, Award, Database, MapPin, LineChart, MessageCircle, Building2 } from 'lucide-react';
 import { COPY } from '@shared/copy';
 import { Logo } from '../Logo';
 import { TestimonialsCarousel } from './TestimonialsCarousel';
@@ -14,9 +14,6 @@ interface Props {
 
 // Order-matched with COPY.hero.trustMarks.
 const TRUST_MARK_ICONS = [ShieldCheck, Award, Database];
-
-// Order-matched with COPY.methodology.steps.
-const METHOD_ICONS = [Search, ListChecks, Sparkles, UserCheck];
 
 // Order-matched with COPY.hero.expertiseCards.
 const EXPERTISE_CARD_ICONS = [MapPin, LineChart, MessageCircle, Building2];
@@ -39,102 +36,76 @@ function CtaButton({ onStart }: { onStart: () => void }) {
   );
 }
 
-// Methodology, short: the four step titles with their icons, regular-bold weight.
-function MethodList({ className = '' }: { className?: string }) {
-  const { eyebrow, steps } = COPY.methodology;
+// "¿Cómo lo hacemos?": four checks under the button.
+function HowChecks({ className = '' }: { className?: string }) {
+  const { eyebrow, checks } = COPY.heroEvent.how;
   return (
     <div className={`space-y-3 ${className}`}>
       <p className="text-sm font-bold uppercase tracking-wider text-neutral-500">{eyebrow}</p>
       <ul className="space-y-2.5">
-        {steps.map((st, i) => {
-          const Icon = METHOD_ICONS[i];
-          return (
-            <li key={st.title} className="flex items-center gap-3 text-base font-semibold text-neutral-800 md:text-lg">
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-500/12 text-brand-700">
-                <Icon className="h-4 w-4" strokeWidth={1.75} />
-              </span>
-              {st.title}
-            </li>
-          );
-        })}
+        {checks.map((label) => (
+          <li key={label} className="flex items-center gap-3 text-base font-semibold text-neutral-800 md:text-lg">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-500/15 text-brand-700">
+              <Check className="h-3.5 w-3.5" strokeWidth={3} />
+            </span>
+            {label}
+          </li>
+        ))}
       </ul>
     </div>
   );
 }
 
-// Event mode home: one screen, no scroll. Headline on the left; subtitle,
-// benefits and the button, inside a glass card, on the right. Stacks on
-// narrow screens.
+// Event mode home, one screen. Narrow: headline, button, a hairline, the four
+// checks. Wide: two columns, the headline on the left; the checks and, below
+// them, the button on the right behind a vertical hairline.
 function EventHero({ onStart, wide }: { onStart: () => void; wide: boolean }) {
   const H = COPY.heroEvent;
   const rise = 'animate-in duration-700 fade-in slide-in-from-bottom-4 [animation-fill-mode:both]';
-  // Wide: the subtitle and benefits live in the side panel (the same panel the
-  // steps use), so only the headline and the button stay here.
+  const headline = (
+    <h1
+      className={`pb-2 text-neutral-900 font-extrabold leading-[1.02] tracking-[-0.04em] text-balance ${
+        wide ? 'text-6xl xl:text-8xl' : 'text-5xl md:text-7xl'
+      } ${rise} [animation-delay:120ms]`}
+    >
+      {H.headline}
+    </h1>
+  );
+  const button = (
+    <button
+      onClick={onStart}
+      className={`flex items-center justify-center gap-3 rounded-pill bg-brand-500 bg-brand-gradient font-semibold text-white transition-all active:scale-95 ${
+        wide ? 'px-10 py-5 text-xl' : 'w-full px-9 py-4 text-base sm:w-auto sm:min-w-[240px]'
+      } ${rise} [animation-delay:260ms]`}
+    >
+      {H.ctaLabel}
+      <ArrowRight className={wide ? 'h-5 w-5' : 'h-4 w-4'} strokeWidth={2.25} />
+    </button>
+  );
+
   if (wide) {
     return (
       <div className="relative flex flex-1 flex-col justify-between py-4">
         <Logo className={`h-12 self-start text-neutral-900 ${rise}`} />
-        <div className="space-y-10 pl-8 xl:pl-12">
-          <h1
-            className={`pb-2 text-neutral-900 text-7xl font-extrabold leading-[1.02] tracking-[-0.04em] text-balance xl:text-8xl ${rise} [animation-delay:120ms]`}
-          >
-            {H.headline}
-          </h1>
-          <MethodList className={`${rise} [animation-delay:260ms]`} />
-          <button
-            onClick={onStart}
-            className={`flex items-center gap-3 rounded-pill bg-brand-500 bg-brand-gradient px-10 py-5 text-xl font-semibold text-white transition-all active:scale-95 ${rise} [animation-delay:380ms]`}
-          >
-            {H.ctaLabel}
-            <ArrowRight className="h-5 w-5" strokeWidth={2.25} />
-          </button>
+        <div className="grid grid-cols-[1.35fr_1fr] items-center gap-14">
+          {headline}
+          <div className="space-y-8 border-l border-neutral-300/70 pl-14">
+            <HowChecks className={`${rise} [animation-delay:380ms]`} />
+            <div>{button}</div>
+          </div>
         </div>
         <div />
       </div>
     );
   }
   return (
-    <div className="relative flex flex-1 flex-col justify-center gap-10 py-8">
-      <div className="space-y-8 lg:flex-1">
-        <Logo className={`hidden h-12 text-neutral-900 lg:block ${rise}`} />
-        <h1
-          className={`pb-2 text-neutral-900 text-5xl font-extrabold leading-[1.02] tracking-[-0.04em] text-balance md:text-7xl lg:text-8xl ${rise} [animation-delay:120ms]`}
-        >
-          {H.headline}
-        </h1>
-        <MethodList />
-      </div>
-
-      <div
-        className={`relative overflow-hidden rounded-[2rem] border border-white/70 bg-parchment-card/55 p-7 shadow-[0_40px_90px_-40px_rgba(20,83,45,0.45),inset_0_1px_0_rgba(255,255,255,0.9)] backdrop-blur-2xl backdrop-saturate-150 md:p-9 lg:flex-[1.3] ${rise} [animation-delay:260ms]`}
-      >
-        {/* Specular sheen: light catching the top-left edge of the glass. */}
-        <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/60 via-white/0 to-white/0" />
-        <div className="relative space-y-7">
-          <div className="space-y-3">
-            <p className="text-2xl font-bold tracking-tight text-emerald-deep md:text-3xl">{H.tagline}</p>
-            <p className="max-w-xl text-lg leading-relaxed text-neutral-700 md:text-xl">{H.body}</p>
-          </div>
-          <ul className="space-y-4">
-            {H.bullets.map((label, i) => {
-              const Icon = TRUST_MARK_ICONS[i];
-              return (
-                <li key={label} className="flex items-center gap-4 text-lg font-medium text-neutral-900 md:text-xl">
-                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-300/50 to-brand-500/25 text-brand-800 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] ring-1 ring-brand-500/20">
-                    <Icon className="h-6 w-6" strokeWidth={1.75} />
-                  </span>
-                  {label}
-                </li>
-              );
-            })}
-          </ul>
-          <button
-            onClick={onStart}
-            className="w-full rounded-pill bg-brand-500 bg-brand-gradient px-12 py-5 text-xl font-semibold text-white transition-all active:scale-95 sm:w-auto sm:min-w-[280px]"
-          >
-            {H.ctaLabel}
-          </button>
-        </div>
+    <div className="relative flex flex-1 flex-col gap-8 pt-8">
+      <div className="my-auto space-y-8">
+        <Logo className={`hidden h-12 self-start text-neutral-900 lg:block ${rise}`} />
+        {headline}
+        <div className={`h-px bg-neutral-300/70 ${rise} [animation-delay:340ms]`} />
+        <HowChecks className={`${rise} [animation-delay:420ms]`} />
+        <div className="pt-2">{button}</div>
       </div>
     </div>
   );
