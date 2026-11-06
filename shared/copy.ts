@@ -59,8 +59,12 @@ export const COPY = {
     sheetTitle: 'Tu valuación',
     chip: 'Rango preliminar',
     // The text that travels with the image in the share sheet.
-    message: (firstName: string) =>
-      `Hola ${firstName}, tu propiedad está en este rango. Platiquemos uno a uno para llegar a un precio adecuado y que puedas tomar la mejor decisión.`,
+    message: (firstName: string, link: string) =>
+      `Hola ${firstName}, aquí está tu valuación: ${link}\nPlatiquemos uno a uno para llegar a un precio adecuado y que puedas tomar la mejor decisión.`,
+    messageNoLink: (firstName: string) =>
+      `Hola ${firstName}, platiquemos uno a uno para llegar a un precio adecuado y que puedas tomar la mejor decisión.`,
+    pageTitle: 'Tu valuación | Habitanza',
+    pageCta: (advisorFirstName: string) => `Platicar con ${advisorFirstName}`,
     features: {
       construction: (n: number) => `${n} m² de construcción`,
       land: (n: number) => `${n} m² de terreno`,
@@ -74,8 +78,6 @@ export const COPY = {
     attended: 'Broker',
     download: 'Descargar',
     share: 'Enviar por WhatsApp',
-    copied: 'Imagen copiada. Pégala en el chat de WhatsApp.',
-    copyFailed: 'No se pudo copiar. Se descargó la imagen: adjúntala en el chat.',
     close: 'Cerrar',
     fileName: 'Valuacion.png',
     shareTitle: 'Mi valuación con Habitanza',

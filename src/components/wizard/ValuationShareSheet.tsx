@@ -9,20 +9,20 @@ type CardProps = Omit<React.ComponentProps<typeof ValuationShareCard>, 'brokerPh
   brokerPhotoUrl: string;
   // The client's phone as typed: the share goes straight to their WhatsApp.
   clientPhone: string;
+  // Short link to the valuation page; null when the colonia is not in the list.
+  link: string | null;
 };
 
 const CARD_W = 400;
 
-// Preview of the card plus Descargar / Compartir. The blob is built inside
-// the tap, and navigator.share is called right after, so iOS keeps the gesture.
-export function ValuationShareSheet({ onClose, brokerPhotoUrl, clientPhone, firstName, ...card }: CardProps & { onClose: () => void }) {
+// Preview of the card plus Descargar (image) / Enviar por WhatsApp (link).
+export function ValuationShareSheet({ onClose, brokerPhotoUrl, clientPhone, firstName, link, ...card }: CardProps & { onClose: () => void }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const boxRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
   const [cardH, setCardH] = useState(0);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(false);
-  const [hint, setHint] = useState<string | null>(null);
   // The broker photo is fetched into a data URL first (a remote <img> would
   // come out blank). If the fetch fails the card shows the initial instead.
   const [photo, setPhoto] = useState<string | null>(null);
@@ -96,34 +96,11 @@ export function ValuationShareSheet({ onClose, brokerPhotoUrl, clientPhone, firs
     }
   }
 
-  // WhatsApp links cannot carry an image, so: copy the image to the clipboard,
-  // then open the chat with the client's number (and the text ready). The
-  // broker pastes the image. The tab opens first, inside the tap, so the
-  // browser does not block it.
-  async function sendWhatsApp() {
-    setBusy(true);
-    setError(false);
-    setHint(null);
-    const tab = window.open('', '_blank');
-    const num = waNumber(clientPhone);
-    const url = `https://wa.me/${num}?text=${encodeURIComponent(COPY.share.message(firstName))}`;
-    try {
-      const blobPromise = toBlob();
-      try {
-        await navigator.clipboard.write([new ClipboardItem({ 'image/png': blobPromise })]);
-        setHint(COPY.share.copied);
-      } catch {
-        download(await blobPromise);
-        setHint(COPY.share.copyFailed);
-      }
-      if (tab) tab.location.href = url;
-      else window.location.href = url;
-    } catch {
-      tab?.close();
-      setError(true);
-    } finally {
-      setBusy(false);
-    }
+  // Opens the client's WhatsApp chat with the message and the link ready.
+  // A link works everywhere (desktop and phone); an image cannot be attached.
+  function sendWhatsApp() {
+    const text = link ? COPY.share.message(firstName, link) : COPY.share.messageNoLink(firstName);
+    window.open(`https://wa.me/${waNumber(clientPhone)}?text=${encodeURIComponent(text)}`, '_blank');
   }
 
   return (
@@ -147,7 +124,6 @@ export function ValuationShareSheet({ onClose, brokerPhotoUrl, clientPhone, firs
           </div>
         </div>
 
-        {hint && <p className="mt-3 text-center text-sm font-medium text-brand-600">{hint}</p>}
         {error && <p className="mt-3 text-center text-sm font-medium text-red-600">{COPY.share.error}</p>}
 
         <div className="mt-4 grid grid-cols-2 gap-3">
@@ -162,11 +138,10 @@ export function ValuationShareSheet({ onClose, brokerPhotoUrl, clientPhone, firs
           </button>
           <button
             type="button"
-            disabled={busy || !photoSettled}
             onClick={sendWhatsApp}
             className="flex items-center justify-center gap-2 rounded-pill bg-brand-500 bg-brand-gradient px-4 py-3 text-sm font-semibold text-white disabled:opacity-60"
           >
-            {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <MessageCircle className="h-4 w-4" />}
+            <MessageCircle className="h-4 w-4" />
             {COPY.share.share}
           </button>
         </div>

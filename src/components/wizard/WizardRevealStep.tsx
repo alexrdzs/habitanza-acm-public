@@ -15,6 +15,8 @@ import { competitionLevel, pendingComparableListings, readyComparableListings, t
 import { COPY } from '@shared/copy';
 import { referencePerM2, type PreliminaryEstimate } from '@shared/pricing';
 import { formatCurrency, formatMillions, formatPhone } from '../../lib/utils';
+import { shareMarket } from '../../lib/shareMarket';
+import { encodeShareLink } from '@shared/shareLink';
 
 interface Props {
   estimate: PreliminaryEstimate;
@@ -48,6 +50,13 @@ export function WizardRevealStep({ estimate, nombre, telefono, tipoPropiedad, co
   const message = buildWhatsAppMessage(advisor, nombre, tipoPropiedad, colonia, precioResultado);
   const zoneReference = referencePerM2(colonia, tipoPropiedad);
   const competition = competitionLevel(colonia);
+  const shareCode = encodeShareLink({
+    colonia,
+    tipoPropiedad,
+    advisorName: advisor.name,
+    m2: (tipoPropiedad === 'Terreno' ? profile.m2Terreno : profile.m2Construccion) ?? 0,
+  });
+  const link = shareCode ? `${window.location.origin}/${shareCode}` : null;
 
   const str = (n?: number) => (n ? String(n) : '');
   const [shareOpen, setShareOpen] = useState(false);
@@ -82,10 +91,6 @@ export function WizardRevealStep({ estimate, nombre, telefono, tipoPropiedad, co
     <div className="animate-in fade-in slide-in-from-bottom-4 grid grid-cols-1 gap-3 pb-20 duration-700 md:gap-5 lg:grid-cols-2">
       {!wide && (
         <>
-          <div className="pb-2 text-center md:text-left lg:hidden">
-            <h2 className="text-lg font-medium leading-snug text-neutral-900 md:text-xl">{COPY.reveal.greeting(firstName)}</h2>
-            <p className="mt-1 text-sm text-neutral-500">{IS_EVENT_MODE ? COPY.event.revealSubtext : COPY.reveal.subtext}</p>
-          </div>
           <div className="lg:col-span-2">
             <RevealPricePanel
               estimate={estimate}
@@ -250,13 +255,8 @@ export function WizardRevealStep({ estimate, nombre, telefono, tipoPropiedad, co
           colonia={colonia}
           low={estimate.low}
           high={estimate.high}
-          market={[
-            { title: COPY.reveal.pulse.m2Label, value: formatCurrency(zoneReference.perM2) },
-            { title: COPY.reveal.pulse.listingsLabel, value: COPY.reveal.pulse.listingsValue(totalReadyListingsCount()) },
-            ...(competition
-              ? [{ title: COPY.reveal.pulse.competitionLabel, value: COPY.reveal.pulse.competitionLevels[competition.level] }]
-              : []),
-          ]}
+          market={shareMarket(colonia, tipoPropiedad)}
+          link={link}
           brokerName={advisor.name}
           brokerPhone={formatPhone(advisor.phone)}
           brokerPhotoUrl={advisor.imageUrl}

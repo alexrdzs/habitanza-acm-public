@@ -23,7 +23,6 @@ interface Props {
 // PropertyFicha as the wizard) on the left, the RANGE bar on the right. It
 // never shows a single price. Stacked on phones: range first, summary last.
 export function RevealPricePanel({ estimate, nombre, tipoPropiedad, colonia, profile, panelRef }: Props) {
-  const firstName = nombre.trim().split(' ')[0] || 'gracias';
   const hasComps = readyComparableListings(colonia).length > 0;
   const hasPendingComps = pendingComparableListings(colonia).length > 0;
   const caption = hasPendingComps && !hasComps ? COPY.reveal.researchCaption(colonia) : COPY.reveal.caption(colonia);
@@ -39,12 +38,6 @@ export function RevealPricePanel({ estimate, nombre, tipoPropiedad, colonia, pro
 
       <Logo className="absolute right-8 top-7 z-10 hidden h-7 text-neutral-900 lg:block" />
       <div className="relative flex flex-col gap-5 p-5 md:p-6 lg:grid lg:grid-cols-2 lg:items-center lg:gap-x-10 lg:gap-y-8 lg:p-8">
-        <div className="hidden lg:col-span-2 lg:block">
-          <h2 className="text-xl font-extrabold leading-tight tracking-tight text-neutral-900 md:text-2xl">{COPY.reveal.greeting(firstName)}</h2>
-          <p className="mt-3 text-sm text-neutral-500 md:text-base">{IS_EVENT_MODE ? COPY.event.revealSubtext : COPY.reveal.subtext}</p>
-          <div className="mt-6 h-px w-16 bg-gradient-to-r from-brand-500 to-transparent" />
-        </div>
-
         {/* The whole property sheet across the card. */}
         <div className="order-2 border-t border-neutral-200/70 pt-5 lg:self-stretch lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0 lg:flex lg:flex-col lg:justify-center">
           <PropertyFicha

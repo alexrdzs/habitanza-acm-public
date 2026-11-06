@@ -16,6 +16,8 @@ interface Props {
   brokerPhone: string;
   // Data URL (a remote photo would render blank). Without it: the initial.
   brokerPhoto?: string | null;
+  // Page mode: fill the container (max 400px) instead of the fixed image width.
+  fluid?: boolean;
 }
 
 const TYPE_ICONS: Record<string, LucideIcon> = { Casa: House, Departamento: Building2, Terreno: LandPlot };
@@ -31,7 +33,7 @@ export const ValuationShareCard = forwardRef<HTMLDivElement, Props>(function Val
   const TypeIcon = TYPE_ICONS[p.tipoPropiedad] ?? House;
 
   return (
-    <div ref={ref} style={{ width: 400 }} className="bg-white p-6 text-neutral-900">
+    <div ref={ref} style={p.fluid ? undefined : { width: 400 }} className="bg-white p-6 text-neutral-900">
       <p className="flex items-center gap-2 text-xl font-extrabold leading-tight">
         <TypeIcon className="h-5 w-5 shrink-0" style={{ color: GREEN }} strokeWidth={2} />
         <span>{`${p.tipoPropiedad} en ${p.colonia}`}</span>
