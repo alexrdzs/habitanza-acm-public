@@ -1,5 +1,6 @@
-import { forwardRef } from 'react';
-import { Building2, ChevronDown, House, LandPlot, LineChart, Users, type LucideIcon } from 'lucide-react';
+import { forwardRef, useLayoutEffect, useRef, useState } from 'react';
+import { Building2, ChevronDown, LineChart, Users, type LucideIcon } from 'lucide-react';
+import { neighborhoodIcon } from '@shared/neighborhoodIcons';
 import { Logo } from '../Logo';
 import { COPY } from '@shared/copy';
 import { idealBand } from '@shared/pricing';
@@ -20,24 +21,51 @@ interface Props {
   fluid?: boolean;
 }
 
-const TYPE_ICONS: Record<string, LucideIcon> = { Casa: House, Departamento: Building2, Terreno: LandPlot };
 const MARKET_ICONS: LucideIcon[] = [LineChart, Building2, Users];
 const GREEN = '#16A34A';
 
+
+// Bold title on two lines ("Casa en" / colonia). The colonia always stays on ONE
+// line: the font starts at 22px and shrinks (min 11px) until it fits, also after
+// the web font loads. So the title is never 3 lines.
+function Title({ tipo, colonia }: { tipo: string; colonia: string }) {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const [size, setSize] = useState(22);
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const fit = () => {
+      let s = 22;
+      el.style.fontSize = `${s}px`;
+      while (el.scrollWidth > el.clientWidth && s > 11) el.style.fontSize = `${(s -= 0.5)}px`;
+      setSize(s);
+    };
+    fit();
+    document.fonts?.ready.then(fit);
+  }, [colonia]);
+  return (
+    <div className="w-full text-center font-semibold leading-tight" style={{ fontSize: size }}>
+      <p>{tipo} en</p>
+      <p ref={ref} className="overflow-hidden whitespace-nowrap">
+        {colonia}
+      </p>
+    </div>
+  );
+}
 
 // The image that gets shared: the same content as the first reveal card (range,
 // bar, property sheet) plus the broker. Fixed 400px, solid colors only (no
 // blur, no transparency): html-to-image renders those badly.
 export const ValuationShareCard = forwardRef<HTMLDivElement, Props>(function ValuationShareCard(p, ref) {
   const ideal = idealBand(p.low, p.high);
-  const TypeIcon = TYPE_ICONS[p.tipoPropiedad] ?? House;
+  const Icon = neighborhoodIcon(p.colonia);
 
   return (
     <div ref={ref} style={p.fluid ? undefined : { width: 400 }} className="bg-white p-6 text-neutral-900">
-      <p className="flex items-center gap-2 text-xl font-extrabold leading-tight">
-        <TypeIcon className="h-5 w-5 shrink-0" style={{ color: GREEN }} strokeWidth={2} />
-        <span>{`${p.tipoPropiedad} en ${p.colonia}`}</span>
-      </p>
+      <div className="flex flex-col items-center gap-2">
+        <Icon className="h-9 w-9" style={{ color: GREEN }} strokeWidth={1.5} />
+        <Title tipo={p.tipoPropiedad} colonia={p.colonia} />
+      </div>
       <div className="mt-4 h-px bg-neutral-200" />
 
       {/* Range card */}

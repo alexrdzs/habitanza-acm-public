@@ -50,6 +50,16 @@ export const COPY = {
     ctaLabel: 'Empezar',
     // Order-matched with TRUST_MARK_ICONS in WizardHero.tsx.
     bullets: ['Sin costo', 'Asesores locales de la zona', 'Con datos reales del mercado'],
+    // The only list under the button: how the estimate is made.
+    how: {
+      eyebrow: '¿Cómo lo hacemos?',
+      checks: [
+        'Homologamos tu propiedad',
+        'Cruzamos datos con similares activas',
+        'Usamos IA para analizar a escala',
+        'Un broker especializado lo revisa',
+      ],
+    },
   },
 
   // Event mode: the advisor is standing next to the visitor, so copy talks
