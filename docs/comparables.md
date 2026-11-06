@@ -14,11 +14,11 @@ Este doc dice dónde vive cada dato, cómo editarlo y de dónde salió.
 
 | Fraccionamiento | Total | Casas | Terrenos | Deptos | EasyBroker | Lamudi | Rango de precio |
 |---|---|---|---|---|---|---|---|
-| Condado de Sayavedra | 6 | 4 | 2 | 0 | 6 | 0 | $3.8 a $20.0 MDP |
+| Condado de Sayavedra | 8 | 5 | 3 | 0 | 8 | 0 | $3.8 a $14.6 MDP |
 | Hacienda de Valle Escondido | 7 | 4 | 3 | 0 | 7 | 0 | $14.2 a $39.0 MDP |
 | Rancho San Juan | 7 | 2 | 5 | 0 | 7 | 0 | $10.9 a $38.2 MDP |
 | Bosque Real | 6 | 4 | 0 | 2 | 6 | 0 | $8.5 a $85.0 MDP |
-| Club de Golf Chiluca | 6 | 6 | 0 | 0 | 5 | 1 | $10.8 a $18.0 MDP |
+| Club de Golf Chiluca | 7 | 7 | 0 | 0 | 4 | 3 | $10.8 a $18.0 MDP |
 | Prado Largo | 6 | 6 | 0 | 0 | 3 | 3 | $15.5 a $27.0 MDP |
 | Residencial Lago Esmeralda | 8 | 6 | 1 | 1 | 8 | 0 | $2.6 a $9.3 MDP |
 | Lomas de Valle Escondido | 6 | 6 | 0 | 0 | 6 | 0 | $13.5 a $17.9 MDP |
@@ -52,8 +52,8 @@ Regla: de **6 a 10** por fraccionamiento. La pantalla muestra solo los **6 prime
 
 ## Reglas con las que se eligieron
 
-- Todos son de **otras agencias**. Ninguno es del inventario de Pulppo de Habitanza.
-- La ficha existe hoy (no da 404) y trae precio, m² y coordenadas.
+- Todos son de **otras agencias**, con **una excepción puesta a propósito**: el terreno de Residencial Xinté en Condado de Sayavedra ($3,962,000, 346 m²) es **TMS-854, de nuestro inventario de Pulppo**. Alex decidió dejarlo.
+- La ficha existe hoy (no da 404) y trae precio, m² y coordenadas. Algunos enlaces (`easybroker.com/agent/...`) son de la cuenta de Habitanza en EasyBroker y piden iniciar sesión. El sitio no los muestra.
 - Tiene al menos 5 fotos y la foto principal carga. El filtro de fotos es para que sean **fotos reales**, no por tamaño.
 - En Lamudi, los m² de la lista y de la ficha deben coincidir.
 - Sin duplicados: mismo tipo, precio dentro de 3% y m² dentro de 6%.
@@ -69,6 +69,6 @@ Regla: de **6 a 10** por fraccionamiento. La pantalla muestra solo los **6 prime
 
 ## De dónde salió esto
 
-Se investigó en EasyBroker y Lamudi con Firecrawl el 2026-11-05 y 2026-11-06. Firecrawl consume créditos: **no se vuelve a usar** sin avisar. Para refrescar datos, edita a mano o pide una corrida específica.
+Se investigó en EasyBroker y Lamudi con Firecrawl el 2026-11-05 y 2026-11-06. Después se agregaron 8 comparables a mano, desde localhost (Condado de Sayavedra y Club de Golf Chiluca). Firecrawl consume créditos: **no se vuelve a usar** sin avisar. Para refrescar datos, edita a mano o pide una corrida específica.
 
 `docs/comparables-candidatos.json` guarda cada ficha que se revisó: fuente, enlace, tipo, precio, m², fraccionamiento, si está **en uso** o **descartada** y el motivo.

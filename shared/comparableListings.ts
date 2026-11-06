@@ -1,5 +1,6 @@
 // Real, currently-published listings from OTHER agencies (Lamudi, EasyBroker),
-// never from Habitanza's own Pulppo inventory. Checked on each listing page on
+// never from Habitanza's own Pulppo inventory (one exception kept on purpose:
+// the Residencial Xinté terreno, TMS-854). Checked on each listing page on
 // 2026-11-05. They are used on the reveal screen's
 // map + mini cards. Keyed by colonia name, matching ZONA_ESMERALDA_COLONIAS
 // in validation.ts. These are reference listings for social/spatial proof
