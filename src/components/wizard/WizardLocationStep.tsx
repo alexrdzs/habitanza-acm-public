@@ -9,7 +9,8 @@ import { neighborhoodIcon } from '@shared/neighborhoodIcons';
 import { neighborhoodImage } from '@shared/neighborhoodImages';
 import { COPY } from '@shared/copy';
 import { WizardShell } from './WizardShell';
-import { inputClass, labelClass } from './formStyles';
+import { labelClass } from './formStyles';
+import { PlaceSearch } from './PlaceSearch';
 import { cn } from '../../lib/utils';
 
 interface Props {
@@ -233,13 +234,7 @@ export function WizardLocationStep(props: Props) {
               <div className="animate-in fade-in slide-in-from-top-1 flex flex-col gap-3 duration-200">
                 <div>
                   <label className={labelClass}>{COPY.location.otherInputLabel}</label>
-                  <input
-                    className={inputClass}
-                    value={props.coloniaOtra}
-                    onChange={(e) => props.setColoniaOtra(e.target.value)}
-                    maxLength={120}
-                    autoFocus
-                  />
+                  <PlaceSearch value={props.coloniaOtra} onChange={props.setColoniaOtra} />
                 </div>
                 <button
                   type="button"

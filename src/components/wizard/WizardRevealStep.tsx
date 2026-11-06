@@ -11,6 +11,7 @@ import { SlideBullets, SlideCard } from './SlideCard';
 import { AdvisorAvatar } from './AdvisorAvatar';
 import { AdvisorCTA } from './AdvisorCTA';
 import { whatsappLink, buildWhatsAppMessage, type Advisor } from '@shared/advisors';
+import { borrowedFrom } from '../../lib/borrowedComparables';
 import { competitionLevel, pendingComparableListings, readyComparableListings, totalReadyListingsCount } from '@shared/comparableListings';
 import { COPY } from '@shared/copy';
 import { referencePerM2, type PreliminaryEstimate } from '@shared/pricing';
@@ -147,6 +148,7 @@ export function WizardRevealStep({ estimate, nombre, telefono, tipoPropiedad, co
             {/* Row 2: map on the left, listings on the right. */}
             <div className="space-y-3 lg:space-y-5 border-t border-neutral-200/70 pt-6 lg:pt-8">
               <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-500 md:text-xs">{COPY.reveal.mercadoSubtitle}</p>
+              {borrowedFrom(colonia) && <p className="text-sm text-neutral-500">{COPY.reveal.borrowedNote(borrowedFrom(colonia)!)}</p>}
               {hasComps || hasPendingComps ? (
                 <div className="space-y-3 md:flex md:gap-3 md:space-y-0 lg:grid lg:grid-cols-2 lg:gap-10">
                   <div className="md:w-1/2 lg:h-full lg:w-full">

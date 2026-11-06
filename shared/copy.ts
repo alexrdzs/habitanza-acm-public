@@ -200,6 +200,7 @@ export const COPY = {
     expandedPanelLabel: 'Otros fraccionamientos cercanos',
     otherLabel: 'Otro fraccionamiento',
     otherInputLabel: '¿Cuál?',
+    otherSearchPlaceholder: 'Busca tu fraccionamiento',
     continueLabel: 'Continuar',
   },
 
@@ -285,6 +286,8 @@ export const COPY = {
     title: 'Analizando la zona',
     description: 'Estamos preparando un primer estimado de valor.',
     completeLabel: 'Todo listo',
+    reviewingLabel: (n: number) => `Revisando ${n} propiedades`,
+    selectedLabel: (n: number) => `${n} comparables seleccionados`,
     stages: [
       {
         label: 'Ubicando tu propiedad',
@@ -598,6 +601,7 @@ export const COPY = {
     },
     mercadoChip: '02 Referencias del Mercado',
     mercadoTitle: 'Análisis del mercado',
+    borrowedNote: (from: string) => `Aún no tenemos referencias en tu fraccionamiento. Te mostramos las de ${from}, la zona más cercana.`,
     mercadoSubtitle: 'Lo que se publica hoy en tu zona.',
     // Shown when real comparables render below: the same "oferta pública"
     // caveat the full ACM opens its comparables chapter with.
