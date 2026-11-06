@@ -74,14 +74,15 @@ export function WizardExtrasStep({ tipoPropiedad, amenidades, setAmenidades, onB
       description={COPY.extras.description}
       onBack={onBack}
       onNext={onContinue}
+      fill
     >
-      <div>
+      <div className="flex flex-1 flex-col">
         {premium && (
           <p className="mb-3 text-[11px] font-bold uppercase tracking-wider text-neutral-500 md:text-xs">{COPY.extras.premiumTitle}</p>
         )}
         {/* Two columns on phones, three on tablet and up. Keyed on the type so
             the tiles fade in again if the type ever changes. */}
-        <div key={tipoPropiedad} className={`grid animate-in gap-2 duration-300 fade-in slide-in-from-bottom-2 md:gap-3 ${premium ? 'grid-cols-3' : 'grid-cols-2 md:grid-cols-3'}`}>
+        <div key={tipoPropiedad} className={`grid flex-1 auto-rows-fr animate-in gap-2 duration-300 fade-in slide-in-from-bottom-2 md:gap-3 ${premium ? 'grid-cols-3' : 'grid-cols-2 md:grid-cols-3'}`}>
           {features.map(({ value }) => (
             <OptionTile
               key={value}
