@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLoadScript } from '@react-google-maps/api';
 import { MapPin } from 'lucide-react';
 import { borrowComparables } from '../../lib/borrowedComparables';
+import { NEIGHBORHOOD_COORDINATES } from '@shared/neighborhoods';
 import { COPY } from '@shared/copy';
 import { inputClass } from './formStyles';
 
@@ -69,7 +70,6 @@ export function PlaceSearch({ value, onChange, onPlace, placeholder }: Props) {
 
   async function pick(s: Suggestion) {
     picked.current = s.text;
-    onChange(s.text);
     setItems([]);
     try {
       const place = s.toPlace();
@@ -77,11 +77,16 @@ export function PlaceSearch({ value, onChange, onPlace, placeholder }: Props) {
       if (place.location) {
         const [lat, lng] = [place.location.lat(), place.location.lng()];
         if (onPlace) onPlace(s.text, lat, lng);
-        else borrowComparables(s.text, lat, lng);
+        else {
+          borrowComparables(s.text, lat, lng);
+          // Before onChange below, so the side map already finds the point when it re-renders with the new name.
+          NEIGHBORHOOD_COORDINATES[s.text] = { lat, lng };
+        }
       }
     } catch {
       /* no coordinates: the reveal just shows no comparables, as before */
     }
+    onChange(s.text);
     token.current = undefined;
   }
 

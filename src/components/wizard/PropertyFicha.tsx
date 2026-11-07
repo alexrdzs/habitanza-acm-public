@@ -1,5 +1,5 @@
 import { Bath, BedDouble, Building2, CalendarDays, Car, CheckCheck, House, LandPlot, MapPin, Ruler, ShieldCheck, Sparkles, type LucideIcon } from 'lucide-react';
-import { COPY } from '@shared/copy';
+import { COPY, shortName } from '@shared/copy';
 import { FEATURE_ICONS } from './WizardExtrasStep';
 
 export interface PropertyFichaProps {
@@ -56,7 +56,7 @@ export function PropertyFicha({ showHighlights = true, ...p }: PropertyFichaProp
             const T = p.tipoPropiedad ? (TYPE_ICONS[p.tipoPropiedad] ?? House) : MapPin;
             return <T className="h-[18px] w-[18px] shrink-0 text-brand-600" strokeWidth={2} />;
           })()}
-          <span className="truncate">{p.tipoPropiedad ? `${p.tipoPropiedad} en ${p.colonia}` : p.colonia}</span>
+          <span className="truncate">{p.tipoPropiedad ? `${p.tipoPropiedad} en ${shortName(p.colonia)}` : shortName(p.colonia)}</span>
         </p>
       )}
 

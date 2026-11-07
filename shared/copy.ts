@@ -14,6 +14,9 @@
 // Millions with one decimal at most: 8200000 -> $8.2, 12000000 -> $12.
 const mdp = (n: number) => `$${Math.round(n / 1e5) / 10}`;
 
+// A typed fraccionamiento arrives as a Google Places string ("Colonia, Municipio, Estado, País"); copy shows only the first part.
+export const shortName = (colonia: string) => colonia.split(',')[0].trim();
+
 export const COPY = {
   hero: {
     headline: '¿Cuánto vale mi propiedad?',
@@ -109,7 +112,7 @@ export const COPY = {
     },
     broker: { label: 'Broker:', placeholder: 'Elige tu nombre' },
     advisorParagraph: (advisorFirstName: string, colonia: string) =>
-      `${advisorFirstName} está contigo hoy y conoce muy bien ${colonia}. Después del evento te escribe por WhatsApp ` +
+      `${advisorFirstName} está contigo hoy y conoce muy bien ${shortName(colonia)}. Después del evento te escribe por WhatsApp ` +
       'para armar la estrategia ideal para vender tu propiedad.',
     panelAdvisorSuffix: ', y está aquí para revisarlo contigo ahora.',
     panelCtaLabel: 'Seguir por WhatsApp',
@@ -333,15 +336,24 @@ export const COPY = {
       feature: (name: string) => `Suma valor: ${name}`,
       challenge: (name: string) => `A considerar: ${name}`,
       competition: (count: number, colonia: string) =>
-        `${count} ${count === 1 ? 'propiedad similar publicada' : 'propiedades similares publicadas'} hoy en ${colonia}, compiten por el mismo comprador`,
+        `${count} ${count === 1 ? 'propiedad similar publicada' : 'propiedades similares publicadas'} hoy en ${shortName(colonia)}, compiten por el mismo comprador`,
     },
     headlinePrefix: 'Tu propiedad podría estar en un rango de:',
     headlineJoiner: 'a',
-    caption: (colonia: string) => `Esto es un promedio de ${colonia} basado en datos históricos y nuestra experiencia en la zona.`,
+    caption: (colonia: string) => `Esto es un promedio de ${shortName(colonia)} basado en datos históricos y nuestra experiencia en la zona.`,
+    // Shown instead of the caption when the colonia has no comparables of its own
+    // (a typed fraccionamiento): the range is the zone-wide average, so it can
+    // sit outside the references below.
+    genericEstimate: {
+      title: 'Estimado con el promedio de la zona',
+      body: (colonia: string) =>
+        `Aún no tenemos comparables de ${shortName(colonia)}, así que este rango parte del promedio de Zona Esmeralda y puede diferir de las referencias de abajo. ` +
+        'Con comparables detallados de tu fraccionamiento, tu asesor puede hacer un estimado real.',
+    },
     researchCaption: (colonia: string) =>
-      `Este es un rango preliminar de ${colonia}, basado en datos históricos y nuestra experiencia en la zona.`,
+      `Este es un rango preliminar de ${shortName(colonia)}, basado en datos históricos y nuestra experiencia en la zona.`,
     advisorParagraph: (advisorFirstName: string, gender: 'm' | 'f', colonia: string) =>
-      `${advisorFirstName} será tu ${gender === 'f' ? 'asesora experta' : 'asesor experto'} en ${colonia}. Muy pronto se ` +
+      `${advisorFirstName} será tu ${gender === 'f' ? 'asesora experta' : 'asesor experto'} en ${shortName(colonia)}. Muy pronto se ` +
       'pondrá en contacto para platicar personalmente sobre ' +
       'la estrategia ideal para vender tu propiedad.',
     // Advisor note inside the price panel, one paragraph. Split into
@@ -524,9 +536,9 @@ export const COPY = {
     // real document, not a standalone widget.
     pulse: {
       chip: '01 Pulso del Mercado',
-      title: (colonia: string) => `Análisis del mercado en ${colonia}`,
+      title: (colonia: string) => `Análisis del mercado en ${shortName(colonia)}`,
       m2Label: 'Referencia por m²',
-      m2SublineColonia: (colonia: string) => `Con base en listados reales de ${colonia}.`,
+      m2SublineColonia: (colonia: string) => `Con base en listados reales de ${shortName(colonia)}.`,
       m2SublineZona: 'Promedio general de la zona',
       listingsLabel: 'Publicaciones',
       listingsValue: (count: number) => `${count}+`,
@@ -535,13 +547,13 @@ export const COPY = {
       // Never shown as "Baja": the zone is always at least medium competition.
       competitionLevels: { bajo: 'Media', medio: 'Media', alto: 'Alta' },
       competitionSubline: (count: number, colonia: string) =>
-        `${count} ${count === 1 ? 'propiedad publicada' : 'propiedades publicadas'} en ${colonia} frente al resto de la zona.`,
+        `${count} ${count === 1 ? 'propiedad publicada' : 'propiedades publicadas'} en ${shortName(colonia)} frente al resto de la zona.`,
     },
     // Per-fraccionamiento read of the market. `precios` is a client-supplied
     // range, used only when the colonia has no comparables to derive one from.
     // A colonia without an entry shows no profile (never invented).
     zona: {
-      title: (colonia: string) => `Perfil de ${colonia}`,
+      title: (colonia: string) => `Perfil de ${shortName(colonia)}`,
       perfilLabel: 'Perfil',
       mercadoLabel: 'Mercado',
       preciosLabel: 'Precios de referencia',
@@ -613,10 +625,10 @@ export const COPY = {
       'estos valores, y tu estrategia debe contemplarlo.',
     notaPlaceholderTag: 'Nota sobre la zona',
     notaPlaceholderBody: (colonia: string) =>
-      `Estamos reuniendo referencias específicas de ${colonia}. Tu Master Broker las revisará contigo para completar el análisis comparativo.`,
+      `Estamos reuniendo referencias específicas de ${shortName(colonia)}. Tu Master Broker las revisará contigo para completar el análisis comparativo.`,
     researchCardsLabel: (count: number) => `${count} referencias en investigación`,
     noCompsBody: (colonia: string) =>
-      `Todavía no tenemos comparables específicos de ${colonia} en nuestro sistema, pero tu asesor los incluirá al ` +
+      `Todavía no tenemos comparables específicos de ${shortName(colonia)} en nuestro sistema, pero tu asesor los incluirá al ` +
       'preparar tu Análisis Comparativo de Mercado completo.',
     acm: {
       chip: '03 Tu ACM Completo',
