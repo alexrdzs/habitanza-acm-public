@@ -68,6 +68,8 @@ export const COPY = {
     button: 'Compartir mi valuación',
     sheetTitle: 'Tu valuación',
     chip: 'Rango preliminar',
+    // Small line above the title on the shared image.
+    eyebrow: 'Análisis preliminar de mercado',
     // The text that travels with the image in the share sheet.
     message: (firstName: string, link: string) =>
       `Hola ${firstName}, aquí está tu valuación: ${link}\nPlatiquemos uno a uno para llegar a un precio adecuado y que puedas tomar la mejor decisión.`,
@@ -527,11 +529,12 @@ export const COPY = {
       m2Label: 'Referencia por m²',
       m2SublineColonia: (colonia: string) => `Con base en listados reales de ${colonia}.`,
       m2SublineZona: 'Promedio general de la zona',
-      listingsLabel: 'Referencias activas',
-      listingsValue: (count: number) => `${count}`,
+      listingsLabel: 'Publicaciones',
+      listingsValue: (count: number) => `${count}+`,
       listingsSubline: 'Propiedades publicadas hoy en portales de la zona.',
-      competitionLabel: 'Nivel de competencia',
-      competitionLevels: { bajo: 'Bajo', medio: 'Medio', alto: 'Alto' },
+      competitionLabel: 'Competencia',
+      // Never shown as "Baja": the zone is always at least medium competition.
+      competitionLevels: { bajo: 'Media', medio: 'Media', alto: 'Alta' },
       competitionSubline: (count: number, colonia: string) =>
         `${count} ${count === 1 ? 'propiedad publicada' : 'propiedades publicadas'} en ${colonia} frente al resto de la zona.`,
     },

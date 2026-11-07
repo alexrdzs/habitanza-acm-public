@@ -1,4 +1,4 @@
-import { Bath, BedDouble, Building2, CalendarDays, Car, House, LandPlot, MapPin, Ruler, ShieldCheck, Sparkles, type LucideIcon } from 'lucide-react';
+import { Bath, BedDouble, Building2, CalendarDays, Car, CheckCheck, House, LandPlot, MapPin, Ruler, ShieldCheck, Sparkles, type LucideIcon } from 'lucide-react';
 import { COPY } from '@shared/copy';
 import { FEATURE_ICONS } from './WizardExtrasStep';
 
@@ -14,6 +14,9 @@ export interface PropertyFichaProps {
   amenidades: string[];
   // Reveal card: bigger numbers, since it spans the whole card.
   large?: boolean;
+  // The "Destacado" block. The sidebar turns it on once the visitor reaches
+  // "¿Qué la hace especial?"; the reveal always shows it.
+  showHighlights?: boolean;
 }
 
 const TYPE_ICONS: Record<string, LucideIcon> = { Casa: House, Departamento: Building2, Terreno: LandPlot };
@@ -28,7 +31,7 @@ const shortAge = (a: string) => COPY.age.short[a] ?? a;
 // The property summary: location + type, then label/value cells with an icon
 // per answer, then feature icons. No card chrome of its own, so the wizard's
 // map panel and the reveal's range card can each wrap it as they need.
-export function PropertyFicha(p: PropertyFichaProps) {
+export function PropertyFicha({ showHighlights = true, ...p }: PropertyFichaProps) {
   const S = COPY.sidebar;
   // Header = location + type. Everything else is one 3-column grid of
   // label + value cells (built, land, age / rooms), in a fixed order; a cell
@@ -78,7 +81,7 @@ export function PropertyFicha(p: PropertyFichaProps) {
           skipped when the visitor already picked the equivalent feature, so
           the same shield never shows twice. In the big reveal version each
           feature also carries a mini label. */}
-      {(() => {
+      {showHighlights && (() => {
         const items: { Icon: LucideIcon; label: string }[] = [
           ...(p.amenidades.includes(SECURITY_AMENITY) ? [] : [{ Icon: ShieldCheck, label: S.seguridad }]),
           ...p.amenidades.map((a) => ({ Icon: FEATURE_ICONS[a] ?? Sparkles, label: a })),
@@ -86,7 +89,7 @@ export function PropertyFicha(p: PropertyFichaProps) {
         return (
           <div className="animate-in border-t border-neutral-200/70 pt-3 duration-300 fade-in">
             <p className={`flex items-center gap-1.5 text-neutral-500 ${p.large ? 'text-xs md:text-sm' : 'text-[11px]'}`}>
-              <Sparkles className={`shrink-0 text-brand-600 ${p.large ? 'h-4 w-4' : 'h-3.5 w-3.5'}`} strokeWidth={2} />
+              <CheckCheck className={`shrink-0 text-brand-600 ${p.large ? 'h-4 w-4' : 'h-3.5 w-3.5'}`} strokeWidth={2} />
               {S.destacado}
             </p>
             <ul className={`flex flex-wrap ${p.large ? 'mt-2.5 gap-x-6 gap-y-2' : 'mt-1.5 gap-3'}`}>

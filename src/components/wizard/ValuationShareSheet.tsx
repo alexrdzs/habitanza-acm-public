@@ -131,7 +131,7 @@ export function ValuationShareSheet({ onClose, brokerPhotoUrl, clientPhone, firs
             type="button"
             disabled={busy || !photoSettled}
             onClick={onDownload}
-            className="flex items-center justify-center gap-2 rounded-pill border border-neutral-300 bg-white px-4 py-3 text-sm font-semibold text-neutral-800 disabled:opacity-60"
+            className="flex items-center justify-center gap-2 rounded-pill border border-neutral-300 bg-parchment-card px-4 py-3 text-sm font-semibold text-neutral-800 disabled:opacity-60"
           >
             <Download className="h-4 w-4" />
             {COPY.share.download}

@@ -75,11 +75,11 @@ function EventHero({ onStart, wide }: { onStart: () => void; wide: boolean }) {
     <button
       onClick={onStart}
       className={`flex items-center justify-center gap-3 rounded-pill bg-brand-500 bg-brand-gradient font-semibold text-white transition-all active:scale-95 ${
-        wide ? 'px-10 py-5 text-xl' : 'w-full px-9 py-4 text-base sm:w-auto sm:min-w-[240px]'
+        wide ? 'px-8 py-3.5 text-lg' : 'self-start px-7 py-3 text-base'
       } ${rise} [animation-delay:260ms]`}
     >
       {H.ctaLabel}
-      <ArrowRight className={wide ? 'h-5 w-5' : 'h-4 w-4'} strokeWidth={2.25} />
+      <ArrowRight className={wide ? 'h-4.5 w-4.5' : 'h-4 w-4'} strokeWidth={2.25} />
     </button>
   );
 
@@ -105,7 +105,7 @@ function EventHero({ onStart, wide }: { onStart: () => void; wide: boolean }) {
         {headline}
         <div className={`h-px bg-neutral-300/70 ${rise} [animation-delay:340ms]`} />
         <HowChecks className={`${rise} [animation-delay:420ms]`} />
-        <div className="pt-2">{button}</div>
+        <div className="flex pt-2">{button}</div>
       </div>
     </div>
   );

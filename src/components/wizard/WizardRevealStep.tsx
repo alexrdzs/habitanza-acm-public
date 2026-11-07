@@ -225,7 +225,7 @@ export function WizardRevealStep({ estimate, nombre, telefono, tipoPropiedad, co
                   <button
                     type="button"
                     onClick={() => setShareOpen(true)}
-                    className="inline-flex items-center justify-center gap-2 rounded-pill border border-brand-500 bg-white px-5 py-2.5 text-sm font-semibold text-brand-700 transition-transform active:scale-95"
+                    className="inline-flex items-center justify-center gap-2 rounded-pill border border-brand-500 bg-parchment-card px-5 py-2.5 text-sm font-semibold text-brand-700 dark:text-brand-400 transition-transform active:scale-95"
                   >
                     <Share2 className="h-4 w-4" />
                     {COPY.share.button}

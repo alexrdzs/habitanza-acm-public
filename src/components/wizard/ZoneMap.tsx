@@ -2,26 +2,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { GoogleMap, useLoadScript } from '@react-google-maps/api';
 import { NEIGHBORHOOD_COORDINATES, ZONA_ESMERALDA_CENTER } from '@shared/neighborhoods';
 import { readyComparableListings } from '@shared/comparableListings';
-import { smoothZoomTo } from './NeighborhoodMap';
-
-// Pastel, Airbnb/Apple Maps-like style (same as the ACM tool): no POI icons or
-// transit, soft parks and water, white roads.
-const MAP_STYLE = [
-  { elementType: 'geometry', stylers: [{ color: '#f7f5f0' }] },
-  { elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
-  { elementType: 'labels.text.fill', stylers: [{ color: '#9b9a96' }] },
-  { elementType: 'labels.text.stroke', stylers: [{ color: '#f7f5f0' }] },
-  { featureType: 'poi', stylers: [{ visibility: 'off' }] },
-  { featureType: 'poi.park', elementType: 'geometry', stylers: [{ visibility: 'on' }, { color: '#dcecdd' }] },
-  { featureType: 'transit', stylers: [{ visibility: 'off' }] },
-  { featureType: 'landscape.natural', elementType: 'geometry', stylers: [{ color: '#eef1ea' }] },
-  { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#ffffff' }] },
-  { featureType: 'road', elementType: 'labels', stylers: [{ visibility: 'simplified' }] },
-  { featureType: 'road.arterial', elementType: 'geometry', stylers: [{ color: '#fbf3e3' }] },
-  { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#fbe3bf' }] },
-  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#c9e6f2' }] },
-  { featureType: 'administrative', elementType: 'geometry', stylers: [{ visibility: 'off' }] },
-];
+import { smoothZoomTo, useMapStyles } from './NeighborhoodMap';
 
 // Lucide map-pin glyph as a data URI, brand green with a white outline.
 const PIN_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0Z" fill="#27C840" stroke="#ffffff" stroke-width="1.5"/><circle cx="12" cy="10" r="3" fill="#ffffff"/></svg>`;
@@ -74,6 +55,7 @@ function scatter(seed: string): { dx: number; dy: number }[] {
 export function ZoneMap({ colonia, pinCount }: Props) {
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string | undefined;
   const { isLoaded } = useLoadScript({ googleMapsApiKey: apiKey || '' });
+  const mapStyles = useMapStyles();
   const mapRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.Marker[]>([]);
 
@@ -155,7 +137,7 @@ export function ZoneMap({ colonia, pinCount }: Props) {
             mapRef.current = map;
             sync(map);
           }}
-          options={{ styles: MAP_STYLE, disableDefaultUI: true, gestureHandling: 'none', clickableIcons: false }}
+          options={{ styles: mapStyles, disableDefaultUI: true, gestureHandling: 'none', clickableIcons: false }}
         />
       )}
       {!(apiKey && isLoaded) && (

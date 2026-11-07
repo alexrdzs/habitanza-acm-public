@@ -3,7 +3,7 @@ import { useLoadScript, GoogleMap } from '@react-google-maps/api';
 import { MapPin } from 'lucide-react';
 import type { ComparableListing } from '@shared/comparableListings';
 import { NEIGHBORHOOD_COORDINATES } from '@shared/neighborhoods';
-import { MAP_STYLES } from './NeighborhoodMap';
+import { useMapStyles } from './NeighborhoodMap';
 
 interface Props {
   listings: ComparableListing[];
@@ -70,7 +70,7 @@ export function ComparablesMap({ listings, colonia, researchCount = 0 }: Props) 
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string | undefined;
   const { isLoaded } = useLoadScript({ googleMapsApiKey: apiKey || '' });
   // The reveal is always light, so this map never takes the dark style.
-  const mapStyles = MAP_STYLES;
+  const mapStyles = useMapStyles();
   const markersRef = useRef<google.maps.Marker[]>([]);
   // A single neighborhood center is enough for temporary dots. It is not a
   // property address and avoids asking Google for geocoding permission.

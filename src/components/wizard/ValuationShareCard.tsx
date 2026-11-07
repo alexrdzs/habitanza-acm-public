@@ -44,7 +44,7 @@ function Title({ tipo, colonia }: { tipo: string; colonia: string }) {
     document.fonts?.ready.then(fit);
   }, [colonia]);
   return (
-    <div className="w-full text-center font-semibold leading-tight" style={{ fontSize: size }}>
+    <div className="w-full text-center font-extrabold leading-tight" style={{ fontSize: size }}>
       <p>{tipo} en</p>
       <p ref={ref} className="overflow-hidden whitespace-nowrap">
         {colonia}
@@ -65,13 +65,13 @@ export const ValuationShareCard = forwardRef<HTMLDivElement, Props>(function Val
       <div className="flex flex-col items-center gap-2">
         <Icon className="h-9 w-9" style={{ color: GREEN }} strokeWidth={1.5} />
         <Title tipo={p.tipoPropiedad} colonia={p.colonia} />
+        <p className="-mt-0.5 text-center text-[11px] font-bold uppercase tracking-wider" style={{ color: '#15803D' }}>{COPY.share.eyebrow}</p>
       </div>
       <div className="mt-4 h-px bg-neutral-200" />
 
       {/* Range card */}
       <div className="mt-5 text-center">
-        <p className="text-[11px] font-bold uppercase tracking-wider" style={{ color: '#15803D' }}>{COPY.reveal.panelChip}</p>
-        <p className="mt-2 text-[13px] font-medium text-neutral-500">{COPY.reveal.headlinePrefix}</p>
+        <p className="text-[13px] font-medium text-neutral-500">{COPY.reveal.headlinePrefix}</p>
         <p className="mt-1 text-2xl font-bold leading-tight tabular-nums">
           {formatMillions(p.low)} <span className="font-light text-neutral-400">-</span> {formatMillions(p.high)}
         </p>
@@ -112,7 +112,7 @@ export const ValuationShareCard = forwardRef<HTMLDivElement, Props>(function Val
                 <div key={title} className="rounded-xl bg-[#F5F5F4] px-3 py-3">
                   <Icon className="h-4 w-4" style={{ color: GREEN }} strokeWidth={1.75} />
                   <p className="mt-2 break-words text-lg font-extrabold leading-tight tabular-nums">{value}</p>
-                  <p className="mt-0.5 text-[11px] font-semibold leading-tight text-neutral-600">{title}</p>
+                  <p className="mt-0.5 text-[10px] font-semibold leading-tight text-neutral-600">{title}</p>
                 </div>
               );
             })}

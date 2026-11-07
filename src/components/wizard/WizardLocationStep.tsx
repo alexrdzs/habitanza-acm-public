@@ -66,10 +66,10 @@ function ColoniaRow({ label, active, disabled, onSelect, icon, dashed }: Colonia
       className={cn(
         'relative flex min-h-[150px] flex-col items-center justify-center gap-3 rounded-2xl border-2 px-2 py-5 lg:min-h-[190px] lg:gap-4 text-center transition-all active:scale-[0.97] disabled:opacity-40',
         active
-          ? 'border-brand-500 bg-selected-gradient'
+          ? 'border-brand-500 bg-selected-gradient dark:bg-brand-100'
           : dashed
             ? 'border-dashed border-neutral-300 bg-parchment-card hover:border-brand-400'
-            : 'border-neutral-200 bg-parchment-card hover:border-neutral-300'
+            : 'border-neutral-200 bg-parchment-card hover:border-neutral-300 dark:border-transparent dark:bg-[#eceff4]'
       )}
     >
       <div
@@ -79,7 +79,7 @@ function ColoniaRow({ label, active, disabled, onSelect, icon, dashed }: Colonia
             ? 'bg-gradient-to-br from-brand-400 to-brand-500 text-white'
             : dashed
               ? 'bg-transparent text-neutral-400'
-              : 'bg-gradient-to-br from-neutral-100 to-neutral-200 text-emerald-deep'
+              : 'bg-gradient-to-br from-neutral-100 to-neutral-200 text-emerald-deep dark:from-white dark:to-white dark:text-[#15803d]'
         )}
       >
         {showImage ? (
@@ -97,7 +97,7 @@ function ColoniaRow({ label, active, disabled, onSelect, icon, dashed }: Colonia
         )}
       </div>
 
-      <span className={cn('text-sm font-semibold leading-tight lg:text-base', dashed && !active ? 'text-neutral-500' : 'text-neutral-800')}>
+      <span className={cn('text-sm font-semibold leading-tight lg:text-base', dashed && !active ? 'text-neutral-500' : 'text-neutral-800 dark:text-[#19202A]')}>
         {label}
       </span>
 

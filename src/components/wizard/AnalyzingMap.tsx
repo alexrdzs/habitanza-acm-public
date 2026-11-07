@@ -3,7 +3,7 @@ import { useLoadScript, GoogleMap } from '@react-google-maps/api';
 import { Search } from 'lucide-react';
 import { NEIGHBORHOOD_COORDINATES, ZONA_ESMERALDA_CENTER } from '@shared/neighborhoods';
 import { readyComparableListings } from '@shared/comparableListings';
-import { useMapStyles, smoothZoomTo } from './NeighborhoodMap';
+import { smoothZoomTo, useMapStyles } from './NeighborhoodMap';
 
 interface Props {
   colonia: string;

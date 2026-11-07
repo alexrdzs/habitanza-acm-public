@@ -103,17 +103,6 @@ export function LandingPage() {
     panelRef.current?.scrollTo(0, 0);
   }, [step]);
 
-  // The reveal is always light (no dark blocks, no dark mode): this flag turns
-  // off the dark token remap in index.css.
-  useEffect(() => {
-    const root = document.documentElement;
-    if (step === 'reveal') root.dataset.forceLight = '';
-    else delete root.dataset.forceLight;
-    return () => {
-      delete root.dataset.forceLight;
-    };
-  }, [step]);
-
   // Bumped on every restart so a lead submission still in flight can't push
   // the next visitor's screen to "analyzing".
   const sessionRef = useRef(0);
@@ -439,6 +428,7 @@ export function LandingPage() {
                   <div className="relative h-full">
                     <WizardSidebar
                       pinCount={pinCount}
+                      showHighlights={step === 'extras' || step === 'contact' || step === 'analyzing'}
                       colonia={resolvedColonia}
                       tipoPropiedad={tipoPropiedad}
                       m2Construccion={m2Construccion}

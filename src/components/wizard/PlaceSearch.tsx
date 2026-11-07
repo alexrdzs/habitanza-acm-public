@@ -96,7 +96,7 @@ export function PlaceSearch({ value, onChange, onPlace, placeholder }: Props) {
         autoFocus={!onPlace}
       />
       {items.length > 0 && (
-        <ul className="mt-1 overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-lg">
+        <ul className="mt-1 overflow-hidden rounded-2xl border border-neutral-200 bg-parchment-card shadow-lg">
           {items.map((s) => (
             <li key={s.text}>
               <button
