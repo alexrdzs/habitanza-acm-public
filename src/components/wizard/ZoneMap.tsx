@@ -18,6 +18,10 @@ interface Props {
   analyzingStage?: number;
 }
 
+// Module-level so the overlays get the same function every render. A new one each time makes
+// the library tear the overlay down and rebuild it, which replays the photo's fade-in.
+const centerOffset = (w: number, h: number) => ({ x: -w / 2, y: -h / 2 });
+
 // A reviewed comparable on the map. Slow fade in, and the ones not selected fade out.
 function PhotoPin({ photo, index, dim }: { photo: string; index: number; dim: boolean }) {
   const [failed, setFailed] = useState(false);
@@ -53,6 +57,8 @@ function offsetCenter(map: google.maps.Map, target: google.maps.LatLngLiteral, z
   return { lat: target.lat - (0.5 - RADAR_TOP) * h * degPerPx, lng: target.lng };
 }
 const COLONIA_ZOOM = 14;
+// Analyzing starts one step out from the fraccionamiento (not the whole zone), then closes in.
+const ANALYZING_START_ZOOM = 13;
 export const MAX_PINS = 45;
 // Spread of the search pins around the fraccionamiento, in degrees (~2.4 km tall, ~1.7 km wide).
 const SPREAD_LAT = 0.022;
@@ -90,10 +96,10 @@ export function ZoneMap({ colonia, pinCount, analyzingStage }: Props) {
 
   const points = useMemo(() => scatter(colonia || 'zona'), [colonia]);
   const center = NEIGHBORHOOD_COORDINATES[colonia];
-  const photos = useMemo(() => (analyzingStage === undefined ? [] : buildPool(colonia)), [analyzingStage === undefined, colonia]);
+  const photos = useMemo(() => (analyzingStage === undefined ? [] : buildPool(colonia).map((p) => ({ ...p, position: { lat: p.listing.lat, lng: p.listing.lng } }))), [analyzingStage === undefined, colonia]);
   const photoMode = photos.some((p) => p.picked);
-  // Photo mode: wide view while reviewing, then in on the fraccionamiento once narrowed to the selection.
-  const zoom = photoMode && (analyzingStage ?? 0) < 2 ? OVERVIEW_ZOOM : COLONIA_ZOOM;
+  // Photo mode: a bit wider than the fraccionamiento while reviewing, then in on the fraccionamiento once narrowed to the selection.
+  const zoom = photoMode && (analyzingStage ?? 0) < 2 ? ANALYZING_START_ZOOM : COLONIA_ZOOM;
 
   // Fly to the fraccionamiento and (re)build the markers when it changes.
   const sync = useCallback(
@@ -176,9 +182,9 @@ export function ZoneMap({ colonia, pinCount, analyzingStage }: Props) {
             photos.map((p, i) => (
               <OverlayViewF
                 key={i}
-                position={{ lat: p.listing.lat, lng: p.listing.lng }}
+                position={p.position}
                 mapPaneName={OVERLAY_MOUSE_TARGET}
-                getPixelPositionOffset={(w, h) => ({ x: -w / 2, y: -h / 2 })}
+                getPixelPositionOffset={centerOffset}
               >
                 <PhotoPin photo={p.listing.photo!} index={i} dim={(analyzingStage ?? 0) >= 2 && !p.picked} />
               </OverlayViewF>
@@ -210,13 +216,13 @@ export function ZoneMap({ colonia, pinCount, analyzingStage }: Props) {
           ))}
         </div>
       )}
-      {/* Hidden twin at the analyzing overview zoom (same style, panel-sized), so its tiles are
+      {/* Hidden twin at the analyzing start zoom (same style, panel-sized), so its tiles are
           already cached when the real map zooms out. Gone once the analyzing step starts. */}
       {apiKey && isLoaded && center && analyzingStage === undefined && (
         <GoogleMap
           mapContainerStyle={{ position: 'absolute', left: 0, top: 0, width: 480, height: 800, opacity: 0, pointerEvents: 'none' }}
           center={center}
-          zoom={OVERVIEW_ZOOM}
+          zoom={ANALYZING_START_ZOOM}
           options={{ styles: mapStyles, disableDefaultUI: true, gestureHandling: 'none', clickableIcons: false }}
         />
       )}
