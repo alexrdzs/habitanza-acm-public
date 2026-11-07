@@ -21,17 +21,27 @@ export const PRICE_PER_M2_CONSTRUCCION: Record<string, number | null> = {
   'Lomas de Valle Escondido': 42000, // avg of CAX-089 ($45.5k/m²) and CAZ-272 ($39.5k/m²)
   'Hacienda de Valle Escondido': 48000, // CAQ-399: $34M / 700m²
   'Rancho San Juan': 34000, // TAP-307: $44.9M / 1,327m²
-  // Condado de Sayavedra has no construcción comp sampled yet — falls back to the default below.
-  'Bosque Real': null, // TODO research: verified construcción price per m²
-  Interlomas: null, // TODO research: verified construcción price per m²
+  // Medianas de $/m² de los listados reales de shared/comparableListings.ts (precio de lista, 2026-11-07), redondeadas a $500.
+  'Condado de Sayavedra': 29000, // mediana de 5 casas: $24.2k a $37.2k/m²
+  'Club de Golf Chiluca': 28500, // mediana de 7 casas: $24.7k a $54.3k/m²
+  'Prado Largo': 37000, // mediana de 6 casas: $33.1k a $44.0k/m²
+  'Club de Golf Valle Escondido': 47000, // mediana de 6 casas: $24.1k a $68.0k/m² (muy disperso)
+  'Fincas de Sayavedra': 42500, // mediana de 3 casas: $38.8k a $42.5k/m²
+  'La Estadía': 29500, // mediana de 4 casas: $20.0k a $54.4k/m² (disperso)
+  'Bosque Real': 55500, // mediana de 4 casas: $37.2k a $78.7k/m² (muy disperso)
+  Interlomas: 36000, // mediana de 2 casas: $32.2k y $39.9k/m² (pocas, direccional)
+  'Interlomas y Hda. de las Palmas': 36000, // mismo dato que Interlomas
 };
 export const DEFAULT_PRICE_PER_M2_CONSTRUCCION = 42000;
 
 export const PRICE_PER_M2_TERRENO: Record<string, number | null> = {
   'Condado de Sayavedra': 6000, // TXJ-575: $6.9M / 1,147m²
-  // Other colonias have no raw-land comp sampled yet — fall back to the default below.
+  // Medianas de listados reales (n>=3). Sin listados de terreno (Chiluca, Prado Largo, Lomas, Club de Golf VE, Interlomas) o con 1 o 2, queda el valor general: no se inventa.
+  'Hacienda de Valle Escondido': 7000, // mediana de 3 terrenos: $5.8k a $7.4k/m²
+  'Rancho San Juan': 11500, // mediana de 5 terrenos: $11.4k a $13.2k/m²
+  'Fincas de Sayavedra': 2500, // mediana de 4 terrenos: $1.9k a $8.4k/m² (muy disperso)
+  'La Estadía': 7000, // mediana de 3 terrenos: $5.7k a $8.3k/m²
   'Bosque Real': 19600, // mediana de 9 terrenos de la Colección TBR3SPM (EasyBroker, 2026-11-07): $17.6k a $25.5k/m², n=9
-  Interlomas: null, // TODO research: verified terreno price per m²
 };
 export const DEFAULT_PRICE_PER_M2_TERRENO = 6000;
 

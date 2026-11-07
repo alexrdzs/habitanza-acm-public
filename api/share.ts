@@ -14,7 +14,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const origin = `https://${host}`;
   let html = await (await fetch(`${origin}/index.html`)).text();
 
-  const m = /^([0-9a-z])([1-9])\d\d{1,5}$/.exec(code);
+  const m = /^([0-9a-z])([1-9])\d\d{1,5}(?:[tarbe]\d{1,5})*$/.exec(code);
   if (m) {
     const image = `${origin}/api/og?code=${code}&v=2`; // v=2 busts WhatsApp's cached preview
     const set = (re: RegExp, value: string) => (html = html.replace(re, (_m, prefix = '') => prefix + value));

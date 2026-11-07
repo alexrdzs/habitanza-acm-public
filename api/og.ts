@@ -29,7 +29,7 @@ const dataUri = (buf: ArrayBuffer) => `data:image/svg+xml;base64,${Buffer.from(b
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const origin = url.origin;
-  const m = /^([0-9a-z])([1-9])\d\d{1,5}$/.exec(url.searchParams.get('code') ?? '');
+  const m = /^([0-9a-z])([1-9])\d\d{1,5}(?:[tarbe]\d{1,5})*$/.exec(url.searchParams.get('code') ?? '');
   const colonia = m && COLONIAS[parseInt(m[1], 36) - 1];
   const tipo = m && TIPOS[Number(m[2]) - 1];
   if (!m || !colonia || !tipo) return new Response('Not found', { status: 404 });

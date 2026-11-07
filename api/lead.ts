@@ -196,8 +196,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const estimadoMin = money(body.estimadoMin);
   const estimadoAprox = money(body.estimadoAprox);
   const estimadoMax = money(body.estimadoMax);
-  // Same shape encodeShareLink produces: https://host/<colonia><tipo><asesor><m2>.
-  const estimadoLink = /^https?:\/\/[\w.-]+(:\d+)?\/[0-9a-z][1-9]\d\d{1,5}$/.test(body.estimadoLink ?? '')
+  // Same shape encodeShareLink produces: https://host/<colonia><tipo><asesor><m2>[t a r b e extras].
+  const estimadoLink = /^https?:\/\/[\w.-]+(:\d+)?\/[0-9a-z][1-9]\d\d{1,5}(?:[tarbe]\d{1,5})*$/.test(body.estimadoLink ?? '')
     ? body.estimadoLink
     : undefined;
   const consentimiento = body.consentimiento === true;

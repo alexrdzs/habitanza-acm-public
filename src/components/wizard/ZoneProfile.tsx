@@ -18,7 +18,8 @@ export function ZoneProfile({ colonia }: { colonia: string }) {
   return (
     <div className="space-y-3 rounded-xl bg-neutral-50 p-4 lg:p-5">
       <p className="text-sm font-semibold text-neutral-900">{z.title(colonia)}</p>
-      <div className="space-y-3 lg:grid lg:grid-cols-3 lg:gap-8 lg:space-y-0">
+      {/* One column per row, so a colonia with fewer than 3 rows (e.g. only prices) fills the whole line. */}
+      <div className="space-y-3 lg:grid lg:gap-8 lg:space-y-0" style={{ gridTemplateColumns: `repeat(${rows.length}, minmax(0, 1fr))` }}>
       {rows.map((r) => (
         <div key={r.label}>
           <p className="text-xs font-medium text-neutral-500">{r.label}</p>

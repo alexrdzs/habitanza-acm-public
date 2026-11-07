@@ -187,6 +187,11 @@ export function LandingPage() {
       tipoPropiedad,
       advisorName: advisor.name,
       m2: (tipoPropiedad === 'Terreno' ? Number(m2Terreno) : Number(m2Construccion)) || 0,
+      terreno: m2Terreno ? Number(m2Terreno) : undefined,
+      antiguedad,
+      recamaras: parseRoomCount(recamaras),
+      banos: parseRoomCount(banos),
+      estacionamientos: parseRoomCount(estacionamientos),
     });
     try {
       const res = await fetch('/api/lead', {
