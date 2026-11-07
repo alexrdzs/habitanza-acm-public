@@ -3,11 +3,12 @@ import { Check } from 'lucide-react';
 import { COPY } from '@shared/copy';
 import { WizardShell } from './WizardShell';
 import { AnalyzingMap } from './AnalyzingMap';
+import { AnalyzingComparables } from './AnalyzingComparables';
 import { cn } from '../../lib/utils';
 
 const STAGES = COPY.analyzing.stages;
 
-const STAGE_DURATION_MS = 950;
+const STAGE_DURATION_MS = 1250;
 const COMPLETE_HOLD_MS = 850;
 const EXIT_DURATION_MS = 500;
 
@@ -73,6 +74,9 @@ export function WizardAnalyzingStep({ colonia, onDone }: { colonia: string; onDo
               </div>
             )}
           </div>
+
+          {/* The comparables being reviewed, then narrowed to the selection. */}
+          <AnalyzingComparables colonia={colonia} stage={isComplete ? 3 : stageIndex} />
 
           {/* Stage checklist — each item narrates what's happening and why it
               matters, not a generic "cargando..." message. */}

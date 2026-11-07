@@ -49,7 +49,7 @@ export function PreliminaryPricingBar({ estimate }: Props) {
 
         {/* Frosted glass pill: the band that makes sense. */}
         <div
-          className="animate-in fade-in fill-mode-both absolute rounded-full border border-brand-500/40 bg-white/50 shadow-[0_4px_12px_-4px_rgba(22,163,74,0.3)] backdrop-blur-[3px] duration-500 delay-300"
+          className="animate-in fade-in fill-mode-both absolute rounded-full border border-brand-500/40 bg-parchment-card/50 shadow-[0_4px_12px_-4px_rgba(22,163,74,0.3)] backdrop-blur-[3px] duration-500 delay-300"
           style={{ left: `${PILL_LEFT}%`, width: `${PILL_WIDTH}%`, top: '-9px', height: '28px' }}
         />
 

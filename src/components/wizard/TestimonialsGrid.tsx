@@ -35,7 +35,7 @@ export function TestimonialsGrid() {
               const s = COPY.hero.expertiseCards[it.i];
               const Icon = SERVICE_ICONS[it.i];
               return (
-                <div key={s.title} style={style} className={`${card} border border-neutral-200/70 bg-white`}>
+                <div key={s.title} style={style} className={`${card} border border-neutral-200/70 bg-parchment-card`}>
                   <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-500/10 text-brand-600">
                     <Icon className="h-4 w-4" strokeWidth={1.75} />
                   </span>
@@ -46,7 +46,7 @@ export function TestimonialsGrid() {
             }
             const t = quotes[it.i]!;
             return (
-              <div key={t.name} style={style} className={`${card} border border-white/70 bg-white/85 shadow-[0_8px_24px_-14px_rgba(15,23,42,0.25)]`}>
+              <div key={t.name} style={style} className={`${card} border border-neutral-200/60 bg-parchment-card/85 shadow-[0_8px_24px_-14px_rgba(15,23,42,0.25)]`}>
                 <div className="flex items-center justify-between">
                   <Quote className="h-3.5 w-3.5 text-emerald-deep/40" />
                   <div className="flex gap-0.5">

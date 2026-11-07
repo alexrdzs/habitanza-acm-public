@@ -7,37 +7,44 @@
 import { useEffect, useState } from 'react';
 import { useLoadScript } from '@react-google-maps/api';
 
-// Same muted style array the authenticated ACM tool uses for its property
-// map, so this feels like the same product rather than a bare default map.
+// Pastel, Airbnb/Apple Maps-like style (same as the ACM tool): no POI icons or
+// transit, soft parks and water, white roads. One source for every map in the
+// flow (wizard panel, analyzing, reveal).
 export const MAP_STYLES = [
-  { featureType: 'all', elementType: 'geometry', stylers: [{ color: '#f5f5f5' }] },
-  { featureType: 'all', elementType: 'labels.text.fill', stylers: [{ color: '#616161' }] },
-  { featureType: 'all', elementType: 'labels.text.stroke', stylers: [{ color: '#f5f5f5' }] },
-  { featureType: 'administrative', elementType: 'geometry.fill', stylers: [{ color: '#dee2e6' }] },
+  { elementType: 'geometry', stylers: [{ color: '#f7f5f0' }] },
+  { elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
+  { elementType: 'labels.text.fill', stylers: [{ color: '#9b9a96' }] },
+  { elementType: 'labels.text.stroke', stylers: [{ color: '#f7f5f0' }] },
   { featureType: 'poi', stylers: [{ visibility: 'off' }] },
-  { featureType: 'poi.park', stylers: [{ visibility: 'on' }, { color: '#d2e7d6' }] },
+  { featureType: 'poi.park', elementType: 'geometry', stylers: [{ visibility: 'on' }, { color: '#dcecdd' }] },
+  { featureType: 'transit', stylers: [{ visibility: 'off' }] },
+  { featureType: 'landscape.natural', elementType: 'geometry', stylers: [{ color: '#eef1ea' }] },
   { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#ffffff' }] },
-  { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#dadada' }] },
-  { featureType: 'water', stylers: [{ visibility: 'on' }, { color: '#c3e1ff' }] },
+  { featureType: 'road', elementType: 'labels', stylers: [{ visibility: 'simplified' }] },
+  { featureType: 'road.arterial', elementType: 'geometry', stylers: [{ color: '#fbf3e3' }] },
+  { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#fbe3bf' }] },
+  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#c9e6f2' }] },
+  { featureType: 'administrative', elementType: 'geometry', stylers: [{ visibility: 'off' }] },
 ];
 
-// Dark counterpart, tuned to the app's green-grey / emerald palette (see
-// index.css) rather than a generic Google night theme: the base geometry
-// matches the dark card surfaces, water reads as a deep blue-grey, parks a
-// muted forest green, and labels are a light grey-green with a near-black
-// stroke so they stay legible. The brand-green (#27C840) markers layered on
-// top pop against it. Mirrors MAP_STYLES feature-for-feature so the two are
-// easy to keep in sync.
+// Dark counterpart: same features, carbon surfaces that match the dark tokens
+// in index.css (parchment #131316, cards #1c1c20), muted forest parks and a
+// deep blue-grey water. The brand-green markers pop against it.
 export const MAP_STYLES_DARK = [
-  { featureType: 'all', elementType: 'geometry', stylers: [{ color: '#16211b' }] },
-  { featureType: 'all', elementType: 'labels.text.fill', stylers: [{ color: '#8fa096' }] },
-  { featureType: 'all', elementType: 'labels.text.stroke', stylers: [{ color: '#0e1712' }] },
-  { featureType: 'administrative', elementType: 'geometry.fill', stylers: [{ color: '#2a352f' }] },
+  { elementType: 'geometry', stylers: [{ color: '#1c1c20' }] },
+  { elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
+  { elementType: 'labels.text.fill', stylers: [{ color: '#8a8a92' }] },
+  { elementType: 'labels.text.stroke', stylers: [{ color: '#1c1c20' }] },
   { featureType: 'poi', stylers: [{ visibility: 'off' }] },
-  { featureType: 'poi.park', stylers: [{ visibility: 'on' }, { color: '#173529' }] },
-  { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#2b352f' }] },
-  { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#3a463f' }] },
-  { featureType: 'water', stylers: [{ visibility: 'on' }, { color: '#0e1a20' }] },
+  { featureType: 'poi.park', elementType: 'geometry', stylers: [{ visibility: 'on' }, { color: '#1f2e25' }] },
+  { featureType: 'transit', stylers: [{ visibility: 'off' }] },
+  { featureType: 'landscape.natural', elementType: 'geometry', stylers: [{ color: '#18181c' }] },
+  { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#2e2e34' }] },
+  { featureType: 'road', elementType: 'labels', stylers: [{ visibility: 'simplified' }] },
+  { featureType: 'road.arterial', elementType: 'geometry', stylers: [{ color: '#34343b' }] },
+  { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#40404a' }] },
+  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#14222b' }] },
+  { featureType: 'administrative', elementType: 'geometry', stylers: [{ visibility: 'off' }] },
 ];
 
 // The map style is a JS options array, not CSS, so prefers-color-scheme

@@ -7,7 +7,6 @@ import { WizardTopBar } from '../components/wizard/WizardTopBar';
 import { WizardExtrasStep } from '../components/wizard/WizardExtrasStep';
 import { WizardAnalyzingStep } from '../components/wizard/WizardAnalyzingStep';
 import { IS_EVENT_MODE } from '../lib/eventMode';
-import { TestimonialsGrid } from '../components/wizard/TestimonialsGrid';
 import { WizardContactStep } from '../components/wizard/WizardContactStep';
 import { WizardRevealStep } from '../components/wizard/WizardRevealStep';
 import { MapPreloader } from '../components/wizard/NeighborhoodMap';
@@ -102,17 +101,6 @@ export function LandingPage() {
   useEffect(() => {
     window.scrollTo(0, 0);
     panelRef.current?.scrollTo(0, 0);
-  }, [step]);
-
-  // The reveal is always light (no dark blocks, no dark mode): this flag turns
-  // off the dark token remap in index.css.
-  useEffect(() => {
-    const root = document.documentElement;
-    if (step === 'reveal') root.dataset.forceLight = '';
-    else delete root.dataset.forceLight;
-    return () => {
-      delete root.dataset.forceLight;
-    };
   }, [step]);
 
   // Bumped on every restart so a lead submission still in flight can't push
@@ -427,20 +415,20 @@ export function LandingPage() {
               <div ref={panelRef} className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden">
                 <main
                   className={`mx-auto flex min-h-full flex-col px-[var(--gutter)] [--gutter:2rem] xl:[--gutter:2.5rem] ${
-                    flowIndex >= 0 ? 'max-w-3xl pb-0 pt-2' : step === 'reveal' ? 'max-w-7xl pb-8 pt-2' : 'max-w-5xl pb-8 pt-8 xl:pb-10'
+                    flowIndex >= 0 ? 'max-w-3xl pb-0 pt-2' : step === 'reveal' ? 'max-w-7xl pb-8 pt-2' : step === 'hero' ? 'max-w-6xl pb-8 pt-8' : 'max-w-5xl pb-8 pt-8 xl:pb-10'
                   }`}
                 >
                   {steps}
                 </main>
               </div>
             </div>
-            {(step !== 'hero' || isEventMode) && step !== 'reveal' && (
+            {step !== 'hero' && step !== 'reveal' && (
               <aside className="w-[440px] shrink-0 animate-in overflow-hidden duration-500 fade-in slide-in-from-right-6 xl:w-[480px]">
                 <div className="h-full overflow-y-auto">
                   <div className="relative h-full">
                     <WizardSidebar
-                      intro={step === 'hero'}
                       pinCount={pinCount}
+                      showHighlights={step === 'extras' || step === 'contact' || step === 'analyzing'}
                       colonia={resolvedColonia}
                       tipoPropiedad={tipoPropiedad}
                       m2Construccion={m2Construccion}
@@ -451,17 +439,6 @@ export function LandingPage() {
                       antiguedad={antiguedad}
                       amenidades={amenidades}
                     />
-                    {/* Home cards sit on top of the (already loaded) map and fade
-                        away on the first step, so the map never pops in. */}
-                    {isEventMode && (
-                      <div
-                        className={`absolute inset-0 transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-                          step === 'hero' ? '' : 'pointer-events-none translate-x-4 opacity-0'
-                        }`}
-                      >
-                        <TestimonialsGrid />
-                      </div>
-                    )}
                   </div>
                 </div>
               </aside>
@@ -488,9 +465,10 @@ export function LandingPage() {
         {topBar && <div className="mx-auto max-w-md md:max-w-2xl">{topBar}</div>}
       </header>
       <main
-        className={`mx-auto flex min-h-[calc(100dvh-7.05rem)] max-w-md flex-col px-[var(--gutter)] pt-4 [--gutter:1rem] md:max-w-2xl ${
-          flowIndex >= 0 ? 'pb-0' : 'pb-20'
-        }`}
+        className={`mx-auto flex max-w-md flex-col px-[var(--gutter)] pt-4 [--gutter:1rem] md:max-w-2xl ${
+          // Home: fills the screen under the header so its button sits at the very bottom.
+          step === 'hero' ? 'min-h-[calc(100dvh-3.8rem)] pb-0' : 'min-h-[calc(100dvh-7.05rem)]'
+        } ${flowIndex >= 0 || step === 'hero' ? 'pb-0' : 'pb-20'}`}
       >
         {steps}
       </main>

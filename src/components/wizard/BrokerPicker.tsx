@@ -48,7 +48,7 @@ export function BrokerPicker({ value, onChange }: Props) {
         <ChevronDown className="h-4 w-4 text-neutral-400" />
       </button>
       {open && (
-        <ul className="absolute right-0 mt-2 w-60 animate-in overflow-hidden rounded-2xl border border-neutral-200/70 bg-white p-1 shadow-lg duration-150 fade-in">
+        <ul className="absolute right-0 mt-2 w-60 animate-in overflow-hidden rounded-2xl border border-neutral-200/70 bg-parchment-card p-1 shadow-lg duration-150 fade-in">
           {BROKERS.map((b) => (
             <li key={b.name}>
               <button

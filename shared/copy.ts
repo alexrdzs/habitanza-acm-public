@@ -50,6 +50,16 @@ export const COPY = {
     ctaLabel: 'Empezar',
     // Order-matched with TRUST_MARK_ICONS in WizardHero.tsx.
     bullets: ['Sin costo', 'Asesores locales de la zona', 'Con datos reales del mercado'],
+    // The only list under the button: how the estimate is made.
+    how: {
+      eyebrow: '¿Cómo lo hacemos?',
+      checks: [
+        'Homologamos tu propiedad',
+        'Cruzamos datos con similares activas',
+        'Usamos IA para analizar a escala',
+        'Un broker especializado lo revisa',
+      ],
+    },
   },
 
   // Event mode: the advisor is standing next to the visitor, so copy talks
@@ -58,6 +68,8 @@ export const COPY = {
     button: 'Compartir mi valuación',
     sheetTitle: 'Tu valuación',
     chip: 'Rango preliminar',
+    // Small line above the title on the shared image.
+    eyebrow: 'Análisis preliminar de mercado',
     // The text that travels with the image in the share sheet.
     message: (firstName: string, link: string) =>
       `Hola ${firstName}, aquí está tu valuación: ${link}\nPlatiquemos uno a uno para llegar a un precio adecuado y que puedas tomar la mejor decisión.`,
@@ -190,6 +202,7 @@ export const COPY = {
     expandedPanelLabel: 'Otros fraccionamientos cercanos',
     otherLabel: 'Otro fraccionamiento',
     otherInputLabel: '¿Cuál?',
+    otherSearchPlaceholder: 'Busca tu fraccionamiento',
     continueLabel: 'Continuar',
   },
 
@@ -275,6 +288,8 @@ export const COPY = {
     title: 'Analizando la zona',
     description: 'Estamos preparando un primer estimado de valor.',
     completeLabel: 'Todo listo',
+    reviewingLabel: (n: number) => `Revisando ${n} propiedades`,
+    selectedLabel: (n: number) => `${n} comparables seleccionados`,
     stages: [
       {
         label: 'Ubicando tu propiedad',
@@ -514,11 +529,12 @@ export const COPY = {
       m2Label: 'Referencia por m²',
       m2SublineColonia: (colonia: string) => `Con base en listados reales de ${colonia}.`,
       m2SublineZona: 'Promedio general de la zona',
-      listingsLabel: 'Referencias activas',
-      listingsValue: (count: number) => `${count}`,
+      listingsLabel: 'Publicaciones',
+      listingsValue: (count: number) => `${count}+`,
       listingsSubline: 'Propiedades publicadas hoy en portales de la zona.',
-      competitionLabel: 'Nivel de competencia',
-      competitionLevels: { bajo: 'Bajo', medio: 'Medio', alto: 'Alto' },
+      competitionLabel: 'Competencia',
+      // Never shown as "Baja": the zone is always at least medium competition.
+      competitionLevels: { bajo: 'Media', medio: 'Media', alto: 'Alta' },
       competitionSubline: (count: number, colonia: string) =>
         `${count} ${count === 1 ? 'propiedad publicada' : 'propiedades publicadas'} en ${colonia} frente al resto de la zona.`,
     },
@@ -588,6 +604,7 @@ export const COPY = {
     },
     mercadoChip: '02 Referencias del Mercado',
     mercadoTitle: 'Análisis del mercado',
+    borrowedNote: (from: string) => `Aún no tenemos referencias en tu fraccionamiento. Te mostramos las de ${from}, la zona más cercana.`,
     mercadoSubtitle: 'Lo que se publica hoy en tu zona.',
     // Shown when real comparables render below: the same "oferta pública"
     // caveat the full ACM opens its comparables chapter with.

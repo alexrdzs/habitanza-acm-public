@@ -11,6 +11,7 @@ import { SlideBullets, SlideCard } from './SlideCard';
 import { AdvisorAvatar } from './AdvisorAvatar';
 import { AdvisorCTA } from './AdvisorCTA';
 import { whatsappLink, buildWhatsAppMessage, type Advisor } from '@shared/advisors';
+import { borrowedFrom } from '../../lib/borrowedComparables';
 import { competitionLevel, pendingComparableListings, readyComparableListings, totalReadyListingsCount } from '@shared/comparableListings';
 import { COPY } from '@shared/copy';
 import { referencePerM2, type PreliminaryEstimate } from '@shared/pricing';
@@ -42,7 +43,7 @@ const MEETING_ICONS = [FileSearch, Target, Route];
 export function WizardRevealStep({ estimate, nombre, telefono, tipoPropiedad, colonia, profile, advisor, wide = false }: Props) {
   const firstName = nombre.trim().split(' ')[0] || 'gracias';
   const advisorFirstName = advisor.name.split(' ')[0];
-  const comps = readyComparableListings(colonia);
+  const comps = readyComparableListings(colonia).slice(0, 6); // always at most 6: 3 x 2 grid, same set on map and cards
   const pendingComps = pendingComparableListings(colonia);
   const hasComps = comps.length > 0;
   const hasPendingComps = pendingComps.length > 0;
@@ -147,6 +148,7 @@ export function WizardRevealStep({ estimate, nombre, telefono, tipoPropiedad, co
             {/* Row 2: map on the left, listings on the right. */}
             <div className="space-y-3 lg:space-y-5 border-t border-neutral-200/70 pt-6 lg:pt-8">
               <p className="text-[11px] font-bold uppercase tracking-wider text-neutral-500 md:text-xs">{COPY.reveal.mercadoSubtitle}</p>
+              {borrowedFrom(colonia) && <p className="text-sm text-neutral-500">{COPY.reveal.borrowedNote(borrowedFrom(colonia)!)}</p>}
               {hasComps || hasPendingComps ? (
                 <div className="space-y-3 md:flex md:gap-3 md:space-y-0 lg:grid lg:grid-cols-2 lg:gap-10">
                   <div className="md:w-1/2 lg:h-full lg:w-full">
@@ -223,7 +225,7 @@ export function WizardRevealStep({ estimate, nombre, telefono, tipoPropiedad, co
                   <button
                     type="button"
                     onClick={() => setShareOpen(true)}
-                    className="inline-flex items-center justify-center gap-2 rounded-pill border border-brand-500 bg-white px-5 py-2.5 text-sm font-semibold text-brand-700 transition-transform active:scale-95"
+                    className="inline-flex items-center justify-center gap-2 rounded-pill border border-brand-500 bg-parchment-card px-5 py-2.5 text-sm font-semibold text-brand-700 dark:text-brand-400 transition-transform active:scale-95"
                   >
                     <Share2 className="h-4 w-4" />
                     {COPY.share.button}

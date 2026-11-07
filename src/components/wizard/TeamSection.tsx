@@ -33,7 +33,7 @@ export function TeamSection() {
             >
               <AdvisorAvatar
                 advisor={member}
-                className="h-16 w-16 border-2 border-white shadow-sm"
+                className="h-16 w-16 border-2 border-parchment-card shadow-sm"
                 iconClassName="h-6 w-6 text-neutral-400"
               />
               <p className="text-xs font-semibold leading-tight text-neutral-800">{member.firstName}</p>
