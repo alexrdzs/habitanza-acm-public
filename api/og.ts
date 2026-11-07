@@ -52,6 +52,7 @@ export async function GET(request: Request) {
       h('div', {}, `${tipo} en`),
       h('div', {}, colonia),
     ]),
+    h('div', { fontSize: 36, fontWeight: 500, color: '#737373', marginTop: 24 }, 'Estimado preliminar'),
     h('img', { position: 'absolute', left: 974, top: 48 }, undefined, { src: dataUri(logo), width: 170, height: 44 }),
   ]);
 
