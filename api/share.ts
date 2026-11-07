@@ -16,7 +16,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const m = /^([0-9a-z])([1-9])\d\d{1,5}$/.exec(code);
   if (m) {
-    const image = `${origin}/api/og?code=${code}`;
+    const image = `${origin}/api/og?code=${code}&v=2`; // v=2 busts WhatsApp's cached preview
     const set = (re: RegExp, value: string) => (html = html.replace(re, (_m, prefix = '') => prefix + value));
     set(/(<title>)[^<]*/, TITLE);
     set(/(<meta property="og:title" content=")[^"]*/, `${TITLE}`);
