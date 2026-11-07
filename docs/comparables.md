@@ -17,7 +17,7 @@ Este doc dice dónde vive cada dato, cómo editarlo y de dónde salió.
 | Condado de Sayavedra | 8 | 5 | 3 | 0 | 8 | 0 | $3.8 a $14.6 MDP |
 | Hacienda de Valle Escondido | 7 | 4 | 3 | 0 | 7 | 0 | $14.2 a $39.0 MDP |
 | Rancho San Juan | 6 | 2 | 4 | 0 | 6 | 0 | $10.9 a $38.2 MDP |
-| Bosque Real | 10 | 4 | 4 | 2 | 10 | 0 | $6.8 a $85.0 MDP |
+| Bosque Real | 10 | 4 | 3 | 3 | 8 | 0 | $6.8 a $85.0 MDP |
 | Club de Golf Chiluca | 7 | 7 | 0 | 0 | 4 | 3 | $10.8 a $18.0 MDP |
 | Prado Largo | 6 | 6 | 0 | 0 | 3 | 3 | $15.5 a $27.0 MDP |
 | Residencial Lago Esmeralda | 8 | 6 | 1 | 1 | 8 | 0 | $2.6 a $9.3 MDP |
