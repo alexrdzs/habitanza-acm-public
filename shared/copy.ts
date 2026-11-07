@@ -80,6 +80,8 @@ export const COPY = {
       `Hola ${firstName}, platiquemos uno a uno para llegar a un precio adecuado y que puedas tomar la mejor decisión.`,
     pageTitle: 'Tu valuación | Habitanza',
     pageCta: (advisorFirstName: string) => `Platicar con ${advisorFirstName}`,
+    meetingTitle: 'Agendemos una reunión',
+    meetingBody: 'Revisamos juntos tu estimado y definimos el mejor precio de salida.',
     features: {
       construction: (n: number) => `${n} m² de construcción`,
       land: (n: number) => `${n} m² de terreno`,

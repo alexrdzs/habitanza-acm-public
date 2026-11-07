@@ -4,15 +4,19 @@ import { COPY } from '@shared/copy';
 import { buildWhatsAppMessage, whatsappLink } from '@shared/advisors';
 import { estimatePreliminaryRange } from '@shared/pricing';
 import type { ShareLinkData } from '@shared/shareLink';
+import { AdvisorAvatar } from '../components/wizard/AdvisorAvatar';
+import { PropertyFicha } from '../components/wizard/PropertyFicha';
 import { ValuationShareCard } from '../components/wizard/ValuationShareCard';
 import { formatMillions, formatPhone } from '../lib/utils';
 import { shareMarket } from '../lib/shareMarket';
 
 // What the client opens from the WhatsApp link: their range card, no wizard.
 export function SharedValuationPage({ data }: { data: ShareLinkData }) {
-  const { colonia, tipoPropiedad, advisor, m2 } = data;
+  const { colonia, tipoPropiedad, advisor, m2, terreno, antiguedad, recamaras, banos, estacionamientos } = data;
+  const isTerreno = tipoPropiedad === 'Terreno';
+  const str = (n?: number) => (n === undefined ? '' : String(n));
   const estimate = estimatePreliminaryRange(
-    tipoPropiedad === 'Terreno' ? { tipoPropiedad, colonia, m2Terreno: m2 } : { tipoPropiedad, colonia, m2Construccion: m2 }
+    isTerreno ? { tipoPropiedad, colonia, m2Terreno: m2 } : { tipoPropiedad, colonia, m2Construccion: m2, antiguedad }
   );
 
   useEffect(() => {
@@ -41,17 +45,39 @@ export function SharedValuationPage({ data }: { data: ShareLinkData }) {
           brokerPhoto={advisor?.imageUrl}
         />
       </div>
+      <div className="mt-4 w-full max-w-[400px] rounded-2xl border border-neutral-200/70 bg-parchment-card/80 p-4 backdrop-blur-md">
+        <PropertyFicha
+          colonia=""
+          tipoPropiedad={tipoPropiedad}
+          m2Construccion={isTerreno ? '' : String(m2)}
+          m2Terreno={isTerreno ? String(m2) : str(terreno)}
+          recamaras={str(recamaras)}
+          banos={str(banos)}
+          estacionamientos={str(estacionamientos)}
+          antiguedad={antiguedad ?? ''}
+          amenidades={[]}
+          showHighlights={false}
+        />
+      </div>
       {advisor && (
-        <a
-          href={whatsappLink(
-            advisor,
-            buildWhatsAppMessage(advisor, '', tipoPropiedad, colonia, `${formatMillions(estimate.low)} - ${formatMillions(estimate.high)}`)
-          )}
-          className="mt-5 flex w-full max-w-[400px] items-center justify-center gap-2 rounded-pill bg-brand-500 bg-brand-gradient px-4 py-3.5 text-sm font-semibold text-white"
-        >
-          <MessageCircle className="h-4 w-4" />
-          {COPY.share.pageCta(advisor.name.split(' ')[0])}
-        </a>
+        <div className="mt-4 w-full max-w-[400px] rounded-2xl border border-neutral-200/70 bg-parchment-card/80 p-5 text-center backdrop-blur-md">
+          <p className="text-lg font-bold text-neutral-900">{COPY.share.meetingTitle}</p>
+          <p className="mt-1 text-sm text-neutral-600">{COPY.share.meetingBody}</p>
+          <AdvisorAvatar advisor={advisor} className="mx-auto mt-4 h-16 w-16" iconClassName="h-7 w-7" />
+          <p className="mt-2 text-base font-semibold text-neutral-900">{advisor.name}</p>
+          <p className="text-sm text-neutral-500">{advisor.roleLabel}</p>
+          <p className="text-sm text-neutral-500">{formatPhone(advisor.phone)}</p>
+          <a
+            href={whatsappLink(
+              advisor,
+              buildWhatsAppMessage(advisor, '', tipoPropiedad, colonia, `${formatMillions(estimate.low)} - ${formatMillions(estimate.high)}`)
+            )}
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded-pill bg-brand-500 bg-brand-gradient px-4 py-3.5 text-sm font-semibold text-white"
+          >
+            <MessageCircle className="h-4 w-4" />
+            {COPY.share.pageCta(advisor.name.split(' ')[0])}
+          </a>
+        </div>
       )}
     </main>
   );

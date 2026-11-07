@@ -57,6 +57,11 @@ export function WizardRevealStep({ estimate, nombre, telefono, tipoPropiedad, co
     tipoPropiedad,
     advisorName: advisor.name,
     m2: (tipoPropiedad === 'Terreno' ? profile.m2Terreno : profile.m2Construccion) ?? 0,
+    terreno: profile.m2Terreno,
+    antiguedad: profile.antiguedad,
+    recamaras: profile.recamaras,
+    banos: profile.banos,
+    estacionamientos: profile.estacionamientos,
   });
   const link = shareCode ? `${window.location.origin}/${shareCode}` : null;
 
