@@ -2,6 +2,7 @@ import { useCallback, useRef } from 'react';
 import { useLoadScript, GoogleMap } from '@react-google-maps/api';
 import { MapPin } from 'lucide-react';
 import type { ComparableListing } from '@shared/comparableListings';
+import { shortName } from '@shared/copy';
 import { NEIGHBORHOOD_COORDINATES } from '@shared/neighborhoods';
 import { useMapStyles } from './NeighborhoodMap';
 
@@ -37,7 +38,7 @@ function MapFallback({ colonia, researchCount }: Pick<Props, 'colonia' | 'resear
       ))}
       <div className="relative z-10 rounded-lg bg-parchment-card/85 px-3 py-2 shadow-sm backdrop-blur-sm">
         <p className="text-xs font-medium text-neutral-700">{researchCount} referencias en investigación</p>
-        <p className="mt-0.5 text-[10px] md:text-xs text-neutral-500">Alrededor de {colonia}</p>
+        <p className="mt-0.5 text-[10px] md:text-xs text-neutral-500">Alrededor de {shortName(colonia)}</p>
       </div>
     </div>
   );

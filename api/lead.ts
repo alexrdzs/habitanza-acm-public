@@ -191,6 +191,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // the CRM so it knows the owner; sanitized like any other free-text field.
   const asesorAsignado = sanitizeText(body.asesorAsignado, 120) || undefined;
   const asesorTelefono = sanitizeText(body.asesorTelefono, 20) || undefined;
+  // The estimate the client computed, forwarded to the CRM sheet. Non-binding, so only sanity-checked.
+  const money = (n: unknown) => (typeof n === 'number' && n > 0 && n < 1e10 ? Math.round(n) : undefined);
+  const estimadoMin = money(body.estimadoMin);
+  const estimadoAprox = money(body.estimadoAprox);
+  const estimadoMax = money(body.estimadoMax);
+  // Same shape encodeShareLink produces: https://host/<colonia><tipo><asesor><m2>.
+  const estimadoLink = /^https?:\/\/[\w.-]+(:\d+)?\/[0-9a-z][1-9]\d\d{1,5}$/.test(body.estimadoLink ?? '')
+    ? body.estimadoLink
+    : undefined;
   const consentimiento = body.consentimiento === true;
 
   const isKnownColonia =
@@ -239,6 +248,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     comoNosConocisteOtro,
     asesorAsignado,
     asesorTelefono,
+    estimadoLink,
+    estimadoMin,
+    estimadoAprox,
+    estimadoMax,
     fuente: 'landing-valuacion',
     zona: 'zona-esmeralda',
     creadoEn: new Date().toISOString(),

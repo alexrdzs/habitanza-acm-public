@@ -21,6 +21,7 @@ import { BrokerPicker } from '../components/wizard/BrokerPicker';
 import { getStoredBroker, storeBroker } from '../lib/broker';
 import { estimatePreliminaryRange, type PreliminaryEstimate } from '@shared/pricing';
 import { COPY } from '@shared/copy';
+import { encodeShareLink } from '@shared/shareLink';
 
 type Step = 'hero' | 'location' | 'property' | 'spaces' | 'extras' | 'contact' | 'analyzing' | 'reveal';
 
@@ -171,6 +172,22 @@ export function LandingPage() {
     // owns the lead and the reveal screen shows that same person.
     const advisor = (isEventMode && eventBroker) || pickAdvisor(resolvedColonia);
     setAssignedAdvisor(advisor);
+    // Computed before the POST so the same numbers and link go to the CRM sheet and to the reveal.
+    const est = estimatePreliminaryRange({
+      tipoPropiedad,
+      colonia: resolvedColonia,
+      m2Construccion: m2Construccion ? Number(m2Construccion) : undefined,
+      m2Terreno: m2Terreno ? Number(m2Terreno) : undefined,
+      // Nudge the aprox within the range by the property's own signals.
+      amenidades,
+      antiguedad: antiguedad || undefined,
+    });
+    const shareCode = encodeShareLink({
+      colonia: resolvedColonia,
+      tipoPropiedad,
+      advisorName: advisor.name,
+      m2: (tipoPropiedad === 'Terreno' ? Number(m2Terreno) : Number(m2Construccion)) || 0,
+    });
     try {
       const res = await fetch('/api/lead', {
         method: 'POST',
@@ -182,6 +199,10 @@ export function LandingPage() {
           colonia_otra: coloniaOtra || undefined,
           asesorAsignado: advisor.name,
           asesorTelefono: advisor.phone,
+          estimadoLink: shareCode ? `${window.location.origin}/${shareCode}` : undefined,
+          estimadoMin: est?.low,
+          estimadoAprox: est?.mid,
+          estimadoMax: est?.high,
           tipoPropiedad,
           antiguedad: antiguedad || undefined,
           m2Construccion: m2Construccion ? Number(m2Construccion) : undefined,
@@ -203,17 +224,7 @@ export function LandingPage() {
         throw new Error(data.error || 'No se pudo enviar tu solicitud.');
       }
 
-      setEstimate(
-        estimatePreliminaryRange({
-          tipoPropiedad,
-          colonia: resolvedColonia,
-          m2Construccion: m2Construccion ? Number(m2Construccion) : undefined,
-          m2Terreno: m2Terreno ? Number(m2Terreno) : undefined,
-          // Nudge the aprox within the range by the property's own signals.
-          amenidades,
-          antiguedad: antiguedad || undefined,
-        })
-      );
+      setEstimate(est);
       // The analyzing animation now plays after contact info is submitted
       // (not before it) -- the estimate above is already computed from the
       // visitor's real answers, so this reads as "processing your actual

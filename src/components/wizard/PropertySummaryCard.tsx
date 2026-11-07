@@ -2,7 +2,7 @@ import { ArrowDownRight, ArrowUpRight, Equal } from 'lucide-react';
 import type { Amenity, PropertyAge } from '@shared/validation';
 import type { PreliminaryEstimate } from '@shared/pricing';
 import { zoneTypicalConstruccionM2, zoneTypicalSpecs, zoneTypicalTerrenoM2 } from '@shared/comparableListings';
-import { COPY } from '@shared/copy';
+import { COPY, shortName } from '@shared/copy';
 import { SectionChip } from './SectionChip';
 import { formatCurrency } from '../../lib/utils';
 
@@ -75,7 +75,7 @@ export function PropertySummaryCard({ profile, tipoPropiedad, colonia, estimate 
     ? c.analysisSegmentsTerreno(terrenoDir)
     : c.analysisSegments(construccionDir, casaLoteDir, recDir, banDir);
 
-  const cells: SpecCell[] = [{ label: c.labels.ubicacion, value: colonia }];
+  const cells: SpecCell[] = [{ label: c.labels.ubicacion, value: shortName(colonia) }];
 
   if (!isTerreno && profile.m2Construccion) {
     cells.push({ label: c.labels.construccion, value: c.m2Value(profile.m2Construccion) });

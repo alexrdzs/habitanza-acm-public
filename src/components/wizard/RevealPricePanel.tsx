@@ -1,4 +1,4 @@
-import { Logo } from '../Logo';
+import { Info } from 'lucide-react';
 import { IS_EVENT_MODE } from '../../lib/eventMode';
 import type { Ref } from 'react';
 import { PreliminaryPricingBar } from './PreliminaryPricingBar';
@@ -8,6 +8,7 @@ import { pendingComparableListings, readyComparableListings } from '@shared/comp
 import { COPY } from '@shared/copy';
 import type { PreliminaryEstimate } from '@shared/pricing';
 import { formatMillions } from '../../lib/utils';
+import { borrowedFrom } from '../../lib/borrowedComparables';
 
 interface Props {
   estimate: PreliminaryEstimate;
@@ -26,6 +27,9 @@ export function RevealPricePanel({ estimate, nombre, tipoPropiedad, colonia, pro
   const hasComps = readyComparableListings(colonia).length > 0;
   const hasPendingComps = pendingComparableListings(colonia).length > 0;
   const caption = hasPendingComps && !hasComps ? COPY.reveal.researchCaption(colonia) : COPY.reveal.caption(colonia);
+  // No comparables of its own (typed fraccionamiento, or none anywhere): the
+  // range is the zone average, so say so instead of the "datos históricos" caption.
+  const isGeneric = !!borrowedFrom(colonia) || (!hasComps && !hasPendingComps);
   const str = (n?: number) => (n ? String(n) : '');
 
   return (
@@ -36,7 +40,6 @@ export function RevealPricePanel({ estimate, nombre, tipoPropiedad, colonia, pro
       className="relative overflow-hidden rounded-card-lg border border-neutral-200/70 bg-parchment-card/80 backdrop-blur-md"
     >
 
-      <Logo className="absolute right-8 top-7 z-10 hidden h-7 text-neutral-900 lg:block" />
       <div className="relative flex flex-col gap-5 p-5 md:p-6 lg:grid lg:grid-cols-2 lg:items-center lg:gap-x-10 lg:gap-y-8 lg:p-8">
         {/* The whole property sheet across the card. */}
         <div className="order-2 border-t border-neutral-200/70 pt-5 lg:self-stretch lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0 lg:flex lg:flex-col lg:justify-center">
@@ -72,7 +75,17 @@ export function RevealPricePanel({ estimate, nombre, tipoPropiedad, colonia, pro
             </h3>
           </div>
           <PreliminaryPricingBar estimate={estimate} />
-          <p className="mx-auto mt-2 max-w-lg text-[10px] leading-snug text-neutral-400">{caption}</p>
+          {isGeneric ? (
+            <div className="mx-auto mt-4 flex max-w-lg gap-2.5 rounded-xl border border-neutral-200 bg-neutral-50 p-3 text-left">
+              <Info className="mt-0.5 h-4 w-4 flex-shrink-0 text-neutral-500" aria-hidden />
+              <div>
+                <p className="text-xs font-semibold text-neutral-800">{COPY.reveal.genericEstimate.title}</p>
+                <p className="mt-0.5 text-xs leading-snug text-neutral-600">{COPY.reveal.genericEstimate.body(colonia)}</p>
+              </div>
+            </div>
+          ) : (
+            <p className="mx-auto mt-2 max-w-lg text-[10px] leading-snug text-neutral-400">{caption}</p>
+          )}
         </div>
       </div>
     </div>

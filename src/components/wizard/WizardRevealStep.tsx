@@ -1,3 +1,4 @@
+import { Logo } from '../Logo';
 import { IS_EVENT_MODE } from '../../lib/eventMode';
 import { useEffect, useRef, useState } from 'react';
 import { Users, Building2, FileSearch, LineChart, MapPin, MessageCircle, Route, Ruler, Home, CalendarClock, Target, Share2 } from 'lucide-react';
@@ -92,6 +93,9 @@ export function WizardRevealStep({ estimate, nombre, telefono, tipoPropiedad, co
     <div className="animate-in fade-in slide-in-from-bottom-4 grid grid-cols-1 gap-3 pb-20 duration-700 md:gap-5 lg:grid-cols-2">
       {!wide && (
         <>
+          <div className="hidden justify-end lg:col-span-2 lg:flex">
+            <Logo className="h-7 text-neutral-900" />
+          </div>
           <div className="lg:col-span-2">
             <RevealPricePanel
               estimate={estimate}

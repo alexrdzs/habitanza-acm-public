@@ -2,7 +2,7 @@ import { forwardRef, useLayoutEffect, useRef, useState } from 'react';
 import { Building2, ChevronDown, LineChart, Users, type LucideIcon } from 'lucide-react';
 import { neighborhoodIcon } from '@shared/neighborhoodIcons';
 import { Logo } from '../Logo';
-import { COPY } from '@shared/copy';
+import { COPY, shortName } from '@shared/copy';
 import { idealBand } from '@shared/pricing';
 import { formatMillions } from '../../lib/utils';
 
@@ -47,7 +47,7 @@ function Title({ tipo, colonia }: { tipo: string; colonia: string }) {
     <div className="w-full text-center font-extrabold leading-tight" style={{ fontSize: size }}>
       <p>{tipo} en</p>
       <p ref={ref} className="overflow-hidden whitespace-nowrap">
-        {colonia}
+        {shortName(colonia)}
       </p>
     </div>
   );

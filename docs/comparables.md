@@ -17,7 +17,7 @@ Este doc dice dónde vive cada dato, cómo editarlo y de dónde salió.
 | Condado de Sayavedra | 8 | 5 | 3 | 0 | 8 | 0 | $3.8 a $14.6 MDP |
 | Hacienda de Valle Escondido | 7 | 4 | 3 | 0 | 7 | 0 | $14.2 a $39.0 MDP |
 | Rancho San Juan | 6 | 2 | 4 | 0 | 6 | 0 | $10.9 a $38.2 MDP |
-| Bosque Real | 6 | 4 | 0 | 2 | 6 | 0 | $8.5 a $85.0 MDP |
+| Bosque Real | 10 | 4 | 3 | 3 | 8 | 0 | $6.8 a $85.0 MDP |
 | Club de Golf Chiluca | 7 | 7 | 0 | 0 | 4 | 3 | $10.8 a $18.0 MDP |
 | Prado Largo | 6 | 6 | 0 | 0 | 3 | 3 | $15.5 a $27.0 MDP |
 | Residencial Lago Esmeralda | 8 | 6 | 1 | 1 | 8 | 0 | $2.6 a $9.3 MDP |
@@ -52,7 +52,9 @@ Regla: de **6 a 10** por fraccionamiento. La pantalla muestra solo los **6 prime
 
 ## Reglas con las que se eligieron
 
-- Todos son de **otras agencias**, con **una excepción puesta a propósito**: el terreno de Residencial Xinté en Condado de Sayavedra ($3,962,000, 346 m²) es **TMS-854, de nuestro inventario de Pulppo**. Alex decidió dejarlo.
+- Hay dos tipos: **propiedades de Habitanza** (`own: true`, con `internalId` de Pulppo, fuente `Habitanza`) y de **otras agencias**. Las nuestras salen primero (`readyComparableListings` las ordena arriba), así que ocupan los 6 lugares visibles.
+- Nuestras: solo **venta**, solo **Casa, Departamento y Terreno residencial**, solo **Estado de México**. Hoy: THU-827, CAY-069, CIU-841, DBT-278, DSI-514, TBQ-319, TMS-854.
+- Pendientes (18 del Estado de México sin ficha completa): CNL-635, TAP-307, TXJ-575, TAZ-393, DXP-225, DHW-576, DAJ-081, CAX-089, DPU-066, DNI-817, DES-855, DLL-072, TNA-022, TVM-072, DFD-113, CBL-391, DPD-346, CVK-252. Falta m², pin y foto: `ver_propiedad` del MCP de Habitanza falla con `property_not_found`.
 - La ficha existe hoy (no da 404) y trae precio, m² y coordenadas. Algunos enlaces (`easybroker.com/agent/...`) son de la cuenta de Habitanza en EasyBroker y piden iniciar sesión. El sitio no los muestra.
 - Tiene al menos 5 fotos y la foto principal carga. El filtro de fotos es para que sean **fotos reales**, no por tamaño.
 - En Lamudi, los m² de la lista y de la ficha deben coincidir.
