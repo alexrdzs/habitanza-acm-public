@@ -1,4 +1,4 @@
-import { forwardRef, useLayoutEffect, useRef, useState } from 'react';
+import { forwardRef, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { Building2, ChevronDown, LineChart, Users, type LucideIcon } from 'lucide-react';
 import { neighborhoodIcon } from '@shared/neighborhoodIcons';
 import { Logo } from '../Logo';
@@ -19,6 +19,8 @@ interface Props {
   brokerPhoto?: string | null;
   // Page mode: fill the container (max 400px) instead of the fixed image width.
   fluid?: boolean;
+  // Replaces the broker signature (the page shows the broker in its own card below).
+  footer?: ReactNode;
 }
 
 const MARKET_ICONS: LucideIcon[] = [LineChart, Building2, Users];
@@ -66,6 +68,8 @@ export const ValuationShareCard = forwardRef<HTMLDivElement, Props>(function Val
         <Icon className="h-9 w-9" style={{ color: GREEN }} strokeWidth={1.5} />
         <Title tipo={p.tipoPropiedad} colonia={p.colonia} />
         <p className="-mt-0.5 text-center text-[11px] font-bold uppercase tracking-wider" style={{ color: '#15803D' }}>{COPY.share.eyebrow}</p>
+        {/* Page mode (footer given): the logo sits in the header instead of next to the broker. */}
+        {p.footer && <Logo className="mt-1 h-6 text-neutral-900" />}
       </div>
       <div className="mt-4 h-px bg-neutral-200" />
 
@@ -120,7 +124,10 @@ export const ValuationShareCard = forwardRef<HTMLDivElement, Props>(function Val
         </div>
       )}
 
-      {/* Broker signature (left) and logo (right) */}
+      {p.footer ? (
+        <div className="mt-5">{p.footer}</div>
+      ) : (
+      /* Broker signature (left) and logo (right) */
       <div className="mt-5 flex items-center justify-between gap-4 border-t border-neutral-200 pt-4">
         <div className="flex min-w-0 items-center gap-3">
           {p.brokerPhoto ? (
@@ -138,6 +145,7 @@ export const ValuationShareCard = forwardRef<HTMLDivElement, Props>(function Val
         </div>
         <Logo className="h-6 shrink-0 text-neutral-900" />
       </div>
+      )}
     </div>
   );
 });

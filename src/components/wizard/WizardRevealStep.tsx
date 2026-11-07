@@ -99,7 +99,7 @@ export function WizardRevealStep({ estimate, nombre, telefono, tipoPropiedad, co
       {!wide && (
         <>
           <div className="hidden justify-end lg:col-span-2 lg:flex">
-            <Logo className="h-7 text-neutral-900" />
+            <Logo className="h-10 text-neutral-900" />
           </div>
           <div className="lg:col-span-2">
             <RevealPricePanel
@@ -215,8 +215,6 @@ export function WizardRevealStep({ estimate, nombre, telefono, tipoPropiedad, co
                   />
                   <div className="min-w-0">
                     <p className="text-lg font-bold leading-tight text-neutral-900">{advisor.name}</p>
-                    <p className="mt-1 text-xs font-bold uppercase tracking-wider text-brand-600">{advisor.roleLabel}</p>
-                    <p className="mt-1 text-sm text-neutral-500">{formatPhone(advisor.phone)}</p>
                   </div>
                 </div>
               )}

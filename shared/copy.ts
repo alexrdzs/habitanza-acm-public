@@ -539,7 +539,7 @@ export const COPY = {
     pulse: {
       chip: '01 Pulso del Mercado',
       title: (colonia: string) => `Análisis del mercado en ${shortName(colonia)}`,
-      m2Label: 'Referencia por m²',
+      m2Label: 'Aprox. por m²',
       m2SublineColonia: (colonia: string) => `Con base en listados reales de ${shortName(colonia)}.`,
       m2SublineZona: 'Promedio general de la zona',
       listingsLabel: 'Publicaciones',

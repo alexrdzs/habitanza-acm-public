@@ -1,3 +1,5 @@
+import { shortName } from './copy';
+
 // Real Habitanza advisors featured on the "Hablemos ahora" CTA. Which one
 // appears is randomized client-side per visit (see AdvisorCTA.tsx) so the
 // team can see whether Rogelio or Tere gets more inbound WhatsApp contact.
@@ -73,17 +75,14 @@ export function whatsappLink(advisor: Advisor, message: string): string {
 // (e.g. "$8,870,000 a $11,290,000"); omitted, the result clause is dropped.
 export function buildWhatsAppMessage(
   advisor: Advisor,
-  nombre: string,
+  _nombre: string, // kept so callers stay unchanged; the chat already shows who is writing
   tipoPropiedad: string,
   colonia: string,
   precio?: string
 ): string {
-  const homeownerName = nombre.trim();
-  const introduction = homeownerName ? `soy ${homeownerName}. ` : '';
-  const resultado = precio ? ` y el resultado fue ${precio}` : '';
+  const resultado = precio ? ` El rango preliminar fue ${precio}.` : '';
   return (
-    `Hola ${advisor.name.split(' ')[0]}, ${introduction}Acabo de hacer el estimado de precio para mi ` +
-    `${tipoPropiedad.toLowerCase()} en ${colonia}${resultado}. Me gustaría platicar contigo para saber más de ` +
-    `sus servicios y hacer un plan a la medida.`
+    `Hola ${advisor.name.split(' ')[0]}. Me gustaría saber más de sus servicios y hacer un plan a la medida ` +
+    `para mi ${tipoPropiedad.toLowerCase()} en ${shortName(colonia)}.${resultado}`
   );
 }
