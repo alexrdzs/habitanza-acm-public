@@ -136,6 +136,12 @@ export interface LeadSubmission {
   comoNosConocisteOtro?: string;
   asesorAsignado?: string; // broker this lead was routed to (client-assigned)
   asesorTelefono?: string; // that broker's WhatsApp number
+  // The estimate the visitor is about to see (computed client-side, non-binding)
+  // and its short share link (absent for a typed fraccionamiento). For the CRM sheet.
+  estimadoLink?: string;
+  estimadoMin?: number;
+  estimadoAprox?: number;
+  estimadoMax?: number;
   consentimiento: boolean;
   empresa?: string; // honeypot — must stay empty
 }
