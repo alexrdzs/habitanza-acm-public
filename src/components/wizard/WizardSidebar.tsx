@@ -18,6 +18,8 @@ interface Props {
   intro?: boolean;
   /** Search pins on the map: starts high and narrows as the ficha fills in. */
   pinCount?: number;
+  /** Analyzing step only: drives the comparable photos on the map. */
+  analyzingStage?: number;
   /** Show "Destacado" in the ficha: from "¿Qué la hace especial?" on. */
   showHighlights?: boolean;
 }
@@ -38,7 +40,7 @@ export function WizardSidebar(p: Props) {
         <Logo className="h-8 text-neutral-900" />
       </div>
       <div className={`relative min-h-0 flex-1 overflow-hidden rounded-[1.5rem] ${IS_EVENT_MODE ? '' : 'shadow-[0_12px_32px_-16px_rgba(15,23,42,0.35)] ring-1 ring-neutral-200/70'}`}>
-        <ZoneMap colonia={p.colonia} pinCount={p.pinCount ?? 0} />
+        <ZoneMap colonia={p.colonia} pinCount={p.pinCount ?? 0} analyzingStage={p.analyzingStage} />
 
 
         {!p.intro && (

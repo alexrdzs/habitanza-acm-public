@@ -1,20 +1,36 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Check } from 'lucide-react';
 import { COPY } from '@shared/copy';
 import { WizardShell } from './WizardShell';
-import { AnalyzingMap } from './AnalyzingMap';
 import { AnalyzingComparables } from './AnalyzingComparables';
 import { cn } from '../../lib/utils';
 
 const STAGES = COPY.analyzing.stages;
 
-const STAGE_DURATION_MS = 1250;
-const COMPLETE_HOLD_MS = 850;
-const EXIT_DURATION_MS = 500;
+const STAGE_DURATION_MS = 2200;
+const COMPLETE_HOLD_MS = 1400;
+const EXIT_DURATION_MS = 800;
 
 type Phase = 'running' | 'complete' | 'exiting';
 
-export function WizardAnalyzingStep({ colonia, onDone }: { colonia: string; onDone: () => void }) {
+export function WizardAnalyzingStep({
+  colonia,
+  onDone,
+  onStage,
+  showGrid,
+}: {
+  colonia: string;
+  onDone: () => void;
+  /** Reports the current stage (3 once complete) so the side map can follow along. */
+  onStage?: (stage: number) => void;
+  /** Wide screens show the comparables as photos on the side map instead. */
+  showGrid: boolean;
+}) {
+  // Latest callbacks, so a parent re-render can't restart the timers below.
+  const doneRef = useRef(onDone);
+  doneRef.current = onDone;
+  const stageRef = useRef(onStage);
+  stageRef.current = onStage;
   const [stageIndex, setStageIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>('running');
 
@@ -26,7 +42,7 @@ export function WizardAnalyzingStep({ colonia, onDone }: { colonia: string; onDo
     const completeAt = STAGES.length * STAGE_DURATION_MS;
     const completeTimeout = setTimeout(() => setPhase('complete'), completeAt);
     const exitTimeout = setTimeout(() => setPhase('exiting'), completeAt + COMPLETE_HOLD_MS);
-    const doneTimeout = setTimeout(onDone, completeAt + COMPLETE_HOLD_MS + EXIT_DURATION_MS);
+    const doneTimeout = setTimeout(() => doneRef.current(), completeAt + COMPLETE_HOLD_MS + EXIT_DURATION_MS);
 
     return () => {
       clearInterval(interval);
@@ -34,49 +50,24 @@ export function WizardAnalyzingStep({ colonia, onDone }: { colonia: string; onDo
       clearTimeout(exitTimeout);
       clearTimeout(doneTimeout);
     };
-  }, [onDone]);
+  }, []);
 
   const isComplete = phase !== 'running';
+  const stage = isComplete ? 3 : stageIndex;
+  useEffect(() => stageRef.current?.(stage), [stage]);
 
   return (
     <div
       className={cn(
-        'transition-all duration-500 ease-out',
+        'transition-all duration-700 ease-out',
         phase === 'exiting' ? '-translate-y-3 opacity-0' : 'translate-y-0 opacity-100'
       )}
     >
       <WizardShell title={COPY.analyzing.title} description={COPY.analyzing.description}>
         <div className="flex flex-col items-center gap-8 py-4">
-          {/* A real map, not an abstract loading animation: starts zoomed
-              out over the whole zone, then narrows into the visitor's
-              colonia and its real comps once we reach that stage --
-              cross-fading into a completion stamp once every stage has
-              finished so the cut to the next screen reads as a deliberate
-              beat rather than an abrupt jump. */}
-          <div className="relative flex h-36 w-full items-center justify-center overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-50">
-            {!isComplete ? (
-              <>
-                <AnalyzingMap colonia={colonia} narrow={stageIndex >= 1} />
-                <div
-                  className="pointer-events-none absolute inset-0 animate-spin opacity-30 [animation-duration:2.4s]"
-                  style={{
-                    background:
-                      'conic-gradient(from 0deg, transparent 0deg, var(--color-emerald-glow) 25deg, transparent 70deg)',
-                  }}
-                />
-              </>
-            ) : (
-              <div className="flex animate-in flex-col items-center gap-2 zoom-in-95 fade-in duration-500">
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-deep text-white shadow-lg">
-                  <Check className="h-7 w-7" strokeWidth={3} />
-                </div>
-                <p className="text-sm font-bold text-neutral-800">{COPY.analyzing.completeLabel}</p>
-              </div>
-            )}
-          </div>
-
-          {/* The comparables being reviewed, then narrowed to the selection. */}
-          <AnalyzingComparables colonia={colonia} stage={isComplete ? 3 : stageIndex} />
+          {/* The comparables being reviewed, then narrowed to the selection.
+              On wide screens these are photos on the wizard's right-panel map instead. */}
+          {showGrid && <AnalyzingComparables colonia={colonia} stage={stage} />}
 
           {/* Stage checklist — each item narrates what's happening and why it
               matters, not a generic "cargando..." message. */}
@@ -87,7 +78,7 @@ export function WizardAnalyzingStep({ colonia, onDone }: { colonia: string; onDo
               return (
               <div
                 key={stage.label}
-                className={`flex items-start gap-3 rounded-xl border p-3 transition-all duration-500 ${
+                className={`flex items-start gap-3 rounded-xl border p-3 transition-all duration-1000 ${
                   isActive
                     ? 'border-brand-200 bg-brand-50 dark:border-brand-500/40 dark:bg-brand-500/10'
                     : isDone
