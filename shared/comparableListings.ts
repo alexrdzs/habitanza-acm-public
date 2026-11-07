@@ -1,6 +1,6 @@
-// Real, currently-published listings from OTHER agencies (Lamudi, EasyBroker),
-// never from Habitanza's own Pulppo inventory (one exception kept on purpose:
-// the Residencial Xinté terreno, TMS-854). Checked on each listing page on
+// Real, currently-published listings: Habitanza's own inventory (own: true,
+// Estado de México only, venta only; shown first) plus other agencies (Lamudi,
+// EasyBroker). Other-agency listings were checked on each listing page on
 // 2026-11-05. They are used on the reveal screen's
 // map + mini cards. Keyed by colonia name, matching ZONA_ESMERALDA_COLONIAS
 // in validation.ts. These are reference listings for social/spatial proof
@@ -28,8 +28,11 @@ export interface ComparableListing {
   // Research templates remain in this source of truth but must never appear
   // in visitor-facing maps or cards.
   isPlaceholder?: boolean;
-  // Every comparable comes from another agency, never from Habitanza's own
-  // Pulppo inventory. A portal pin is often the colonia centroid, not the house.
+  // own = Habitanza's own inventory (internalId = Pulppo code). Own listings
+  // sort first, so they take the visible slots (the screen shows the first 6).
+  // A portal pin is often the colonia centroid, not the house.
+  own?: boolean;
+  internalId?: string;
   source?: string; // portal name
   sourceUrl?: string; // public listing checked on 2026-11-05
 }
@@ -43,7 +46,7 @@ export const COMPARABLE_LISTINGS: Record<string, ComparableListing[]> = {
     { tipo: 'Terreno residencial', precio: 3800000, m2: 510, photo: 'https://assets.easybroker.com/property_images/4574329/76804087/EB-QO4329.jpg', lat: 19.5833053, lng: -99.3111286, source: 'EasyBroker', sourceUrl: 'https://mx-inmobiliaria.easybroker.com/property/terrenos-en-venta-condado-de-sayavedra-atizapan-de-zaragoza-estado-de-mexico' },
     { tipo: 'Terreno residencial', precio: 4489000, m2: 385, photo: 'https://assets.easybroker.com/property_images/6152129/109145100/EB-WQ2129.jpeg', lat: 19.5853053, lng: -99.3091286, source: 'EasyBroker', sourceUrl: 'https://network-de-asesores-inmobiliarios.easybroker.com/property/terrenos-residenciales-en-condominio-horizontal-condado-de-sayavedra' },
     { tipo: 'Casa', precio: 11900000, m2: 320, lat: 19.576728815461024, lng: -99.3194889093162, recamaras: 3, banos: 3, photo: 'https://assets.easybroker.com/property_images/6326695/112467762/EB-XH6695.jpeg?s=3c3e1982bfa8b99e&version=1792629587&rasterize=true', sourceUrl: 'https://www.easybroker.com/agent/mls_properties/casa-en-centa-renta-condado-de-sayavedra-atizapan-de-zaragoza', source: 'EasyBroker' },
-    { tipo: 'Terreno residencial', precio: 3962000, m2: 346, lat: 19.56522688122928, lng: -99.33048921685494, photo: 'https://assets.easybroker.com/property_images/6251788/110943071/EB-XA1788.jpg?s=65805c1241704422&version=1789579238&rasterize=true', sourceUrl: 'https://www.easybroker.com/agent/properties/terrenos-residenciales-en-venta-residencial-xinte-condado-de-sayavedra', source: 'EasyBroker' },
+    { tipo: 'Terreno residencial', precio: 3962000, m2: 346, photo: 'https://assets.easybroker.com/property_images/6251788/110943071/EB-XA1788.jpg?s=65805c1241704422&version=1789579238', lat: 19.5820306, lng: -99.3149825, source: 'Habitanza', sourceUrl: 'https://www.easybroker.com/listings/terrenos-residenciales-en-venta-residencial-xinte-condado-de-sayavedra', internalId: 'TMS-854', own: true },
   ],
   'Hacienda de Valle Escondido': [
     { tipo: 'Casa', precio: 26889000, m2: 701, recamaras: 5, banos: 5, photo: 'https://assets.easybroker.com/property_images/5704331/99687150/EB-UX4331.jpeg', lat: 19.5703585, lng: -99.3076688, source: 'EasyBroker', sourceUrl: 'https://mdpconsultoria-inmobiliaria.easybroker.com/property/vendo-casa-en-real-de-hacienda-de-valle-escondido' },
@@ -55,6 +58,7 @@ export const COMPARABLE_LISTINGS: Record<string, ComparableListing[]> = {
     { tipo: 'Casa', precio: 24889000, m2: 800, recamaras: 5, banos: 5, photo: 'https://assets.easybroker.com/property_images/6080452/107624125/EB-WJ0452.jpeg', lat: 19.5650443, lng: -99.3101993, source: 'EasyBroker', sourceUrl: 'https://interksa.easybroker.com/property/vendo-residencia-hacienda-de-valle-escondido' },
   ],
   'Rancho San Juan': [
+    { tipo: 'Terreno residencial', precio: 11750000, m2: 889, photo: 'https://assets.easybroker.com/property_images/6180670/109777100/EB-WT0670.jpg?version=1787264688', lat: 19.5839646, lng: -99.3001173, source: 'Habitanza', sourceUrl: 'https://www.easybroker.com/listings/terreno-residencial-en-venta-en-rancho-san-juan-55038901-339d-4250-987b-b567b40561a1', internalId: 'THU-827', own: true },
     { tipo: 'Terreno residencial', precio: 13500000, m2: 1145, photo: 'https://assets.easybroker.com/property_images/6222757/110592423/EB-WX2757.jpeg', lat: 19.5839646, lng: -99.3001173, source: 'EasyBroker', sourceUrl: 'https://heyhaus-listado.easybroker.com/property/terreno-venta-en-rancho-san-juan-almendros-atizapan-zaragoza' },
     { tipo: 'Casa', precio: 35000000, m2: 982, recamaras: 4, banos: 5, photo: 'https://assets.easybroker.com/property_images/6086095/107748111/EB-WJ6095.png', lat: 19.5858451, lng: -99.301925, source: 'EasyBroker', sourceUrl: 'https://innovareal.easybroker.com/property/canelos-en-rancho-san-juan' },
     { tipo: 'Terreno residencial', precio: 12300000, m2: 1044, photo: 'https://assets.easybroker.com/property_images/6172871/109605944/EB-WS2871.jpeg', lat: 19.5798701, lng: -99.2975523, source: 'EasyBroker', sourceUrl: 'https://grupo-tzar.easybroker.com/property/terreno-venta-rancho-san-juan-zona-esmeralda-atizapan-de-zaragoza-edo-mex' },
@@ -63,11 +67,16 @@ export const COMPARABLE_LISTINGS: Record<string, ComparableListing[]> = {
     { tipo: 'Terreno residencial', precio: 10900000, m2: 886, photo: 'https://assets.easybroker.com/property_images/6134365/108772162/EB-WO4365.jpg', lat: 19.577148, lng: -99.3000986, source: 'EasyBroker', sourceUrl: 'https://valueinmobiliaria.easybroker.com/property/terreno-en-venta-en-rancho-san-juan-atizapan-de-zaragoza-8c8c8742-ff35-4d30-b151-143892e7d1de' },
   ],
   'Bosque Real': [
+    { tipo: 'Departamento', precio: 7500000, m2: 185, recamaras: 3, banos: 4, photo: 'https://assets.easybroker.com/property_images/5472040/101168905/EB-UA2040.png?s=f1c6022878f47add&version=1769639176', lat: 19.4205507, lng: -99.2827073, source: 'Habitanza', sourceUrl: 'https://www.easybroker.com/listings/departamento-en-venta-con-3-recamaras-y-family-room-en-bosque-real', internalId: 'DSI-514', own: true },
     { tipo: 'Casa', precio: 23499000, m2: 632, recamaras: 3, banos: 3, photo: 'https://assets.easybroker.com/property_images/6175919/109671554/EB-WS5919.jpg', lat: 19.4262738, lng: -99.2939026, source: 'EasyBroker', sourceUrl: 'https://amir-cherit-real-estate.easybroker.com/property/casa-en-privada-bosque-real-bosque-real-huixquilucan' },
-    { tipo: 'Departamento', precio: 14700000, m2: 337, recamaras: 3, banos: 3, photo: 'https://assets.easybroker.com/property_images/5218270/100938573/EB-TA8270.jpg', lat: 19.4274517, lng: -99.2818927, source: 'EasyBroker', sourceUrl: 'https://living-value.easybroker.com/property/venta-departamento-punta-pergolas-bosque-real' },
+    { tipo: 'Terreno residencial', precio: 12000000, m2: 611, photo: 'https://assets.easybroker.com/property_images/5460649/94590621/EB-TZ0649.png?s=25426898bfaefde6&version=1755646895', lat: 19.4155848, lng: -99.2843137, source: 'EasyBroker', sourceUrl: 'https://www.easybroker.com/listings/terreno-venta-en-bosque-real-habitacional-en-las-terrazas' },
     { tipo: 'Casa', precio: 25900000, m2: 560, recamaras: 4, banos: 4, photo: 'https://assets.easybroker.com/property_images/6241892/110982121/EB-WZ1892.jpg', lat: 19.4303982, lng: -99.2880519, source: 'EasyBroker', sourceUrl: 'https://mac.easybroker.com/property/espectacular-casa-en-bosque-real-3efbb572-d37e-4f1d-a7ea-1ec0061bd319' },
-    { tipo: 'Departamento', precio: 8498000, m2: 204, recamaras: 3, banos: 2, photo: 'https://assets.easybroker.com/property_images/5508076/106056391/EB-UD8076.png', lat: 19.4325376, lng: -99.2875765, source: 'EasyBroker', sourceUrl: 'https://duparcrealty.easybroker.com/property/bosque-real-huixquilucan-edomex-departamento-en-venta' },
+    { tipo: 'Terreno residencial', precio: 8900000, m2: 504, photo: 'https://assets.easybroker.com/property_images/6038595/106709364/EB-WE8595.jpg?s=d2c5f809ae7d5468&version=1780611806', lat: 19.4272170277, lng: -99.2821145719, source: 'Habitanza', sourceUrl: 'https://www.easybroker.com/listings/terreno-residencial-en-venta-en-las-pergolas-bosque-real-bosque-real', internalId: 'TBQ-319', own: true },
+    { tipo: 'Departamento', precio: 14700000, m2: 337, recamaras: 3, banos: 3, photo: 'https://assets.easybroker.com/property_images/5218270/100938573/EB-TA8270.jpg', lat: 19.4274517, lng: -99.2818927, source: 'EasyBroker', sourceUrl: 'https://living-value.easybroker.com/property/venta-departamento-punta-pergolas-bosque-real' },
+    { tipo: 'Terreno residencial', precio: 6790000, m2: 374, photo: 'https://assets.easybroker.com/property_images/6088600/107796139/EB-WJ8600.jpeg?s=8abd08b6c1d8dbbc&version=1783035013', lat: 19.4155848, lng: -99.2843137, source: 'EasyBroker', sourceUrl: 'https://www.easybroker.com/listings/lote-en-privada-de-girasoles-bosque-real' },
     { tipo: 'Casa', precio: 29000000, m2: 450, recamaras: 3, banos: 3, photo: 'https://assets.easybroker.com/property_images/6224353/110626754/EB-WX4353.jpeg', lat: 19.429977, lng: -99.2789068, source: 'EasyBroker', sourceUrl: 'https://mac.easybroker.com/property/casa-en-venta-de-tres-niveles-en-bosque-real' },
+    { tipo: 'Departamento', precio: 8498000, m2: 204, recamaras: 3, banos: 2, photo: 'https://assets.easybroker.com/property_images/5508076/106056391/EB-UD8076.png', lat: 19.4325376, lng: -99.2875765, source: 'EasyBroker', sourceUrl: 'https://duparcrealty.easybroker.com/property/bosque-real-huixquilucan-edomex-departamento-en-venta' },
+    { tipo: 'Terreno residencial', precio: 11668000, m2: 583, photo: 'https://assets.easybroker.com/property_images/6341703/112785787/EB-XJ1703.jpg?s=6f1f4c82d20040fc&version=1793295301', lat: 19.4155848, lng: -99.2843137, source: 'EasyBroker', sourceUrl: 'https://www.easybroker.com/listings/terreno-en-preventa-de-583-m-en-islas-real-del-acueducto-bosque-real' },
     { tipo: 'Casa', precio: 85000000, m2: 1080, recamaras: 4, banos: 4, photo: 'https://assets.easybroker.com/property_images/2906191/46127078/EB-KD6191.jpg', lat: 19.420297, lng: -99.2881025, source: 'EasyBroker', sourceUrl: 'https://interksa.easybroker.com/property/casa-venta-bosque-real-priv-isla-del-rio-rcv533087' },
   ],
   'Club de Golf Chiluca': [
@@ -88,6 +97,7 @@ export const COMPARABLE_LISTINGS: Record<string, ComparableListing[]> = {
     { tipo: 'Casa', precio: 27000000, m2: 800, recamaras: 6, banos: 6, photo: 'https://assets.easybroker.com/property_images/6193235/110051866/EB-WU3235.jpg', lat: 19.5553637, lng: -99.3083389, source: 'EasyBroker', sourceUrl: 'https://mac.easybroker.com/property/fraccionamiento-exclusivo-de-zona-esmeralda-prado-largo-280604ca-4adf-4821-b428-ceec252130e7' },
   ],
   'Residencial Lago Esmeralda': [
+    { tipo: 'Casa', precio: 7945000, m2: 208, recamaras: 3, banos: 3, photo: 'https://assets.easybroker.com/property_images/6285085/111640197/EB-XD5085.jpg?s=f937e4fe9d044ef9&version=1790968236', lat: 19.5445804, lng: -99.2733416, source: 'Habitanza', sourceUrl: 'https://www.easybroker.com/listings/casa-en-venta-en-aqua-ii-lago-esmeralda-residencial-lago-esmeralda-casa', internalId: 'CIU-841', own: true },
     { tipo: 'Casa', precio: 4110000, m2: 92, recamaras: 3, banos: 2, photo: 'https://assets.easybroker.com/property_images/5298810/91361072/EB-TI8810.jpg', lat: 19.5386173305, lng: -99.2625008896, source: 'EasyBroker', sourceUrl: 'https://innovareal.easybroker.com/property/sky-view-en-lago-esmeralda-residencial-lago-esmeralda-atizapan-de-zaragoza' },
     { tipo: 'Departamento', precio: 6500000, m2: 160, recamaras: 3, banos: 4, photo: 'https://assets.easybroker.com/property_images/5877818/103349053/EB-VO7818.jpeg', lat: 19.53766, lng: -99.273344, source: 'EasyBroker', sourceUrl: 'https://quality-habitat.easybroker.com/property/venta-departamento-vista-antigua-3-lago-esmeralda-atizapan-de-zaragoza-residencial-lago-esmeralda' },
     { tipo: 'Terreno residencial', precio: 2625000, m2: 105, photo: 'https://assets.easybroker.com/property_images/6068741/107358414/EB-WH8741.jpeg', lat: 19.5370996, lng: -99.272454, source: 'EasyBroker', sourceUrl: 'https://meti.easybroker.com/property/pre-venta-lotes-residenciales-residencial-lago-esmeralda' },
@@ -135,6 +145,7 @@ export const COMPARABLE_LISTINGS: Record<string, ComparableListing[]> = {
     { tipo: 'Terreno residencial', precio: 4900000, m2: 582, photo: 'https://img.lamudi.com.mx/eyJidWNrZXQiOiJwcmQtbGlmdWxsY29ubmVjdC1iYWNrZW5kLWIyYi1pbWFnZXMiLCJrZXkiOiJpbmdlc3Rlci8wMWExNDI2My0zY2I0LTc4MDgtODYxMC01ZmMxYmQxZjNmOWUvYmJkYWFmNWYwMjM2OGVhOGQ1YjZkYjg4YzRjYjFiMjc2ZGNkODlhN2UzYjFkMDUxY2YyZDUzMDAzYmU3MTNlOC5qcGVnIiwiYnJhbmQiOiJsYW11ZGkiLCJlZGl0cyI6eyJyb3RhdGUiOm51bGwsInJlc2l6ZSI6eyJ3aWR0aCI6OTAwLCJoZWlnaHQiOjY1MCwiZml0IjoiY292ZXIifX19', lat: 19.580877, lng: -99.322791, source: 'Lamudi', sourceUrl: 'https://www.lamudi.com.mx/detalle/41032-73-5fc1bd1f3fe7-3cfd-1a142ac-8659-7851' },
   ],
   'Interlomas y Hda. de las Palmas': [
+    { tipo: 'Departamento', precio: 7900000, m2: 160, recamaras: 3, banos: 3, photo: 'https://assets.easybroker.com/property_images/5472814/107847423/EB-UA2814.jpg?s=e66a82d07b5f1656&version=1783135976', lat: 19.3898567, lng: -99.2868454, source: 'Habitanza', sourceUrl: 'https://www.easybroker.com/listings/departamento-en-venta-con-terraza-y-3-recamaras-en-160-m', internalId: 'DBT-278', own: true },
     { tipo: 'Departamento', precio: 9300000, m2: 260, recamaras: 3, banos: 3, photo: 'https://assets.easybroker.com/property_images/5415875/93691124/EB-TU5875.jpg', lat: 19.3886145, lng: -99.2915608, source: 'EasyBroker', sourceUrl: 'https://mac.easybroker.com/property/departamento-en-venta-en-hacienda-de-las-palmas-huixquilucan-mexico-interlomas' },
     { tipo: 'Casa', precio: 11980000, m2: 300, recamaras: 3, banos: 3, photo: 'https://assets.easybroker.com/property_images/6245430/110803375/EB-WZ5430.jpeg', lat: 19.3976512, lng: -99.2764361, source: 'EasyBroker', sourceUrl: 'https://living-value.easybroker.com/property/casa-venta-cerrada-paseo-de-las-palmas-interlomas' },
     { tipo: 'Departamento', precio: 9950000, m2: 310, recamaras: 3, banos: 3, photo: 'https://assets.easybroker.com/property_images/4077916/67451876/EB-OQ7916.jpeg', lat: 19.3913452, lng: -99.2864981, source: 'EasyBroker', sourceUrl: 'https://amir-cherit-real-estate.easybroker.com/property/departamento-en-venta-en-sei-interlomas-hacienda-de-las-palmas?agent=consueloo_2&lang=es' },
@@ -143,6 +154,7 @@ export const COMPARABLE_LISTINGS: Record<string, ComparableListing[]> = {
     { tipo: 'Departamento', precio: 8900000, m2: 280, recamaras: 3, banos: 3, photo: 'https://assets.easybroker.com/property_images/5607443/97599889/EB-UN7443.jpeg', lat: 19.3895043, lng: -99.2890403, source: 'EasyBroker', sourceUrl: 'https://mac.easybroker.com/property/vendo-depa-con-280-metros-y-terraza-en-torre-da-vinci-hacienda-de-las-palmas-en' },
   ],
   'La Estadía': [
+    { tipo: 'Casa', precio: 15490000, m2: 700, recamaras: 4, banos: 4, photo: 'https://assets.easybroker.com/property_images/3069559/48980741/EB-KT9559.jpg?s=59fcd802ba30d29b&version=1656356081', lat: 19.5327599, lng: -99.3005942, source: 'Habitanza', sourceUrl: 'https://www.easybroker.com/listings/la-estadia-hbz', internalId: 'CAY-069', own: true },
     { tipo: 'Casa', precio: 9800000, m2: 180, recamaras: 3, banos: 3, photo: 'https://assets.easybroker.com/property_images/5509139/101012118/EB-UD9139.png', lat: 19.5322973, lng: -99.303839, source: 'EasyBroker', sourceUrl: 'https://innovareal.easybroker.com/property/la-montana-en-zona-esmeralda' },
     { tipo: 'Terreno residencial', precio: 8990000, m2: 1079, photo: 'https://assets.easybroker.com/property_images/3580070/58270113/EB-MT0070.jpeg', lat: 19.5327599, lng: -99.3005942, source: 'EasyBroker', sourceUrl: 'https://tresolbienesraices.easybroker.com/property/terreno-en-venta-la-estadia-casi-plano-y-panoramico' },
     { tipo: 'Casa', precio: 19990000, m2: 1000, recamaras: 3, banos: 5, photo: 'https://assets.easybroker.com/property_images/3211500/51478377/EB-LI1500.jpg', lat: 19.5354335, lng: -99.2993504, source: 'EasyBroker', sourceUrl: 'https://loto.easybroker.com/property/espectacular-casa-en-venta-en-la-estadia-zona-esmeralda-atizapan-de-zaragoza' },
@@ -156,7 +168,9 @@ export const COMPARABLE_LISTINGS: Record<string, ComparableListing[]> = {
 // canonical way to look up a single photo -- components should call this
 // instead of reaching into COMPARABLE_LISTINGS directly.
 export function readyComparableListings(colonia: string): ComparableListing[] {
-  return (COMPARABLE_LISTINGS[colonia] ?? []).filter((listing) => !listing.isPlaceholder);
+  const ready = (COMPARABLE_LISTINGS[colonia] ?? []).filter((listing) => !listing.isPlaceholder);
+  // Array.sort is stable: own first, everything else keeps its order.
+  return [...ready.filter((l) => l.own), ...ready.filter((l) => !l.own)];
 }
 
 // Development/research-only entries. Render them as progress indicators, never

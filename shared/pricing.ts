@@ -30,10 +30,29 @@ export const DEFAULT_PRICE_PER_M2_CONSTRUCCION = 42000;
 export const PRICE_PER_M2_TERRENO: Record<string, number | null> = {
   'Condado de Sayavedra': 6000, // TXJ-575: $6.9M / 1,147m²
   // Other colonias have no raw-land comp sampled yet — fall back to the default below.
-  'Bosque Real': null, // TODO research: verified terreno price per m²
+  'Bosque Real': 19600, // mediana de 9 terrenos de la Colección TBR3SPM (EasyBroker, 2026-11-07): $17.6k a $25.5k/m², n=9
   Interlomas: null, // TODO research: verified terreno price per m²
 };
 export const DEFAULT_PRICE_PER_M2_TERRENO = 6000;
+
+// Minimum $/m² per property type, applied to every colonia. The estimate never
+// shows a price per m² below these. While a colonia sits on its floor, each
+// positive feature the visitor ticks lifts the price 2% (the position model
+// below only moves the point inside the band, so it can't lift a floored one).
+const MIN_PRICE_PER_M2: Record<string, number> = { Terreno: 15500, Casa: 30000, Departamento: 25000 };
+const FLOOR_FEATURE_LIFT = 0.02;
+const minPerM2 = (tipo: string) => MIN_PRICE_PER_M2[tipo] ?? MIN_PRICE_PER_M2.Casa;
+
+function upFeatureCount(amenidades: Amenity[] = []): number {
+  return amenidades.filter((a) => FEATURE_EFFECTS[a] === 'up').length;
+}
+
+// Fixed terreno band for colonias where the $/m² floor doesn't fit the market
+// (Sayavedra lots sell at $8k to $11k/m²). Ignores lot size on purpose.
+// ponytail: fixed band, make it size-aware if visitors with very small or very large lots complain.
+const TERRENO_FIXED_RANGE: Record<string, { low: number; high: number }> = {
+  'Condado de Sayavedra': { low: 3_000_000, high: 8_000_000 },
+};
 
 const PROPERTY_TYPE_FACTOR: Partial<Record<PublicPropertyType, number>> = {
   Casa: 1,
@@ -104,12 +123,12 @@ export interface ZoneReference {
 export function referencePerM2(colonia: string, tipoPropiedad: PublicPropertyType | string): ZoneReference {
   if (tipoPropiedad === 'Terreno') {
     const perM2 = PRICE_PER_M2_TERRENO[colonia];
-    return { perM2: perM2 ?? DEFAULT_PRICE_PER_M2_TERRENO, isColoniaSpecific: perM2 != null };
+    return { perM2: Math.max(perM2 ?? DEFAULT_PRICE_PER_M2_TERRENO, minPerM2('Terreno')), isColoniaSpecific: perM2 != null };
   }
   const perM2 = PRICE_PER_M2_CONSTRUCCION[colonia];
   const typeFactor = PROPERTY_TYPE_FACTOR[tipoPropiedad as PublicPropertyType] ?? 1;
   const base = perM2 ?? DEFAULT_PRICE_PER_M2_CONSTRUCCION;
-  return { perM2: Math.round(base * typeFactor), isColoniaSpecific: perM2 != null };
+  return { perM2: Math.max(Math.round(base * typeFactor), minPerM2(String(tipoPropiedad))), isColoniaSpecific: perM2 != null };
 }
 
 // A preliminary estimate should be directionally useful, not falsely
@@ -144,10 +163,17 @@ export function estimatePreliminaryRange(params: {
     if (!m2Terreno || m2Terreno <= 0) return null;
     // Land has no age, but its características (vistas lift it, a slope or an
     // irregular shape drag it) move the aprox within the band, same as a home.
+    const fixed = TERRENO_FIXED_RANGE[colonia];
+    if (fixed) {
+      const mid = fixed.low + estimateRangePosition({ amenidades, antiguedad: undefined }) * (fixed.high - fixed.low);
+      return { low: fixed.low, mid: roundPreliminaryEstimate(mid), high: fixed.high };
+    }
     const perM2 = PRICE_PER_M2_TERRENO[colonia] ?? DEFAULT_PRICE_PER_M2_TERRENO;
-    const base = m2Terreno * perM2;
-    const low = base * 0.75;
-    const high = base * 1.25;
+    const floor = minPerM2('Terreno');
+    const lift = perM2 < floor ? 1 + FLOOR_FEATURE_LIFT * upFeatureCount(amenidades) : 1;
+    const base = m2Terreno * Math.max(perM2, floor) * lift;
+    const low = Math.max(base * 0.75, m2Terreno * floor);
+    const high = Math.max(base * 1.25, low);
     const mid = low + estimateRangePosition({ amenidades, antiguedad: undefined }) * (high - low);
     return {
       low: roundPreliminaryEstimate(low),
@@ -162,9 +188,11 @@ export function estimatePreliminaryRange(params: {
   // `base` is the zone-anchored center of the band; low/high are the fixed
   // ±15% comparable range. The aprox then floats within [low, high] by the
   // property's own signals instead of always landing at the midpoint.
-  const base = m2Construccion * perM2 * typeFactor;
-  const low = base * 0.85;
-  const high = base * 1.15;
+  const floor = minPerM2(String(tipoPropiedad));
+  const lift = perM2 * typeFactor < floor ? 1 + FLOOR_FEATURE_LIFT * upFeatureCount(amenidades) : 1;
+  const base = m2Construccion * Math.max(perM2 * typeFactor, floor) * lift;
+  const low = Math.max(base * 0.85, m2Construccion * floor);
+  const high = Math.max(base * 1.15, low);
   const mid = low + estimateRangePosition({ amenidades, antiguedad }) * (high - low);
   return {
     low: roundPreliminaryEstimate(low),
