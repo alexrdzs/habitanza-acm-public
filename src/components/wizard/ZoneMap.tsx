@@ -52,7 +52,8 @@ const OVERVIEW_ZOOM = 12;
 const RADAR_TOP = 0.68;
 // Map center that puts `target` at RADAR_TOP of the panel height (at zoom z).
 function offsetCenter(map: google.maps.Map, target: google.maps.LatLngLiteral, z: number) {
-  const h = map.getDiv().clientHeight || 700;
+  // getDiv() is undefined when Google Maps fails to load (bad key or domain). Do not crash the page.
+  const h = map.getDiv()?.clientHeight || 700;
   const degPerPx = (360 / (256 * 2 ** z)) * Math.cos((target.lat * Math.PI) / 180);
   return { lat: target.lat - (0.5 - RADAR_TOP) * h * degPerPx, lng: target.lng };
 }
