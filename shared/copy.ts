@@ -287,7 +287,6 @@ export const COPY = {
   analyzing: {
     title: 'Analizando la zona',
     description: 'Estamos preparando un primer estimado de valor.',
-    completeLabel: 'Todo listo',
     reviewingLabel: (n: number) => `Revisando ${n} propiedades`,
     selectedLabel: (n: number) => `${n} comparables seleccionados`,
     stages: [
@@ -301,11 +300,11 @@ export const COPY = {
       },
       {
         label: 'Ajustando por variables de la propiedad',
-        detail: 'Las características únicas de cada proiedad se consideran desde el primer cálculo.',
+        detail: 'Las características únicas de cada propiedad se consideran desde el primer cálculo.',
       },
       {
         label: 'Preparando el análisis de zona',
-        detail: 'A partir del estado actual del mercado y los comparables visibles actualmente..',
+        detail: 'A partir del estado actual del mercado y los comparables visibles actualmente.',
       },
     ],
   },

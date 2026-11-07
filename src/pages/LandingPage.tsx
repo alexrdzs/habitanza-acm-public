@@ -13,7 +13,10 @@ import { MapPreloader } from '../components/wizard/NeighborhoodMap';
 import { WizardSidebar } from '../components/wizard/WizardSidebar';
 import { useIsWide } from '../lib/useIsWide';
 import { OTHER_COLONIA_VALUE, normalizePhone, type PropertyAge, type Amenity } from '@shared/validation';
-import { pickAdvisor, type Advisor } from '@shared/advisors';
+import { advisorsForColonia, pickAdvisor, type Advisor } from '@shared/advisors';
+import { optimizedPhotoUrl } from '@shared/comparableListings';
+import { preloadImages } from '../lib/preload';
+import { buildPool } from '../components/wizard/AnalyzingComparables';
 import { BrokerPicker } from '../components/wizard/BrokerPicker';
 import { getStoredBroker, storeBroker } from '../lib/broker';
 import { estimatePreliminaryRange, type PreliminaryEstimate } from '@shared/pricing';
@@ -40,10 +43,14 @@ export function LandingPage() {
     { interlomas: 'Interlomas', lomas: 'Lomas de Valle Escondido' }[previewParams.get('colonia') ?? ''] ??
     previewParams.get('colonia') ??
     'Bosque Real';
-  const [step, setStep] = useState<Step>(() => (isRevealPreview ? 'reveal' : 'hero'));
+  // ?preview=analizando: shows the analyzing step and loops it (dev only).
+  const isAnalyzingPreview = import.meta.env.DEV && previewParams.get('preview') === 'analizando';
+  const [replay, setReplay] = useState(0);
+  const [analyzingStage, setAnalyzingStage] = useState(0);
+  const [step, setStep] = useState<Step>(() => (isRevealPreview ? 'reveal' : isAnalyzingPreview ? 'analyzing' : 'hero'));
 
   // Location
-  const [colonia, setColonia] = useState(() => (isRevealPreview ? revealPreviewColonia : ''));
+  const [colonia, setColonia] = useState(() => (isRevealPreview || isAnalyzingPreview ? revealPreviewColonia : ''));
   const [coloniaOtra, setColoniaOtra] = useState('');
 
   // Property specifics
@@ -98,6 +105,19 @@ export function LandingPage() {
   // On wide screens the right panel is the scroll container, not the window.
   const panelRef = useRef<HTMLDivElement>(null);
   const wide = useIsWide();
+
+  // As soon as the fraccionamiento is known, fetch what the next screens show
+  // (analyzing photos, reveal photos, advisor avatars) so they appear without a flash.
+  useEffect(() => {
+    if (!colonia || colonia === OTHER_COLONIA_VALUE) return;
+    const pool = buildPool(colonia);
+    const small = wide ? 120 : 200; // sizes used by the side map / the mobile strips
+    preloadImages([
+      ...pool.map((p) => optimizedPhotoUrl(p.listing.photo!, small)),
+      ...pool.filter((p) => p.picked).map((p) => optimizedPhotoUrl(p.listing.photo!, 360)),
+      ...advisorsForColonia(colonia).map((a) => a.imageUrl),
+    ]);
+  }, [colonia, wide]);
   useEffect(() => {
     window.scrollTo(0, 0);
     panelRef.current?.scrollTo(0, 0);
@@ -238,7 +258,7 @@ export function LandingPage() {
   // Map search pins narrow as the visitor answers: 45 once the zone is known,
   // half when the type is picked, then down to 12 at the last step.
   const lastIdx = flow.length - 1;
-  const pinCount = !colonia
+  const pinCount = !colonia || (wide && step === 'analyzing') // analyzing: comparables show as photos instead
     ? 0
     : !tipoPropiedad
       ? 45
@@ -363,7 +383,13 @@ export function LandingPage() {
       )}
 
       {step === 'analyzing' && (
-        <WizardAnalyzingStep colonia={resolvedColonia} onDone={() => setStep('reveal')} />
+        <WizardAnalyzingStep
+          key={replay}
+          colonia={resolvedColonia}
+          showGrid={!wide}
+          onStage={setAnalyzingStage}
+          onDone={() => (isAnalyzingPreview ? setReplay((n) => n + 1) : setStep('reveal'))}
+        />
       )}
 
       {step === 'reveal' &&
@@ -428,6 +454,7 @@ export function LandingPage() {
                   <div className="relative h-full">
                     <WizardSidebar
                       pinCount={pinCount}
+                      analyzingStage={step === 'analyzing' ? analyzingStage : undefined}
                       showHighlights={step === 'extras' || step === 'contact' || step === 'analyzing'}
                       colonia={resolvedColonia}
                       tipoPropiedad={tipoPropiedad}

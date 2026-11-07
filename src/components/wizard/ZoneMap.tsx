@@ -1,7 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { GoogleMap, useLoadScript } from '@react-google-maps/api';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { GoogleMap, OVERLAY_MOUSE_TARGET, OverlayViewF, useLoadScript } from '@react-google-maps/api';
 import { NEIGHBORHOOD_COORDINATES, ZONA_ESMERALDA_CENTER } from '@shared/neighborhoods';
-import { readyComparableListings } from '@shared/comparableListings';
+import { optimizedPhotoUrl, readyComparableListings } from '@shared/comparableListings';
+import { cn } from '../../lib/utils';
+import { buildPool } from './AnalyzingComparables';
 import { smoothZoomTo, useMapStyles } from './NeighborhoodMap';
 
 // Lucide map-pin glyph as a data URI, brand green with a white outline.
@@ -12,6 +14,37 @@ interface Props {
   colonia: string;
   /** How many search pins to show around the chosen fraccionamiento (0 = none). */
   pinCount: number;
+  /** Analyzing step: the comparables show as photos at their real spots. Stage 0-1 = all of them, 2+ = only the selection. */
+  analyzingStage?: number;
+}
+
+// Module-level so the overlays get the same function every render. A new one each time makes
+// the library tear the overlay down and rebuild it, which replays the photo's fade-in.
+const centerOffset = (w: number, h: number) => ({ x: -w / 2, y: -h / 2 });
+
+// A reviewed comparable on the map. Slow fade in, and the ones not selected fade out.
+function PhotoPin({ photo, index, dim }: { photo: string; index: number; dim: boolean }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) return null;
+  return (
+    <div className="animate-in fade-in zoom-in-90 duration-[1400ms] [animation-fill-mode:both]" style={{ animationDelay: `${index * 140}ms` }}>
+      <div
+        className={cn(
+          'h-12 w-12 overflow-hidden rounded-xl border-2 border-white bg-neutral-100 shadow-[0_6px_16px_-6px_rgba(15,23,42,0.45)] transition-all duration-[1200ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]',
+          dim ? 'scale-50 opacity-0' : 'scale-100 opacity-100'
+        )}
+      >
+        <img
+          src={optimizedPhotoUrl(photo, 120)}
+          alt=""
+          aria-hidden="true"
+          className="h-full w-full object-cover"
+          referrerPolicy="no-referrer"
+          onError={() => setFailed(true)}
+        />
+      </div>
+    </div>
+  );
 }
 
 const OVERVIEW_ZOOM = 12;
@@ -24,6 +57,8 @@ function offsetCenter(map: google.maps.Map, target: google.maps.LatLngLiteral, z
   return { lat: target.lat - (0.5 - RADAR_TOP) * h * degPerPx, lng: target.lng };
 }
 const COLONIA_ZOOM = 14;
+// Analyzing starts one step out from the fraccionamiento (not the whole zone), then closes in.
+const ANALYZING_START_ZOOM = 13;
 export const MAX_PINS = 45;
 // Spread of the search pins around the fraccionamiento, in degrees (~2.4 km tall, ~1.7 km wide).
 const SPREAD_LAT = 0.022;
@@ -52,7 +87,7 @@ function scatter(seed: string): { dx: number; dy: number }[] {
 // listings as brand-green dots. A radar pulse sits at the center so the panel
 // feels like it is analyzing the area. Without a Maps key it falls back to a
 // soft gradient with the same radar.
-export function ZoneMap({ colonia, pinCount }: Props) {
+export function ZoneMap({ colonia, pinCount, analyzingStage }: Props) {
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string | undefined;
   const { isLoaded } = useLoadScript({ googleMapsApiKey: apiKey || '' });
   const mapStyles = useMapStyles();
@@ -61,6 +96,10 @@ export function ZoneMap({ colonia, pinCount }: Props) {
 
   const points = useMemo(() => scatter(colonia || 'zona'), [colonia]);
   const center = NEIGHBORHOOD_COORDINATES[colonia];
+  const photos = useMemo(() => (analyzingStage === undefined ? [] : buildPool(colonia).map((p) => ({ ...p, position: { lat: p.listing.lat, lng: p.listing.lng } }))), [analyzingStage === undefined, colonia]);
+  const photoMode = photos.some((p) => p.picked);
+  // Photo mode: a bit wider than the fraccionamiento while reviewing, then in on the fraccionamiento once narrowed to the selection.
+  const zoom = photoMode && (analyzingStage ?? 0) < 2 ? ANALYZING_START_ZOOM : COLONIA_ZOOM;
 
   // Fly to the fraccionamiento and (re)build the markers when it changes.
   const sync = useCallback(
@@ -88,16 +127,16 @@ export function ZoneMap({ colonia, pinCount }: Props) {
           })
         );
       });
-      map.panTo(offsetCenter(map, center, COLONIA_ZOOM));
-      smoothZoomTo(map, COLONIA_ZOOM);
+      map.panTo(offsetCenter(map, center, zoom));
+      smoothZoomTo(map, zoom);
     },
-    [colonia, center, points]
+    [colonia, center, points, zoom]
   );
 
   // Real comparables: always visible once the fraccionamiento is chosen.
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || !colonia) return;
+    if (!map || !colonia || photoMode) return;
     const real = readyComparableListings(colonia).map(
       (c) =>
         new google.maps.Marker({
@@ -108,7 +147,7 @@ export function ZoneMap({ colonia, pinCount }: Props) {
         })
     );
     return () => real.forEach((m) => m.setMap(null));
-  }, [colonia, isLoaded]);
+  }, [colonia, isLoaded, photoMode]);
 
   useEffect(() => {
     if (mapRef.current) sync(mapRef.current);
@@ -138,7 +177,19 @@ export function ZoneMap({ colonia, pinCount }: Props) {
             sync(map);
           }}
           options={{ styles: mapStyles, disableDefaultUI: true, gestureHandling: 'none', clickableIcons: false }}
-        />
+        >
+          {photoMode &&
+            photos.map((p, i) => (
+              <OverlayViewF
+                key={i}
+                position={p.position}
+                mapPaneName={OVERLAY_MOUSE_TARGET}
+                getPixelPositionOffset={centerOffset}
+              >
+                <PhotoPin photo={p.listing.photo!} index={i} dim={(analyzingStage ?? 0) >= 2 && !p.picked} />
+              </OverlayViewF>
+            ))}
+        </GoogleMap>
       )}
       {!(apiKey && isLoaded) && (
         // No map available (no key, or still loading): soft street grid so the panel still reads as a map.
@@ -164,6 +215,16 @@ export function ZoneMap({ colonia, pinCount }: Props) {
             />
           ))}
         </div>
+      )}
+      {/* Hidden twin at the analyzing start zoom (same style, panel-sized), so its tiles are
+          already cached when the real map zooms out. Gone once the analyzing step starts. */}
+      {apiKey && isLoaded && center && analyzingStage === undefined && (
+        <GoogleMap
+          mapContainerStyle={{ position: 'absolute', left: 0, top: 0, width: 480, height: 800, opacity: 0, pointerEvents: 'none' }}
+          center={center}
+          zoom={ANALYZING_START_ZOOM}
+          options={{ styles: mapStyles, disableDefaultUI: true, gestureHandling: 'none', clickableIcons: false }}
+        />
       )}
       {/* Radar at the center (where the map pans to). */}
       <div className="pointer-events-none absolute left-1/2 top-[68%] -translate-x-1/2 -translate-y-1/2">
