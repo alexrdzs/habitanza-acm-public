@@ -210,6 +210,16 @@ export function ZoneMap({ colonia, pinCount, analyzingStage }: Props) {
           ))}
         </div>
       )}
+      {/* Hidden twin at the analyzing overview zoom (same style, panel-sized), so its tiles are
+          already cached when the real map zooms out. Gone once the analyzing step starts. */}
+      {apiKey && isLoaded && center && analyzingStage === undefined && (
+        <GoogleMap
+          mapContainerStyle={{ position: 'absolute', left: 0, top: 0, width: 480, height: 800, opacity: 0, pointerEvents: 'none' }}
+          center={center}
+          zoom={OVERVIEW_ZOOM}
+          options={{ styles: mapStyles, disableDefaultUI: true, gestureHandling: 'none', clickableIcons: false }}
+        />
+      )}
       {/* Radar at the center (where the map pans to). */}
       <div className="pointer-events-none absolute left-1/2 top-[68%] -translate-x-1/2 -translate-y-1/2">
         <span className="absolute -inset-10 animate-ping rounded-full bg-brand-500/15 [animation-duration:3s]" />

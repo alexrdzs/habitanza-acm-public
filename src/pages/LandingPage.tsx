@@ -13,7 +13,10 @@ import { MapPreloader } from '../components/wizard/NeighborhoodMap';
 import { WizardSidebar } from '../components/wizard/WizardSidebar';
 import { useIsWide } from '../lib/useIsWide';
 import { OTHER_COLONIA_VALUE, normalizePhone, type PropertyAge, type Amenity } from '@shared/validation';
-import { pickAdvisor, type Advisor } from '@shared/advisors';
+import { advisorsForColonia, pickAdvisor, type Advisor } from '@shared/advisors';
+import { optimizedPhotoUrl } from '@shared/comparableListings';
+import { preloadImages } from '../lib/preload';
+import { buildPool } from '../components/wizard/AnalyzingComparables';
 import { BrokerPicker } from '../components/wizard/BrokerPicker';
 import { getStoredBroker, storeBroker } from '../lib/broker';
 import { estimatePreliminaryRange, type PreliminaryEstimate } from '@shared/pricing';
@@ -102,6 +105,19 @@ export function LandingPage() {
   // On wide screens the right panel is the scroll container, not the window.
   const panelRef = useRef<HTMLDivElement>(null);
   const wide = useIsWide();
+
+  // As soon as the fraccionamiento is known, fetch what the next screens show
+  // (analyzing photos, reveal photos, advisor avatars) so they appear without a flash.
+  useEffect(() => {
+    if (!colonia || colonia === OTHER_COLONIA_VALUE) return;
+    const pool = buildPool(colonia);
+    const small = wide ? 120 : 200; // sizes used by the side map / the mobile strips
+    preloadImages([
+      ...pool.map((p) => optimizedPhotoUrl(p.listing.photo!, small)),
+      ...pool.filter((p) => p.picked).map((p) => optimizedPhotoUrl(p.listing.photo!, 360)),
+      ...advisorsForColonia(colonia).map((a) => a.imageUrl),
+    ]);
+  }, [colonia, wide]);
   useEffect(() => {
     window.scrollTo(0, 0);
     panelRef.current?.scrollTo(0, 0);
