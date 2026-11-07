@@ -42,7 +42,7 @@ The teaser screen ends with a "Hablemos ahora" WhatsApp CTA featuring a real Hab
 
 ## Link previews (Open Graph)
 
-`public/og-image.png` is a static 1200×630 image (rendered once from a one-off HTML mockup styled to match the app's ink/emerald/brass palette, not generated from the live page) so links shared in WhatsApp/iMessage/etc. show a real image and title instead of a bare URL. If the brand visuals change meaningfully, re-render and replace this file — it won't update itself.
+`public/og-image.png` is a static 1200×630 image with only the Home headline ("¿Cuánto vale tu propiedad?") big, plus the logo, so links shared in WhatsApp/iMessage/etc. show the same first impression as the app. `scripts/gen-og-image.tsx` draws it, After changing the headline or look, run `npx tsx scripts/gen-og-image.tsx` and commit the new PNG. It is not generated from the live page, and WhatsApp caches previews: after a deploy, re-share with a `?v=2` suffix to see the new image.
 
 ## Commands
 
